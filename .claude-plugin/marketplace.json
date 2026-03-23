@@ -1,0 +1,237 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "premium-plugin-marketplace",
+  "description": "Premium Claude Code plugin collection",
+  "owner": {
+    "name": "elliot"
+  },
+  "plugins": [
+    {
+      "name": "agent-browser",
+      "description": "Automates browser interactions for web testing, form filling, screenshots, and data extraction",
+      "category": "development",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/vercel-labs/agent-browser.git"
+      },
+      "author": {
+        "name": "Vercel",
+        "email": "support@vercel.com"
+      },
+      "strict": false,
+      "skills": ["./skills/agent-browser"],
+      "homepage": "https://github.com/vercel-labs/agent-browser"
+    },
+    {
+      "name": "chrome-devtools-mcp",
+      "description": "Reliable automation, in-depth debugging, and performance analysis in Chrome using Chrome DevTools and Puppeteer",
+      "category": "development",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/ChromeDevTools/chrome-devtools-mcp.git"
+      },
+      "author": {
+        "name": "Chrome DevTools Team",
+        "email": "devtools-dev@chromium.org"
+      },
+      "homepage": "https://github.com/ChromeDevTools/chrome-devtools-mcp"
+    },
+    {
+      "name": "context7-plugin",
+      "description": "Up-to-date documentation lookup. Pull version-specific documentation and code examples directly from source repositories into your LLM context.",
+      "category": "development",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/upstash/context7.git",
+        "path": "plugins/claude/context7"
+      },
+      "author": {
+        "name": "Upstash"
+      },
+      "strict": false,
+      "homepage": "https://github.com/upstash/context7"
+    },
+    {
+      "name": "document-skills",
+      "description": "Collection of document processing suite including Excel, Word, PowerPoint, and PDF capabilities",
+      "category": "productivity",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/anthropics/skills.git"
+      },
+      "author": {
+        "name": "Keith Lazuka",
+        "email": "klazuka@anthropic.com"
+      },
+      "strict": false,
+      "skills": [
+        "./skills/xlsx",
+        "./skills/docx",
+        "./skills/pptx",
+        "./skills/pdf"
+      ],
+      "homepage": "https://github.com/anthropics/skills"
+    },
+    {
+      "name": "marketing-skills",
+      "description": "33 marketing skills for technical marketers and founders: CRO, copywriting, cold email, SEO, AI SEO, paid ads, ad creative, churn prevention, pricing strategy, referral programs, revenue operations, sales enablement, site architecture, and more",
+      "category": "productivity",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/coreyhaines31/marketingskills.git"
+      },
+      "author": {
+        "name": "Corey Haines",
+        "url": "https://corey.co"
+      },
+      "strict": false,
+      "skills": [
+        "./skills/ab-test-setup",
+        "./skills/ad-creative",
+        "./skills/ai-seo",
+        "./skills/analytics-tracking",
+        "./skills/churn-prevention",
+        "./skills/cold-email",
+        "./skills/competitor-alternatives",
+        "./skills/content-strategy",
+        "./skills/copy-editing",
+        "./skills/copywriting",
+        "./skills/email-sequence",
+        "./skills/form-cro",
+        "./skills/free-tool-strategy",
+        "./skills/launch-strategy",
+        "./skills/lead-magnets",
+        "./skills/marketing-ideas",
+        "./skills/marketing-psychology",
+        "./skills/onboarding-cro",
+        "./skills/page-cro",
+        "./skills/paid-ads",
+        "./skills/paywall-upgrade-cro",
+        "./skills/popup-cro",
+        "./skills/pricing-strategy",
+        "./skills/product-marketing-context",
+        "./skills/programmatic-seo",
+        "./skills/referral-program",
+        "./skills/revops",
+        "./skills/sales-enablement",
+        "./skills/schema-markup",
+        "./skills/seo-audit",
+        "./skills/signup-flow-cro",
+        "./skills/site-architecture",
+        "./skills/social-content"
+      ],
+      "homepage": "https://github.com/coreyhaines31/marketingskills"
+    },
+    {
+      "name": "obsidian",
+      "description": "Claude Skills for Obsidian",
+      "category": "productivity",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/kepano/obsidian-skills.git"
+      },
+      "author": {
+        "name": "Steph Ango",
+        "url": "https://stephango.com/"
+      },
+      "homepage": "https://github.com/kepano/obsidian-skills"
+    },
+    {
+      "name": "planning-with-files",
+      "description": "Manus-style persistent markdown files for planning, progress tracking, and knowledge storage. Now with hooks integration.",
+      "category": "productivity",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/OthmanAdi/planning-with-files.git"
+      },
+      "author": {
+        "name": "Ahmad Othman Ammar Adi",
+        "url": "https://github.com/OthmanAdi"
+      },
+      "homepage": "https://github.com/OthmanAdi/planning-with-files"
+    },
+    {
+      "name": "superpowers",
+      "description": "Core skills library for Claude Code: TDD, debugging, collaboration patterns, and proven techniques",
+      "category": "development",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/obra/superpowers.git"
+      },
+      "author": {
+        "name": "Jesse Vincent",
+        "email": "jesse@fsck.com"
+      },
+      "homepage": "https://github.com/obra/superpowers"
+    },
+    {
+      "name": "vue-volar",
+      "description": "Vue.js language server integration (Volar)",
+      "category": "development",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/Piebald-AI/claude-code-lsps.git",
+        "path": "vue-volar"
+      },
+      "tags": [
+        "typescript",
+        "javascript",
+        "lsp",
+        "language-server",
+        "vtsls"
+      ],
+      "author": {
+        "name": "Piebald LLC",
+        "email": "support@piebald.ai"
+      },
+      "lspServers": {
+        "vue": {
+          "command": "sh",
+          "args": [
+            "-c",
+            "set -eu; best_candidate=''; best_version=''; is_newer_version(){ awk -v lhs=\"$1\" -v rhs=\"$2\" 'BEGIN{split(lhs,l,\".\");split(rhs,r,\".\");for(i=1;i<=3;i++){li=l[i]+0;ri=r[i]+0;if(li>ri)exit 0;if(li<ri)exit 1}exit 1}'; }; is_shim_path(){ case \"$1\" in */shims/*) return 0 ;; *) return 1 ;; esac; }; old_ifs=$IFS; IFS=:; for dir in $PATH; do [ -z \"$dir\" ] && dir='.'; candidate=\"$dir/vue-language-server\"; [ -x \"$candidate\" ] || continue; raw_version=$(\"$candidate\" --version 2>&1 || \"$candidate\" -v 2>&1 || true); version=$(printf %s \"$raw_version\" | awk '{while(match($0,/[0-9]+[.][0-9]+[.][0-9]+/)){found=substr($0,RSTART,RLENGTH);$0=substr($0,RSTART+RLENGTH)}} END{if(found!=\"\")print found}'); [ -n \"$version\" ] || continue; [ \"${version%%.*}\" = '2' ] || continue; replace='false'; if [ -z \"$best_version\" ] || is_newer_version \"$version\" \"$best_version\"; then replace='true'; elif [ \"$version\" = \"$best_version\" ] && is_shim_path \"$best_candidate\" && ! is_shim_path \"$candidate\"; then replace='true'; fi; if [ \"$replace\" = 'true' ]; then best_candidate=\"$candidate\"; best_version=\"$version\"; fi; done; IFS=$old_ifs; if [ -z \"$best_candidate\" ]; then echo 'vue-volar plugin requires vue-language-server v2.x.x; no compatible version found on PATH.' >&2; echo 'Install with: npm install -g @vue/language-server@2' >&2; echo 'Version 3.x is incompatible because it requires tsserver request forwarding.' >&2; exit 1; fi; exec \"$best_candidate\" --stdio"
+          ],
+          "transport": "stdio",
+          "extensionToLanguage": {
+            ".vue": "vue"
+          },
+          "initializationOptions": {
+            "typescript": {
+              "tsdk": "node_modules/typescript/lib"
+            },
+            "vue": {
+              "hybridMode": false
+            }
+          },
+          "settings": {},
+          "maxRestarts": 3
+        }
+      },
+      "homepage": "https://github.com/Piebald-AI/claude-code-lsps"
+    },
+    {
+      "name": "ui-ux-pro-max",
+      "description": "Professional UI/UX design intelligence for AI coding assistants. Includes searchable databases of styles, colors, typography, charts, and UX guidelines for React, Next.js, Astro, Vue, Nuxt.js, Nuxt UI, Svelte, SwiftUI, React Native, Flutter, Tailwind, shadcn/ui, and Jetpack Compose.",
+      "category": "design",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git"
+      },
+      "author": {
+        "name": "nextlevelbuilder"
+      },
+      "keywords": [
+        "ui",
+        "ux",
+        "design",
+        "styles",
+        "typography",
+        "color-palette",
+        "accessibility",
+        "charts",
+        "components"
+      ],
+      "homepage": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill"
+    }
+  ]
+}
