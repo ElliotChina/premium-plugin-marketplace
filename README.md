@@ -22,7 +22,6 @@
 ### 📄 文档处理
 - **document-skills** - Excel、Word、PowerPoint、PDF 文档处理套件
 - **obsidian** - Obsidian 知识管理集成
-- **planning-with-files** - Manus 风格的持久化规划和进度追踪
 
 ### 🎨 设计辅助
 - **ui-ux-pro-max** - 专业 UI/UX 设计智能助手，包含样式、色彩、排版等数据库
@@ -103,7 +102,6 @@ claude marketplace reload
 - **生产力** (Productivity)
   - document-skills
   - obsidian
-  - planning-with-files
   - marketing-skills
 
 - **设计** (Design)

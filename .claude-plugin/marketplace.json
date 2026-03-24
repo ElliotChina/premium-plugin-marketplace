@@ -137,20 +137,6 @@
       "homepage": "https://github.com/kepano/obsidian-skills"
     },
     {
-      "name": "planning-with-files",
-      "description": "Manus-style persistent markdown files for planning, progress tracking, and knowledge storage. Now with hooks integration.",
-      "category": "productivity",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/OthmanAdi/planning-with-files.git"
-      },
-      "author": {
-        "name": "Ahmad Othman Ammar Adi",
-        "url": "https://github.com/OthmanAdi"
-      },
-      "homepage": "https://github.com/OthmanAdi/planning-with-files"
-    },
-    {
       "name": "superpowers",
       "description": "Core skills library for Claude Code: TDD, debugging, collaboration patterns, and proven techniques",
       "category": "development",
