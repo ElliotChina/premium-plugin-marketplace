@@ -1,0 +1,11 @@
+{
+  "name": "my-toolkit",
+  "version": "0.1.0",
+  "description": "Elliot 的个人工具箱插件，包含日常开发中常用的命令和技能",
+  "author": {
+    "name": "elliot",
+    "url": "https://github.com/ElliotChina"
+  },
+  "license": "MIT",
+  "keywords": ["toolkit", "workflow", "development"]
+}

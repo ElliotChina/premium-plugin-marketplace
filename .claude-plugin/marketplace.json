@@ -196,6 +196,27 @@
       "homepage": "https://github.com/Piebald-AI/claude-code-lsps"
     },
     {
+      "name": "my-toolkit",
+      "description": "Elliot 的个人工具箱插件，包含 9 个常用开发命令：新项目启动、新功能开发、问题诊断修复、功能测试、代码提交、文档更新、PRD 编写、代码&文档审查、UI 设计",
+      "category": "development",
+      "source": "./plugins/my-toolkit",
+      "author": {
+        "name": "elliot",
+        "url": "https://github.com/ElliotChina"
+      },
+      "keywords": [
+        "toolkit",
+        "workflow",
+        "commit",
+        "test",
+        "debug",
+        "docs",
+        "prd",
+        "review",
+        "ui"
+      ]
+    },
+    {
       "name": "ui-ux-pro-max",
       "description": "Professional UI/UX design intelligence for AI coding assistants. Includes searchable databases of styles, colors, typography, charts, and UX guidelines for React, Next.js, Astro, Vue, Nuxt.js, Nuxt UI, Svelte, SwiftUI, React Native, Flutter, Tailwind, shadcn/ui, and Jetpack Compose.",
       "category": "design",
