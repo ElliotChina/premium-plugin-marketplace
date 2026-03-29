@@ -6,7 +6,7 @@ Elliot 的个人工具箱插件，包含日常开发中常用的命令。
 
 | 命令 | 用途 |
 |------|------|
-| `/my-toolkit:new-project` | 新项目启动 |
+| `/my-toolkit:project-config` | 项目配置 |
 | `/my-toolkit:new-feature` | 新功能开发 |
 | `/my-toolkit:fix` | 问题诊断修复 & 功能调试 |
 | `/my-toolkit:test` | 功能测试 |
