@@ -15,59 +15,6 @@ description: >
 
 用户执行 `/my-toolkit:review` 命令时激活。传入要审查的代码路径、文档文件或 PR 编号作为参数。
 
-## 插件设置
-
-开始前，根据审查对象检查并调整插件状态。
-
-### 判断所需插件
-
-根据审查类型，判断哪些插件需要启用：
-
-- **context7-plugin** — 查阅框架最佳实践和规范（代码审查推荐启用）
-- **frontend-design** — 前端代码设计规范审查（前端代码启用）
-- **ui-ux-pro-max** — UI/UX 设计标准审查（前端 UI 审查启用）
-- **code-review** — 代码审查辅助（代码审查推荐启用）
-- **pr-review-toolkit** — PR 审查工具包（PR 审查时启用）
-- **code-simplifier** — 代码简化建议（代码审查时按需启用）
-- **superpowers** — 代码审查请求流程方法论（推荐启用）
-
-非相关插件建议暂时禁用，减少干扰。
-
-### 检查当前状态
-
-依次读取以下配置文件，综合判断插件的最终启用/禁用状态：
-
-1. **全局配置** `~/.claude/settings.json` — 用户级别的插件默认状态
-2. **项目配置** `.claude/settings.json` — 当前项目级别的覆盖状态
-
-优先级：项目配置 > 全局配置。合并两层配置后，得出各插件的最终生效状态，对比上述需求判断是否需要调整。
-
-### 调整插件状态
-
-若当前状态不符合需求，使用 AskUserQuestion 工具询问用户：
-
-```
-根据当前审查需求，建议以下插件调整：
-- 启用：[插件列表及原因]
-- 禁用：[插件列表及原因]
-是否确认调整？
-```
-
-用户确认后，修改项目 `.claude/settings.json` 中对应插件的启用/禁用状态。
-
-## 技能加载
-
-根据审查对象加载相关技能：
-
-- **web-design-guidelines** — 前端代码 UI/UX 审查
-- **vercel-react-best-practices** — React 代码审查
-- **vercel-composition-patterns** — React 组件设计审查
-- **requesting-code-review**（superpowers）— 代码审查请求流程
-- **receiving-code-review**（superpowers）— 审查反馈处理流程
-- **code-review** — 通用代码审查技能
-
-与用户确认审查范围后，主动加载对应技能。
-
 ## 工作流程
 
 ### 1. 确定审查范围

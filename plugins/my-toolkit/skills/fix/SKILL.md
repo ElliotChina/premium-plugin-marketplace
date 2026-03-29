@@ -15,56 +15,6 @@ description: >
 
 用户执行 `/my-toolkit:fix` 命令时激活。传入问题描述或错误信息作为参数。
 
-## 插件设置
-
-开始前，根据问题类型检查并调整插件状态。
-
-### 判断所需插件
-
-根据问题涉及的技术栈和环境，判断哪些插件需要启用：
-
-- **chrome-devtools-mcp** — 前端页面问题调试（浏览器相关问题启用）
-- **context7-plugin** — 查阅框架文档排查问题（推荐启用）
-- **superpowers** — 系统化调试方法论（推荐启用）
-
-非相关插件建议暂时禁用，减少干扰。
-
-### 检查当前状态
-
-依次读取以下配置文件，综合判断插件的最终启用/禁用状态：
-
-1. **全局配置** `~/.claude/settings.json` — 用户级别的插件默认状态
-2. **项目配置** `.claude/settings.json` — 当前项目级别的覆盖状态
-
-优先级：项目配置 > 全局配置。合并两层配置后，得出各插件的最终生效状态，对比上述需求判断是否需要调整。
-
-### 调整插件状态
-
-若当前状态不符合需求，使用 AskUserQuestion 工具询问用户：
-
-```
-根据当前问题排查，建议以下插件调整：
-- 启用：[插件列表及原因]
-- 禁用：[插件列表及原因]
-是否确认调整？
-```
-
-用户确认后，修改项目 `.claude/settings.json` 中对应插件的启用/禁用状态。
-
-## 技能加载
-
-根据问题涉及的技术栈加载相关技能：
-
-- **vercel-react-best-practices** — React 相关问题
-- **vercel-react-native-skills** — React Native 相关问题
-- **antd** / **ant-design** — Ant Design 相关问题
-- **systematic-debugging**（superpowers）— 系统化调试流程
-- **requesting-code-review**（superpowers）— 复杂修复的代码审查（修复涉及 3+ 文件或逻辑复杂时启用）
-- **receiving-code-review**（superpowers）— 审查反馈处理流程（配合代码审查使用）
-- **verification-before-completion**（superpowers）— 修复完成后强制验证
-
-根据问题上下文判断后，主动加载对应技能。
-
 ## 工作流程
 
 ### 1. 信息收集（根因调查）
@@ -78,6 +28,7 @@ description: >
 - 在组件边界收集证据，追踪数据流
 - 使用 Grep 搜索相关关键词和错误信息
 - 使用 LSP 工具追踪代码调用链（go-to-definition、find-references）
+- 使用 `context7-plugin` 查阅框架/库文档，确认 API 用法和预期行为
 
 **铁律**：不得在没有根因证据的情况下提出修复方案。
 
@@ -103,6 +54,13 @@ description: >
 - 为什么会出现这个问题
 - 影响范围
 
+**插件与技能准备**：根据问题涉及的技术栈，检查并加载所需插件和技能：
+
+- **通用**：`context7-plugin` — 查阅技术栈最新文档和 API，贯穿修复全周期
+- **前端调试**：`chrome-devtools-mcp` — Web 前端功能调试（**前端问题时必选**）
+- **UI 组件库**：按需加载 `antd`（Ant Design 组件调试）、`ant-design`（Ant Design 架构决策）、`shadcn`（shadcn/ui 组件调试）
+- **React 技术栈**：按需加载 `vercel-react-best-practices`（性能问题排查）、`vercel-composition-patterns`（组件接口问题）
+
 ### 4. 实施修复
 
 > **superpowers 技能**：启用 `test-driven-development`，先编写失败测试用例再实施修复。
@@ -118,6 +76,11 @@ description: >
 - 确保修复不会引入新问题
 - 如果连续 3 次修复尝试失败，考虑质疑架构设计
 
+实施过程中按需使用：
+
+- `context7-plugin` — 查阅框架/库的最新文档和 API，确认修复方案的正确性
+- `code-simplifier` — 修复完成后简化因修复引入的复杂代码
+
 ### 5. 代码审查（按需）
 
 > **superpowers 技能**：如果修复涉及 3 个以上文件或逻辑复杂，启用 `requesting-code-review` 派发代码审查子 agent。
@@ -131,6 +94,8 @@ description: >
 
 简单修复（单文件、逻辑清晰）可跳过此步骤。
 
+前端项目审查时加载 `web-design-guidelines` — 基于 Web Interface Guidelines 进行 UI/UX 合规审查。
+
 ### 6. 验证修复
 
 > **superpowers 技能**：启用 `verification-before-completion`，在声称修复完成前必须运行验证命令并获得通过证据。
@@ -141,12 +106,20 @@ description: >
 
 **铁律**：未在本轮运行验证命令，不得声称修复完成。
 
+前端项目验证时按需使用：
+
+- `chrome-devtools-mcp` — Web 前端功能调试（**前端问题时必选**）
+- `playwright` — 执行自动化测试用例
+- `agent-browser` — 非测试/调试场景下的页面自动化操作
+
 ### 7. 总结
 
 简要说明：
 - 问题根因
 - 修复方式
 - 修改了哪些文件
+
+如需更新项目的 CLAUDE.md，加载 `claude-md-management` 进行编辑管理。
 
 ## 注意事项
 

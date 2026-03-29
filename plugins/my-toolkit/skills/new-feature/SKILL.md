@@ -15,65 +15,6 @@ description: >
 
 用户执行 `/my-toolkit:new-feature` 命令时激活。传入功能描述作为参数。
 
-## 插件设置
-
-开始前，根据功能涉及的领域检查并调整插件状态。
-
-### 判断所需插件
-
-根据功能涉及的技术栈和模块，判断哪些插件需要启用：
-
-- **context7-plugin** — 查阅框架和库的最新文档（推荐启用）
-- **frontend-design** — 涉及前端页面开发时启用
-- **feature-dev** — 完整的功能开发工作流和架构审查 agent（推荐启用）
-- **code-simplifier** — 功能开发完成后简化代码（按需启用）
-- **chrome-devtools-mcp** — 前端功能调试时启用
-- **antd** / **shadcn** — 涉及对应 UI 组件库时启用
-- **superpowers** — 功能开发方法论和计划编写（推荐启用）
-
-非相关插件建议暂时禁用，减少干扰。
-
-### 检查当前状态
-
-依次读取以下配置文件，综合判断插件的最终启用/禁用状态：
-
-1. **全局配置** `~/.claude/settings.json` — 用户级别的插件默认状态
-2. **项目配置** `.claude/settings.json` — 当前项目级别的覆盖状态
-
-优先级：项目配置 > 全局配置。合并两层配置后，得出各插件的最终生效状态，对比上述需求判断是否需要调整。
-
-### 调整插件状态
-
-若当前状态不符合需求，使用 AskUserQuestion 工具询问用户：
-
-```
-根据当前功能开发，建议以下插件调整：
-- 启用：[插件列表及原因]
-- 禁用：[插件列表及原因]
-是否确认调整？
-```
-
-用户确认后，修改项目 `.claude/settings.json` 中对应插件的启用/禁用状态。
-
-## 技能加载
-
-根据功能涉及的技术栈加载相关技能：
-
-- **vercel-react-best-practices** / **vercel-composition-patterns** — React 相关功能
-- **vercel-react-native-skills** — React Native 相关功能
-- **antd** / **ant-design** — Ant Design 相关功能
-- **brainstorming**（superpowers）— 功能开发前的创意探索和需求澄清
-- **writing-plans**（superpowers）— 多步骤任务的计划编写
-- **test-driven-development**（superpowers）— TDD 工作流（用户确认启用后加载）
-- **subagent-driven-development**（superpowers）— 逐任务执行实现计划
-- **dispatching-parallel-agents**（superpowers）— 并行分发独立任务
-- **using-git-worktrees**（superpowers）— 创建隔离开发环境
-- **requesting-code-review**（superpowers）— 代码审查请求流程
-- **receiving-code-review**（superpowers）— 审查反馈处理流程
-- **verification-before-completion**（superpowers）— 完成前强制验证
-
-与用户确认技术范围后，主动加载对应技能。
-
 ## 工作流程
 
 ### 1. 需求探索
@@ -89,6 +30,11 @@ description: >
 
 如果功能简单明确，可简化探索过程，但仍需确认关键设计决策。
 
+**自我审查**：完成需求探索后，进行 3 轮全面审查与修复。每轮审查以下所有方面，发现问题立即修复后再进入下一轮：
+- **完整性**：功能目标、边界条件、异常场景是否都已覆盖，是否有遗漏的澄清问题
+- **可行性**：技术方案是否与现有架构兼容，是否引入不必要的复杂度，约束条件是否已充分考虑
+- **一致性**：各设计决策之间是否矛盾，与项目现有规范和用户 CLAUDE.md 是否一致
+
 ### 2. 编写实现计划
 
 > **superpowers 技能**：启用 `writing-plans`，将确认的设计转化为可执行的实现计划。
@@ -100,7 +46,19 @@ description: >
 - 确定数据结构和接口设计
 - 评估对现有代码的影响
 
+**插件与技能准备**：根据功能涉及的技术栈，检查并加载所需插件和技能：
+
+- **通用**：`context7-plugin` — 查阅技术栈最新文档和 API，贯穿开发全周期
+- **前端项目必选**：`frontend-design` — Web 页面设计；`ui-ux-pro-max` — 企业级 UI/UX 设计标准（需要时）
+- **React 技术栈**：按需加载 `vercel-react-best-practices`（性能优化）、`vercel-composition-patterns`（组件组合模式）、`vercel-react-native-skills`（React Native 开发）
+- **UI 组件库**：按需加载 `antd`（Ant Design 组件使用）、`ant-design`（Ant Design 架构决策与主题定制）、`shadcn`（shadcn/ui 组件管理）
+
 将计划呈现给用户确认，确认后再进入实现阶段。
+
+**自我审查**：完成实现计划后，进行 3 轮全面审查与修复。每轮审查以下所有方面，发现问题立即修复后再进入下一轮：
+- **任务完整性**：所有设计点是否都有对应的实现任务，是否有遗漏的文件修改或新增
+- **依赖与顺序**：任务拆分是否合理，依赖关系是否正确，是否有可以并行的独立任务被串行化
+- **风险与影响**：每个任务对现有代码的影响是否已评估，是否有潜在的破坏性变更未被识别
 
 ### 3. 环境隔离
 
@@ -130,6 +88,11 @@ description: >
 - 向后兼容：不破坏现有功能
 - 遵循项目现有代码风格和规范
 
+实现过程中按需使用：
+
+- `context7-plugin` — 查阅框架/库的最新文档和 API
+- `code-simplifier` — 实现完成后简化复杂代码
+
 ### 5. 代码审查
 
 > **superpowers 技能**：启用 `requesting-code-review`，在实现完成后派发代码审查子 agent。
@@ -144,6 +107,13 @@ description: >
 - 对不明确或有疑问的反馈先澄清，再实施
 - 逐条处理 Critical 和 Important 问题，每条处理后运行验证
 
+前端项目审查时加载 `web-design-guidelines` — 基于 Web Interface Guidelines 进行 UI/UX 合规审查。
+
+**自我审查**：代码审查完成后，进行 3 轮全面审查与修复。每轮审查以下所有方面，发现问题立即修复后再进入下一轮：
+- **质量**：是否还有未处理的代码异味、重复代码、过度复杂的逻辑，错误处理是否充分
+- **安全与性能**：是否引入安全隐患（XSS、注入等），是否存在性能瓶颈或资源泄漏
+- **规范与一致性**：代码风格是否与项目一致，命名是否清晰，变更范围是否超出需求边界
+
 ### 6. 完成验证
 
 > **superpowers 技能**：启用 `verification-before-completion`，在声称完成前必须运行验证命令并获得通过证据。
@@ -151,6 +121,12 @@ description: >
 - 运行项目的 lint / build / test 命令
 - 读取完整输出，确认结果与声明一致
 - 检查边界情况处理
+
+前端项目验证时按需使用：
+
+- `chrome-devtools-mcp` — Web 前端功能调试（**有前端时必选**）
+- `playwright` — 执行自动化测试用例
+- `agent-browser` — 非测试/调试场景下的页面自动化操作
 
 ### 7. 收尾
 
@@ -162,6 +138,8 @@ description: >
 - 是否有需要注意的后续事项
 
 根据用户选择执行合并、创建 PR 或保留分支。
+
+如需更新项目的 CLAUDE.md，加载 `claude-md-management` 进行编辑管理。
 
 ## 注意事项
 

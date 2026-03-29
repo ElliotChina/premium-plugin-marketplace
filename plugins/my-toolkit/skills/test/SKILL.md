@@ -15,54 +15,6 @@ description: >
 
 用户执行 `/my-toolkit:test` 命令时激活。传入要测试的功能或模块名称作为参数。
 
-## 插件设置
-
-开始前，根据测试类型检查并调整插件状态。
-
-### 判断所需插件
-
-根据测试范围和方式，判断哪些插件需要启用：
-
-- **playwright** — E2E 测试 MCP 服务器（浏览器自动化测试）
-- **playwright-cli** — E2E 测试命令行工具
-- **chrome-devtools-mcp** — 前端功能测试调试
-- **context7-plugin** — 查阅测试框架文档
-- **superpowers** — 完成验证方法论（推荐启用）
-
-非相关插件建议暂时禁用，减少干扰。
-
-### 检查当前状态
-
-依次读取以下配置文件，综合判断插件的最终启用/禁用状态：
-
-1. **全局配置** `~/.claude/settings.json` — 用户级别的插件默认状态
-2. **项目配置** `.claude/settings.json` — 当前项目级别的覆盖状态
-
-优先级：项目配置 > 全局配置。合并两层配置后，得出各插件的最终生效状态，对比上述需求判断是否需要调整。
-
-### 调整插件状态
-
-若当前状态不符合需求，使用 AskUserQuestion 工具询问用户：
-
-```
-根据当前测试需求，建议以下插件调整：
-- 启用：[插件列表及原因]
-- 禁用：[插件列表及原因]
-是否确认调整？
-```
-
-用户确认后，修改项目 `.claude/settings.json` 中对应插件的启用/禁用状态。
-
-## 技能加载
-
-根据测试场景加载相关技能：
-
-- **vercel-react-best-practices** — React 组件测试
-- **webapp-testing** — 前端 Web 应用测试
-- **verification-before-completion**（superpowers）— 完成前强制验证
-
-与用户确认测试范围后，主动加载对应技能。
-
 ## 工作流程
 
 ### 1. 理解测试目标
@@ -75,6 +27,14 @@ description: >
 
 先读取相关源代码和现有测试用例，了解项目测试风格。
 
+**插件与技能准备**：根据测试范围和技术栈，检查并加载所需插件和技能：
+
+- **通用**：`context7-plugin` — 查阅测试框架文档和 API；`superpowers` — 完成验证方法论（推荐启用）
+- **E2E 测试**：`playwright`（MCP 浏览器自动化）或 `playwright-cli`（命令行工具）
+- **前端测试**：`chrome-devtools-mcp` — 前端功能测试调试（**前端测试时必选**）
+- **React 组件测试**：按需加载 `vercel-react-best-practices`
+- **前端 Web 应用测试**：按需加载 `webapp-testing`
+
 ### 2. 测试方案设计
 
 确定测试策略：
@@ -83,6 +43,8 @@ description: >
 - 识别边界条件和异常情况
 - 确定测试文件位置和命名
 - 选择合适的测试工具和辅助函数
+
+使用 `context7-plugin` 查阅测试框架的最佳实践和 API，确保方案符合框架规范。
 
 ### 3. 用例实现
 
@@ -93,6 +55,11 @@ description: >
 - 测试描述清晰，体现测试意图
 - 使用项目已有的测试工具和 fixture
 
+实现过程中按需使用：
+
+- `context7-plugin` — 查阅测试框架的断言 API、mock 工具用法
+- `chrome-devtools-mcp` — 前端测试调试，定位测试失败原因
+
 ### 4. 运行和验证
 
 > **superpowers 技能**：启用 `verification-before-completion`，在声称测试完成前必须运行全部验证命令。
@@ -102,6 +69,11 @@ description: >
 - 检查测试覆盖率（如果项目有要求）
 
 **铁律**：未在本轮运行测试命令，不得声称测试完成。
+
+E2E 测试验证时按需使用：
+
+- `playwright` / `playwright-cli` — 执行浏览器自动化测试
+- `agent-browser` — 非测试/调试场景下的页面自动化操作
 
 ### 5. 总结
 
