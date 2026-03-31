@@ -26,7 +26,7 @@ Dispatch my-toolkit:plan-reviewer subagent to catch task gaps and ordering issue
 
 **1. Dispatch plan-reviewer subagent:**
 
-Use Agent tool with my-toolkit:plan-reviewer type, fill template at `plan-reviewer.md`
+Use Task tool with my-toolkit:plan-reviewer type, fill template at `plan-reviewer.md`
 
 Before dispatching, replace all `{placeholders}` with actual values:
 

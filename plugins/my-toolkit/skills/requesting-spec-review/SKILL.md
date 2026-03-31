@@ -26,7 +26,7 @@ Dispatch my-toolkit:spec-reviewer subagent to catch document defects before they
 
 **1. Dispatch spec-reviewer subagent:**
 
-Use Agent tool with my-toolkit:spec-reviewer type, fill template at `spec-reviewer.md`
+Use Task tool with my-toolkit:spec-reviewer type, fill template at `spec-reviewer.md`
 
 Before dispatching, replace all `{placeholders}` with actual values:
 
