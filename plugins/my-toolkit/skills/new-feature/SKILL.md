@@ -30,6 +30,8 @@ description: >
 
 如果功能简单明确，可简化探索过程，但仍需确认关键设计决策。
 
+### 2. 方案审查
+
 > **并发审查**：启用 `requesting-spec-review`技能。使用 Agent 工具同时派发 3 个审查 agent，每个 agent 仅输出审查发现的问题，不做修复。
 
 > **统一修复**：所有 agent 全部审查完成后，启用 `receiving-spec-review`技能处理反馈。
@@ -40,7 +42,7 @@ description: >
 - 根据问题优先级统一进行修复，对多个 agent 都发现的问题优先处理
 - 如有无法自动解决的矛盾，呈现给用户决策。
 
-### 2. 编写实现计划
+### 3. 编写实现计划
 
 > **superpowers 技能**：启用 `writing-plans`，将确认的设计转化为可执行的实现计划。
 
@@ -51,6 +53,8 @@ description: >
 - 确定数据结构和接口设计
 - 评估对现有代码的影响
 
+### 4. 编写实现计划
+
 > **并发审查**：启用 `requesting-plan-review`技能。使用 Agent 工具同时派发 3 个审查 agent，每个 agent 仅输出审查发现的问题，不做修复。
 
 > **统一修复**：所有 agent 全部审查完成后，启用 `receiving-plan-review`技能处理反馈。按照以下要求修复审查发现的问题：
@@ -59,7 +63,7 @@ description: >
 - 根据问题优先级统一进行修复，对多个 agent 都发现的问题优先处理
 - 如有无法自动解决的矛盾，呈现给用户决策。
 
-### 3. 插件与技能准备
+### 5. 插件与技能准备
 
 根据功能涉及的技术栈，在每个环节开始前，检查并加载所需插件和技能：
 
@@ -68,7 +72,7 @@ description: >
 - **React 技术栈**：按需加载 `vercel-react-best-practices`（性能优化）、`vercel-composition-patterns`（组件组合模式）、`vercel-react-native-skills`（React Native 开发）
 - **UI 组件库**：按需加载 `antd`（Ant Design 组件使用）、`ant-design`（Ant Design 架构决策与主题定制）、`shadcn`（shadcn/ui 组件管理）
 
-### 4. 环境隔离
+### 6. 环境隔离
 
 > **superpowers 技能**：如果项目使用 Git 且功能涉及多文件变更，启用 `using-git-worktrees` 创建隔离开发环境。
 
@@ -78,7 +82,7 @@ description: >
 
 如果变更范围较小（单文件修改），可跳过此步骤直接在当前分支工作。
 
-### 5. 代码实现
+### 7. 代码实现
 
 > **superpowers 技能**：使用 AskUserQuestion 工具询问用户是否启用 `test-driven-development`（TDD）工作流：
 > - **启用 TDD**：对每个实现任务严格遵循 RED（编写失败测试）→ GREEN（最小实现使测试通过）→ REFACTOR（在测试通过前提下清理代码）循环
@@ -101,7 +105,7 @@ description: >
 - `context7-plugin` — 查阅框架/库的最新文档和 API
 - `code-simplifier` — 实现完成后简化复杂代码
 
-### 6. 代码审查
+### 8. 代码审查
 
 > **superpowers 技能**：启用 `requesting-code-review`，在实现完成后派发代码审查子 agent。
 
@@ -132,7 +136,7 @@ description: >
 - 对不明确或有疑问的反馈先澄清，再实施
 - 逐条处理 Critical 和 Important 问题，每条处理后运行验证
 
-### 7. 完成验证
+### 9. 完成验证
 
 > **superpowers 技能**：启用 `verification-before-completion`，在声称完成前必须运行验证命令并获得通过证据。
 
@@ -146,7 +150,7 @@ description: >
 - `playwright` — 执行自动化测试用例
 - `agent-browser` — 非测试/调试场景下的页面自动化操作
 
-### 8. 收尾
+### 10. 收尾
 
 > **superpowers 技能**：如果使用了 worktree 隔离开发，启用 `finishing-a-development-branch` 处理分支收尾。
 
