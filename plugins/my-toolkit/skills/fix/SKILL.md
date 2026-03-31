@@ -101,7 +101,7 @@ description: >
 - `context7-plugin` — 查阅框架/库的最新文档和 API，确认修复方案的正确性
 - `code-simplifier` — 修复完成后简化因修复引入的复杂代码
 
-### 7. 代码审查
+### 7. 代码审查（并发3次）
 
 > **superpowers 技能**：启用 `requesting-code-review`，在修复完成后派发代码审查子 agent。
 
