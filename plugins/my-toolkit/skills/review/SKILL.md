@@ -1,51 +1,62 @@
 ---
 name: review
 user-invocable: true
-argument-hint: "[代码路径或文档文件]"
+argument-hint: "[审查目标：代码路径、spec/plan 文件路径、文档文件、PR 编号]"
 description: >
   This skill should be used when the user runs "/my-toolkit:review" to review code or documents.
-  Covers code quality review, document review, PR review, and design review scenarios.
+  Supports code review, spec review, plan review, doc review, PR review, and design review.
+  Uses concurrent multi-agent review pattern for code, spec, and plan reviews.
 ---
 
 # Review - 审查
 
-结构化的代码和文档审查工作流，提供专业、全面的审查意见。
+结构化的审查工作流，支持多种审查类型。代码、Spec 和计划审查采用 3 agent 并发审查模式。
 
 ## 触发方式
 
-用户执行 `/my-toolkit:review` 命令时激活。传入要审查的代码路径、文档文件或 PR 编号作为参数。
+用户执行 `/my-toolkit:review` 命令时激活。传入审查目标作为参数。
 
 ## 工作流程
 
-### 1. 确定审查范围
+### 1. 确定审查类型
 
 根据用户输入判断审查类型：
 
 - **代码审查** — 审查指定文件或目录的代码质量
+- **Spec 审查** — 审查需求规格文档的完整性和一致性
+- **计划审查** — 审查实现计划的可执行性
 - **文档审查** — 审查文档的准确性、完整性和规范性
 - **PR 审查** — 通过 gh 命令获取 PR 变更进行审查
 - **设计审查** — 审查前端 UI/UX 设计质量
 
 如果范围不明确，主动询问用户。
 
-### 2. 派发审查
+### 2. 并发审查
 
-> **superpowers 技能**：代码审查和 PR 审查场景下，启用 `requesting-code-review` 派发专业审查子 agent。
+根据审查类型，使用对应的并发审查模式：
 
-- 获取 base 和 head 的 git SHA
-- 派发代码审查子 agent，携带完整变更上下文
-- 审查子 agent 按 Critical / Important / Minor 分级输出问题
+**代码审查 / PR 审查：**
 
-### 3. 收集审查内容（文档审查 / 设计审查）
+> **并发审查**：启用 `requesting-code-review`技能。获取 base 和 head 的 git SHA，使用 Agent 工具同时派发 3 个代码审查 agent，每个 agent 仅输出审查发现的问题，不做修复。
 
-对于文档审查和设计审查，直接收集材料：
+前端项目审查时加载 `web-design-guidelines` — 基于 Web Interface Guidelines 进行 UI/UX 合规审查。
+
+**Spec 审查：**
+
+> **并发审查**：启用 `requesting-spec-review`技能。使用 Agent 工具同时派发 3 个审查 agent，每个 agent 仅输出审查发现的问题，不做修复。
+
+**计划审查：**
+
+> **并发审查**：启用 `requesting-plan-review`技能。使用 Agent 工具同时派发 3 个审查 agent，每个 agent 仅输出审查发现的问题，不做修复。
+
+**文档审查 / 设计审查（直接分析）：**
 
 - **文档审查**：读取文档内容，对照代码验证准确性
 - **设计审查**：读取前端代码和组件结构
 
-### 4. 审查分析
+#### 审查维度
 
-按维度进行审查：
+不同审查类型的关注点：
 
 **代码审查维度：**
 - 代码质量和可读性
@@ -55,6 +66,20 @@ description: >
 - 错误处理是否完善
 - 代码风格和规范一致性
 - 是否符合 SOLID、DRY、KISS 原则
+
+**Spec 审查维度：**
+- 完整性：TODOs、占位符、TBD、缺失的验收标准
+- 一致性：章节间是否存在矛盾
+- 清晰度：需求是否足够明确，不会导致错误实现
+- 范围：是否聚焦于单一目标
+- YAGNI：是否包含未请求的功能
+
+**计划审查维度：**
+- 完整性：占位符、TBD、不完整的步骤
+- Spec 对齐：每个 spec 需求是否有对应任务
+- 任务分解：任务边界清晰、步骤可执行
+- 可执行性：零上下文的工程师能否按计划执行
+- 无占位符：没有"后续实现"、"补充细节"等模糊描述
 
 **文档审查维度：**
 - 内容准确性（与代码行为是否一致）
@@ -76,9 +101,66 @@ description: >
 - 响应式适配
 - 设计系统一致性
 
-### 5. 输出审查报告
+### 3. 插件与技能准备
 
-按严重程度分类输出：
+根据功能涉及的技术栈，在每个环节开始前，检查并加载所需插件和技能：
+
+- **通用**：`context7-plugin` — 查阅技术栈最新文档和 API，贯穿开发全周期
+- **前端项目必选**：`frontend-design` — Web 页面设计；`ui-ux-pro-max` — 企业级 UI/UX 设计标准（需要时）
+- **React 技术栈**：按需加载 `vercel-react-best-practices`（性能优化）、`vercel-composition-patterns`（组件组合模式）、`vercel-react-native-skills`（React Native 开发）
+- **UI 组件库**：按需加载 `antd`（Ant Design 组件使用）、`ant-design`（Ant Design 架构决策与主题定制）、`shadcn`（shadcn/ui 组件管理）
+
+### 4. 统一修复
+
+根据审查类型，启用对应的 receiving 技能处理反馈：
+
+**代码审查 / PR 审查：**
+
+所有 agent 全部完成后，合并审查结果：
+
+- **共识检测**：多个 agent 同时发现的问题 → 高置信度优先处理；仅 1 个 agent 发现的 → 验证后再处理
+- **去重**：相同根因的不同表述合并为一个；同一文件/函数的重叠问题合并为单个修复
+- **问题类型处理**：
+  - 安全漏洞（XSS、注入等）和功能缺陷 → 立即修复
+  - 性能瓶颈或资源泄漏 → 评估影响后修复
+  - 代码异味、重复代码、过度复杂逻辑 → 重构修复
+  - 代码风格和命名不一致 → 对齐项目规范
+  - 超出需求范围的变更 → 跳过（回归到需求边界内）
+  - 审查 agent 误解上下文的误报 → 跳过并附理由
+- **修复顺序**：共识问题优先 → Critical → Important → Minor，每类问题修复后运行验证
+
+如有无法自动解决的矛盾，呈现给用户决策。
+
+> **superpowers 技能**：所有 agent 全部审查完成后，启用 `receiving-code-review`，在实施修改前先理解、验证和评估每条反馈。
+
+- 先完整阅读反馈，用自己的话复述需求
+- 验证反馈是否与代码库实际情况一致
+- 对不明确或有疑问的反馈先澄清，再实施
+- 逐条处理 Critical 和 Important 问题，每条处理后运行验证
+
+**Spec 审查：**
+
+> **统一修复**：所有 agent 全部审查完成后，启用 `receiving-spec-review`技能处理反馈。
+
+按照以下要求修复审查发现的问题：
+
+- 汇总所有审查结果，合并去重
+- 根据问题优先级统一进行修复，对多个 agent 都发现的问题优先处理
+- 如有无法自动解决的矛盾，呈现给用户决策。
+
+**计划审查：**
+
+> **统一修复**：所有 agent 全部审查完成后，启用 `receiving-plan-review`技能处理反馈。
+
+按照以下要求修复审查发现的问题：
+
+- 汇总所有审查结果，合并去重
+- 根据问题优先级统一进行修复，对多个 agent 都发现的问题优先处理
+- 如有无法自动解决的矛盾，呈现给用户决策。
+
+**文档审查 / 设计审查（直接输出）：**
+
+按严重程度分类输出审查报告：
 
 ```
 ## 审查报告
@@ -93,20 +175,12 @@ description: >
 - [值得肯定的做法]
 ```
 
-### 6. 确认和后续
+### 5. 确认和后续
 
-> **superpowers 技能**：如果需要根据审查反馈修改代码，启用 `receiving-code-review`，在实施修改前先理解、验证和评估每条反馈。
-
-将审查报告呈现给用户，询问是否需要：
+将审查结果呈现给用户，询问是否需要：
 - 针对某个问题展开详细说明
 - 直接修复严重问题
 - 生成优化代码
-
-处理审查反馈时遵循：
-- 先完整阅读反馈，用自己的话复述需求
-- 验证反馈是否与代码库实际情况一致
-- 对不明确或有疑问的反馈先澄清，再实施
-- 逐条处理，每条处理后运行验证
 
 ## 注意事项
 
