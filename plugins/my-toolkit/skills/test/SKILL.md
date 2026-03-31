@@ -62,7 +62,7 @@ description: >
 
 ### 4. 运行和验证
 
-> **superpowers 技能**：启用 `verification-before-completion`，在声称测试完成前必须运行全部验证命令。
+> 启用 `superpowers:verification-before-completion`，在声称测试完成前必须运行全部验证命令。
 
 - 运行全部测试用例，读取完整输出确认通过
 - 如有失败，分析原因并修复（非猜测性修复）

@@ -50,10 +50,10 @@ description: >
 - 前端项目审查时加载 `web-design-guidelines` — 基于 Web Interface Guidelines 进行 UI/UX 合规审查。
 
 **Spec 审查：**
-- 启用 `requesting-spec-review`技能
+- 启用 `my-toolkit:requesting-spec-review`技能
 
 **计划审查：**
-- 启用 `requesting-plan-review`技能
+- 启用 `my-toolkit:requesting-plan-review`技能
 
 **文档审查 / 设计审查（直接分析）：**
 
@@ -134,11 +134,11 @@ description: >
 
 **Spec 审查：**
 
-- 启用 `receiving-spec-review`技能
+- 启用 `my-toolkit:receiving-spec-review`技能
 
 **计划审查：**
 
-- 启用 `receiving-plan-review`技能
+- 启用 `my-toolkit:receiving-plan-review`技能
 
 **文档审查 / 设计审查（直接输出）：**
 

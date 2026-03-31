@@ -19,7 +19,7 @@ description: >
 
 ### 1. 需求探索
 
-> **superpowers 技能**：启用 `brainstorming`，通过系统化提问澄清需求意图。
+> 启用 `superpowers:brainstorming`，通过系统化提问澄清需求意图。
 
 通过交互式提问收集产品需求：
 

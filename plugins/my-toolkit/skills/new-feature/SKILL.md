@@ -19,7 +19,7 @@ description: >
 
 ### 1. 需求探索
 
-> **superpowers 技能**：启用 `brainstorming`，在编码前强制进行需求澄清和设计探索。
+> 启用 `superpowers:brainstorming`，在编码前强制进行需求澄清和设计探索。
 
 分析用户提供的功能描述，执行以下步骤：
 
@@ -34,7 +34,7 @@ description: >
 
 #### 2.1 发起审查（并发3次）
 
-启用 `requesting-spec-review`技能。使用 Agent 工具同时派发 3 个审查 agent，每个 agent 仅输出审查发现的问题，不做修复。
+启用 `my-toolkit:requesting-spec-review`技能。使用 Agent 工具同时派发 3 个审查 agent，每个 agent 仅输出审查发现的问题，不做修复。
 
 - **共识检测**：多个 agent 同时发现的问题 → 高置信度优先处理；仅 1 个 agent 发现的 → 验证后再处理
 - **去重**：相同根因的不同表述合并为一个；同一文件/函数的重叠问题合并为单个修复
@@ -48,7 +48,7 @@ description: >
 
 #### 2.2 审查问题修复
 
-所有 agent 全部审查完成后，启用 `receiving-spec-review`技能处理反馈。
+所有 agent 全部审查完成后，启用 `my-toolkit:receiving-spec-review`技能处理反馈。
 按照以下要求修复审查发现的问题：
 
 - 验证反馈是否与代码库实际情况一致
@@ -58,7 +58,7 @@ description: >
 
 ### 3. 编写实现计划
 
-> **superpowers 技能**：启用 `writing-plans`，将确认的设计转化为可执行的实现计划。
+> 启用 `superpowers:writing-plans`，将确认的设计转化为可执行的实现计划。
 
 在动手编码前，制定详细实现计划：
 
@@ -71,7 +71,7 @@ description: >
 
 #### 4.1 发起审查（并发3次）
 
-启用 `requesting-plan-review`技能。使用 Agent 工具同时派发 3 个审查 agent，每个 agent 仅输出审查发现的问题，不做修复。
+启用 `my-toolkit:requesting-plan-review`技能。使用 Agent 工具同时派发 3 个审查 agent，每个 agent 仅输出审查发现的问题，不做修复。
 
 - **共识检测**：多个 agent 同时发现的问题 → 高置信度优先处理；仅 1 个 agent 发现的 → 验证后再处理
 - **去重**：相同根因的不同表述合并为一个；同一文件/函数的重叠问题合并为单个修复
@@ -86,7 +86,7 @@ description: >
 
 #### 4.2 审查问题修复
 
-所有 agent 全部审查完成后，启用 `receiving-plan-review`技能处理反馈。按照以下要求修复审查发现的问题：
+所有 agent 全部审查完成后，启用 `my-toolkit:receiving-plan-review`技能处理反馈。按照以下要求修复审查发现的问题：
 
 - 验证反馈是否与代码库实际情况一致
 - 对不明确或有疑问的反馈先澄清，再实施
@@ -104,7 +104,7 @@ description: >
 
 ### 6. 环境隔离
 
-> **superpowers 技能**：如果项目使用 Git 且功能涉及多文件变更，启用 `using-git-worktrees` 创建隔离开发环境。
+> 如果项目使用 Git 且功能涉及多文件变更，启用 `superpowers:using-git-worktrees` 创建隔离开发环境。
 
 - 检查是否已有 `.worktrees/` 或 `worktrees/` 目录
 - 创建隔离的 worktree 和功能分支
@@ -114,7 +114,7 @@ description: >
 
 ### 7. 代码实现
 
-> **superpowers 技能**：使用 AskUserQuestion 工具询问用户是否启用 `test-driven-development`（TDD）工作流：
+> 使用 AskUserQuestion 工具询问用户是否启用 `superpowers:test-driven-development`（TDD）工作流：
 > - **启用 TDD**：对每个实现任务严格遵循 RED（编写失败测试）→ GREEN（最小实现使测试通过）→ REFACTOR（在测试通过前提下清理代码）循环
 > - **不启用 TDD**：按常规流程实现，完成后统一编写或运行测试
 >
@@ -137,7 +137,7 @@ description: >
 
 ### 8. 代码审查（并发3次）
 
-> **superpowers 技能**：启用 `requesting-code-review`，在实现完成后派发代码审查子 agent。
+> 启用 `superpowers:requesting-code-review`，在实现完成后派发代码审查子 agent。
 
 - 获取 base 和 head 的 git SHA
 - 同时派发 3 个代码审查 agent，每个 agent 仅输出审查发现的问题，不做修复
@@ -159,7 +159,7 @@ description: >
 
 如有无法自动解决的矛盾，呈现给用户决策。
 
-> **superpowers 技能**：所有 agent 全部审查完成后，启用 `receiving-code-review`，在实施修改前先理解、验证和评估每条反馈。
+> 所有 agent 全部审查完成后，启用 `superpowers:receiving-code-review`，在实施修改前先理解、验证和评估每条反馈。
 
 - 先完整阅读反馈，用自己的话复述需求
 - 验证反馈是否与代码库实际情况一致
@@ -168,7 +168,7 @@ description: >
 
 ### 9. 完成验证
 
-> **superpowers 技能**：启用 `verification-before-completion`，在声称完成前必须运行验证命令并获得通过证据。
+> 启用 `superpowers:verification-before-completion`，在声称完成前必须运行验证命令并获得通过证据。
 
 - 运行项目的 lint / build / test 命令
 - 读取完整输出，确认结果与声明一致
@@ -182,7 +182,7 @@ description: >
 
 ### 10. 收尾
 
-> **superpowers 技能**：如果使用了 worktree 隔离开发，启用 `finishing-a-development-branch` 处理分支收尾。
+> 如果使用了 worktree 隔离开发，启用 `superpowers:finishing-a-development-branch` 处理分支收尾。
 
 简要说明：
 - 修改了哪些文件

@@ -19,7 +19,7 @@ description: >
 
 ### 1. 信息收集（根因调查）
 
-> **superpowers 技能**：启用 `systematic-debugging`，遵循四阶段调试流程，禁止跳过根因调查直接修复。
+> 启用 `superpowers:systematic-debugging`，遵循四阶段调试流程，禁止跳过根因调查直接修复。
 
 根据用户提供的信息，收集必要的上下文：
 
@@ -65,7 +65,7 @@ description: >
 
 ### 5. 环境隔离
 
-> **superpowers 技能**：如果项目使用 Git 且修复涉及多文件变更，启用 `using-git-worktrees` 创建隔离开发环境。
+> 如果项目使用 Git 且修复涉及多文件变更，启用 `superpowers:using-git-worktrees` 创建隔离开发环境。
 
 - 检查是否已有 `.worktrees/` 或 `worktrees/` 目录
 - 创建隔离的 worktree 和修复分支
@@ -75,7 +75,7 @@ description: >
 
 ### 6. 实施修复
 
-> **superpowers 技能**：启用 `test-driven-development`，先编写失败测试用例再实施修复。
+> 启用 `superpowers:test-driven-development`，先编写失败测试用例再实施修复。
 
 提出修复方案，说明修复思路后与用户确认。修复时遵循：
 
@@ -103,7 +103,7 @@ description: >
 
 ### 7. 代码审查（并发3次）
 
-> **superpowers 技能**：启用 `requesting-code-review`，在修复完成后派发代码审查子 agent。
+> 启用 `superpowers:requesting-code-review`，在修复完成后派发代码审查子 agent。
 
 - 获取 base 和 head 的 git SHA
 - 同时派发 3 个代码审查 agent，每个 agent 仅输出审查发现的问题，不做修复
@@ -125,7 +125,7 @@ description: >
 
 如有无法自动解决的矛盾，呈现给用户决策。
 
-> **superpowers 技能**：所有 agent 全部审查完成后，启用 `receiving-code-review`，在实施修改前先理解、验证和评估每条反馈。
+> 所有 agent 全部审查完成后，启用 `superpowers:receiving-code-review`，在实施修改前先理解、验证和评估每条反馈。
 
 - 先完整阅读反馈，用自己的话复述需求
 - 验证反馈是否与代码库实际情况一致
@@ -136,7 +136,7 @@ description: >
 
 ### 8. 完成验证
 
-> **superpowers 技能**：启用 `verification-before-completion`，在声称修复完成前必须运行验证命令并获得通过证据。
+> 启用 `superpowers:verification-before-completion`，在声称修复完成前必须运行验证命令并获得通过证据。
 
 - 运行项目的 lint / build / test 命令
 - 读取完整输出，确认结果与声明一致
@@ -152,7 +152,7 @@ description: >
 
 ### 9. 收尾
 
-> **superpowers 技能**：如果使用了 worktree 隔离开发，启用 `finishing-a-development-branch` 处理分支收尾。
+> 如果使用了 worktree 隔离开发，启用 `superpowers:finishing-a-development-branch` 处理分支收尾。
 
 简要说明：
 - 问题根因

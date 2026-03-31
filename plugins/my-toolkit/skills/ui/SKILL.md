@@ -19,7 +19,7 @@ description: >
 
 ### 1. 设计探索
 
-> **superpowers 技能**：启用 `brainstorming`，在设计前系统化探索需求。
+> 启用 `superpowers:brainstorming`，在设计前系统化探索需求。
 
 收集设计相关信息：
 
