@@ -1,6 +1,5 @@
 ---
 name: prd
-user-invocable: true
 argument-hint: "[产品或功能名称]"
 description: >
   This skill should be used when the user runs "/my-toolkit:prd" to write product requirement documents.

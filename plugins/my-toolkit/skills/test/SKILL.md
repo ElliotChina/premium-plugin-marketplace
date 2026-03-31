@@ -1,6 +1,5 @@
 ---
 name: test
-user-invocable: true
 argument-hint: "[测试目标]"
 description: >
   This skill should be used when the user runs "/my-toolkit:test" to write and run tests.

@@ -1,86 +1,151 @@
 ---
 name: receiving-plan-review
-user-invocable: true
 description: >
   Use when receiving implementation plan review feedback from multiple agents, before applying changes.
   Merge deduplicated results, verify against the spec, then apply unified fixes to the plan.
+  Requires technical rigor and verification, not blind acceptance of all suggestions.
 ---
 
 # Receiving Plan Review
 
-多个 agent 的计划审查反馈在应用前需要合并和验证。不要盲目接受所有反馈 —— 部分问题可能是误报或过度工程建议。
+## Overview
 
-**核心原则：** 先合并，再对照 spec 验证，最后修复计划。生成一份一致的计划，而非三份拼凑。
+Plan review requires technical evaluation, not blind acceptance. Multiple agents provide overlapping coverage — their feedback must be merged, verified against the spec, and applied surgically.
 
-## 响应模式
+**Core principle:** Merge first, verify against spec, then fix the plan. Produce one coherent plan, not three stitched together.
 
-```
-当所有 3 个 plan-reviewer agent 完成后：
-
-1. 合并：收集所有问题，去重，识别共识（2+ agent 同时发现的问题）
-2. 验证：对照 spec 和实际计划内容交叉检查每个唯一问题
-3. 评估：这是真实的缺口、误解，还是过度工程建议？
-4. 排序：共识问题优先，然后 Critical → Important → Minor
-5. 修复：直接修复计划文件，每次处理一个类别
-```
-
-## 合并结果
-
-**共识检测：**
-- 2+ agent 同时发现的问题 → 高置信度，很可能是真实问题
-- 仅 1 个 agent 发现的问题 → 验证后再处理（可能是误报）
-
-**去重：**
-- 不同任务中相同根因 → 合并为一个问题
-- 同一任务的重叠问题 → 合并为单个修复
-
-## 不同问题类型的处理
-
-**占位符和 TBD（Critical）：**
-- 替换为实际内容（代码、命令或具体细节）
-- 如无法确定内容，提交用户处理而非保留占位符
-
-**spec 需求缺少对应任务（Critical）：**
-- 在正确的依赖位置添加任务
-- 包含完整的步骤结构（测试 → 运行 → 实现 → 运行 → 提交）
-- 验证新任务不破坏现有依赖链
-
-**模糊或不可执行的步骤（Important）：**
-- 将描述替换为实际代码块和命令
-- 确保每个步骤可独立执行
-
-**缺失测试步骤（Important）：**
-- 添加失败测试 → 运行 → 实现 → 运行 → 提交的循环
-- 包含实际测试代码，而非"为上述内容编写测试"
-
-**依赖问题（Important）：**
-- 修正排序以匹配实际依赖关系
-- 标记独立任务为可并行
-- 验证变更后无循环依赖
-
-**过度工程建议：**
-- 评估：spec 是否要求这个？
-- 不在 spec 中：跳过
-- "锦上添花"但显著增加范围：记录但不添加
-
-**误报：**
-- 跳过并附简短理由
-- 检查计划描述是否不够清晰 —— 如是，改善表述
-
-## 修复顺序
+## The Response Pattern
 
 ```
-对去重后已验证的问题：
-  1. 占位符、TBD、不完整步骤（Critical）
-  2. spec 需求缺少对应任务（Critical）
-  3. 缺少可执行代码/命令的步骤（Important）
-  4. 缺失测试步骤（Important）
-  5. 依赖排序问题（Important）
-  6. 任务描述清晰度（Minor）
+WHEN all 3 plan-reviewer agents complete:
+
+1. MERGE: Collect all issues, deduplicate, identify consensus (2+ agents found same issue)
+2. VERIFY: Cross-check each unique issue against the spec and actual plan
+3. EVALUATE: Is this a real gap, misunderstanding, or over-engineering suggestion?
+4. RANK: Consensus issues first, then Critical → Important → Minor
+5. FIX: Fix the plan file directly, one category at a time
 ```
 
-修复后验证：
-- 每个 spec 需求至少映射到一个任务
-- 无剩余占位符
-- 所有引用的类型/函数已在先前任务中定义
-- 依赖链无循环引用
+## Forbidden Responses
+
+**NEVER:**
+- Accept all feedback without verification
+- Apply three sets of fixes independently
+- Fix issues out of dependency order
+- Keep placeholders because "reviewer didn't mention them"
+
+**INSTEAD:**
+- Merge and deduplicate first
+- Verify each issue against actual spec content
+- Fix in priority order with post-fix verification
+- Reject over-engineering with reasoning
+
+## Consensus Detection
+
+- **2+ agents found same issue** → High confidence, likely a real problem
+- **Only 1 agent found issue** → Verify before acting (possible false positive)
+
+**Deduplication:**
+- Different tasks with same root cause → merge into one issue
+- Overlapping issues in same task → merge into single fix
+
+## Handling Unclear Feedback
+
+```
+IF any issue is unclear or ambiguous:
+  STOP - do not apply fixes yet
+  Cross-reference against spec and plan
+  If still unclear, flag for user decision
+
+WHY: Issues may be related. Partial fixes = broken plan.
+```
+
+**Example:**
+```
+Agent 1: "Task 3 missing error handling"
+Agent 2: "Task 3 step 2 should handle network timeout"
+Agent 3: "Task 3 needs retry logic"
+
+Your evaluation:
+  Root cause: All agents flagged Task 3's error handling
+  Merge: Task 3 needs specific error handling (network timeout + retry)
+  Action: Add concrete steps with actual error handling code
+```
+
+## Issue Type Handling
+
+### Placeholders and TBD (Critical)
+- Replace with actual content (code, commands, or specific details)
+- If content cannot be determined, escalate to user rather than keeping placeholder
+
+### Missing Tasks for Spec Requirements (Critical)
+- Add task at correct dependency position
+- Include full step structure (test → run → implement → run → commit)
+- Verify new task doesn't break existing dependency chain
+
+### Vague or Non-Executable Steps (Important)
+- Replace descriptions with actual code blocks and commands
+- Ensure each step can be executed independently
+
+### Missing Test Steps (Important)
+- Add the cycle: failing test → run → implement → run → commit
+- Include actual test code, not "write tests for the above"
+
+### Dependency Issues (Important)
+- Fix ordering to match actual dependencies
+- Mark independent tasks as parallelizable
+- Verify no circular dependencies after changes
+
+### Over-Engineering Suggestions
+- Evaluate: Does the spec require this?
+- Not in spec: Skip
+- "Nice to have" but significantly adds scope: Document but don't add
+
+### False Positives
+- Skip with brief reasoning
+- Check if plan description was unclear — if so, improve wording
+
+## Fix Order
+
+```
+For verified, deduplicated issues:
+  1. Placeholders, TBD, incomplete steps (Critical)
+  2. Missing tasks for spec requirements (Critical)
+  3. Steps without executable code/commands (Important)
+  4. Missing test steps (Important)
+  5. Dependency ordering issues (Important)
+  6. Task description clarity (Minor)
+```
+
+## Post-Fix Verification
+
+After applying all fixes:
+- Every spec requirement maps to at least one task
+- No remaining placeholders
+- All referenced types/functions defined in prior tasks
+- No circular dependencies in task ordering
+- All fixes are internally consistent
+
+## Common Mistakes
+
+| Mistake | Fix |
+|---------|-----|
+| Accepting all feedback blindly | Verify each issue against spec |
+| Fixing issues independently | Merge first, fix once |
+| Wrong priority order | Critical (blockers) first, then Important, then Minor |
+| Breaking dependency chain | Verify ordering after each fix |
+| Adding over-engineering | Only add what spec requires |
+| Ignoring consensus issues | 2+ agents agree = high priority |
+
+## When To Push Back
+
+Push back when:
+- Suggestion adds tasks beyond spec scope (YAGNI)
+- Reviewer misunderstood the plan context
+- Suggestion would break existing dependency chain
+- Issue is a false positive (plan already addresses it)
+
+**How to push back:**
+- Use technical reasoning, quote the relevant plan section
+- Reference the spec requirement being addressed
+- Skip false positives with brief reasoning

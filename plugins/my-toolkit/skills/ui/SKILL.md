@@ -1,6 +1,5 @@
 ---
 name: ui
-user-invocable: true
 argument-hint: "[页面或组件描述]"
 description: >
   This skill should be used when the user runs "/my-toolkit:ui" to design UI prototypes and interfaces.

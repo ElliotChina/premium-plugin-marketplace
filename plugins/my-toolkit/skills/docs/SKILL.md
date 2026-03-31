@@ -1,6 +1,5 @@
 ---
 name: docs
-user-invocable: true
 argument-hint: "[文档类型或文件名]"
 description: >
   This skill should be used when the user runs "/my-toolkit:docs" to update project documentation.

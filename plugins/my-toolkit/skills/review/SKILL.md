@@ -1,6 +1,5 @@
 ---
 name: review
-user-invocable: true
 argument-hint: "[审查目标：代码路径、spec/plan 文件路径、文档文件、PR 编号]"
 description: >
   This skill should be used when the user runs "/my-toolkit:review" to review code or documents.
@@ -45,7 +44,7 @@ description: >
 #### 选择审查技能
 
 **代码审查 / PR 审查：**
-- 启用 `requesting-code-review`技能
+- 启用 `superpowers:requesting-code-review`技能
 - 获取 base 和 head 的 git SHA
 - 前端项目审查时加载 `web-design-guidelines` — 基于 Web Interface Guidelines 进行 UI/UX 合规审查。
 
@@ -130,7 +129,7 @@ description: >
 
 **代码审查 / PR 审查：**
 
-- 启用 `receiving-code-review`技能
+- 启用 `superpowers:receiving-code-review`技能
 
 **Spec 审查：**
 

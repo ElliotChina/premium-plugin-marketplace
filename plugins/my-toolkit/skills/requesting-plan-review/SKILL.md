@@ -8,40 +8,88 @@ description: >
 
 # Requesting Plan Review
 
-在实现计划编写完成并保存后，派发 plan-reviewer agent 捕捉任务缺口和排序问题，避免在编码阶段浪费时间。每个审查 agent 只接收计划文件路径和 spec 参考，不共享会话历史。
+Dispatch my-toolkit:plan-reviewer subagent to catch task gaps and ordering issues before coding begins. The reviewer gets precisely crafted context — the plan file path and spec reference — never your session's history. This keeps the reviewer focused on the plan quality, not your thought process, and preserves your own context for continued work.
 
-**核心原则：** 糟糕的计划浪费的时间远多于一次好的审查节省的时间。
+**Core principle:** A bad plan wastes far more time than a good review saves.
 
-## 触发时机
+## When to Request Review
 
-**必须触发：**
-- 实现计划编写完成并保存后
-- 开始代码实现之前
+**Mandatory:**
+- After the implementation plan is written and saved
+- Before starting code implementation
 
-**可选触发：**
-- 对现有计划进行重大变更后
-- 计划复杂度较高时（5+ 个有相互依赖的任务）
+**Optional but valuable:**
+- After significant changes to an existing plan
+- When the plan is complex (5+ interdependent tasks)
 
-## 如何派发
+## How to Request
 
-**1. 派发 plan-reviewer agent：**
+**1. Dispatch plan-reviewer subagent:**
 
-使用 Agent 工具，填充 `plan-reviewer.md` 模板。派发前必须将模板中所有 `{占位符}` 替换为实际值：
+Use Agent tool with my-toolkit:plan-reviewer type, fill template at `plan-reviewer.md`
 
-- `{PLAN_FILE_PATH}` — 已保存的计划文档路径
-- `{SPEC_FILE_PATH}` — spec 文档路径（用于交叉验证）
+Before dispatching, replace all `{placeholders}` with actual values:
 
-**2. 处理反馈：**
-- 立即修复缺失的任务
-- 在开始实现前解决依赖问题
-- 移除占位符（TBD、TODO、"添加适当的错误处理"等）
-- 对审查 agent 的过度工程建议予以拒绝
+- `{PLAN_FILE_PATH}` — Saved plan document path
+- `{SPEC_FILE_PATH}` — Spec document path (for cross-referencing)
 
-## 与 new-feature 工作流的集成
+**2. Act on feedback:**
+- Fix missing tasks immediately
+- Resolve dependency issues before implementation
+- Remove placeholders (TBD, TODO, "add appropriate error handling", etc.)
+- Reject over-engineering suggestions from reviewer
 
-在 new-feature 技能中，计划编写完成后同时派发 3 个 agent：
-- 每个 agent 独立审查所有维度（完整性、spec 对齐、任务分解、可执行性）
-- 每个 agent 读取实际的计划文件，仅输出发现的问题
-- 所有 agent 完成后合并和去重结果
-- 多个 agent 同时发现的问题视为高置信度
-- 在继续之前将统一修复应用到计划
+## Example
+
+```
+[Just finished writing implementation plan]
+
+You: Let me request plan review before proceeding.
+
+[Dispatch my-toolkit:plan-reviewer subagent]
+  PLAN_FILE_PATH: docs/plans/user-auth-plan.md
+  SPEC_FILE_PATH: docs/specs/user-auth-spec.md
+
+[Subagent returns]:
+  Issues:
+    Critical: Task 3 references UserService not defined in any prior task
+    Important: Step 2.4 says "add error handling" without specifying what errors
+    Important: No test step for Task 5 (API endpoint)
+    Minor: Task 4 and Task 6 could run in parallel
+  Assessment: Issues Found — missing definitions and vague steps
+
+You: [Fix missing UserService definition in Task 2]
+[Replace "add error handling" with specific error cases]
+[Add test step to Task 5]
+```
+
+## Integration with Workflows
+
+**New Feature Workflow:**
+- Review after the plan is written and saved
+- Dispatch 3 concurrent agents for broader coverage
+- Merge results using receiving-plan-review skill
+- Fix before starting implementation
+
+**Executing Plans:**
+- Re-review after significant plan changes
+- Catch compounding issues before they cascade into code
+
+**Ad-Hoc Planning:**
+- Review when plan complexity is high
+- Review when unsure about task ordering
+
+## Red Flags
+
+**Never:**
+- Skip review because "the plan is straightforward"
+- Ignore Critical issues (missing tasks, placeholders)
+- Proceed with unfixed Important issues (vague steps, missing tests)
+- Accept over-engineering suggestions without evaluating against spec
+
+**If reviewer is wrong:**
+- Push back with specific reasoning (quote the plan section that proves it works)
+- Check if plan description was unclear — if so, improve it
+- Move on if the issue is a misunderstanding, but note it
+
+See template at: requesting-plan-review/plan-reviewer.md

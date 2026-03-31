@@ -1,6 +1,5 @@
 ---
 name: project-config
-user-invocable: true
 argument-hint: "[项目名称]"
 description: >
   This skill should be used when the user runs "/my-toolkit:project-config" to configure project

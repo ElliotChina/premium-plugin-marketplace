@@ -1,6 +1,5 @@
 ---
 name: commit
-user-invocable: true
 argument-hint: "[commit message]"
 description: >
   This skill should be used when the user runs "/my-toolkit:commit" to commit code changes.
