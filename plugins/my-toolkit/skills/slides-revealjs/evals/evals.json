@@ -1,0 +1,72 @@
+{
+  "skill_name": "slides-revealjs",
+  "evals": [
+    {
+      "id": 1,
+      "name": "create-basic-deck",
+      "prompt": "创建一个关于人工智能发展历史的简单幻灯片，包含标题页、3个内容页和结尾页。使用静态HTML格式。",
+      "expected_output": "生成一个完整的 reveal.js HTML 文件，包含5个幻灯片，使用正确的结构（.reveal > .slides > section），有明确的设计方向和调色板。",
+      "files": [],
+      "assertions": [
+        {
+          "name": "valid_html_structure",
+          "check": "输出包含 <div class=\"reveal\"><div class=\"slides\"> 结构"
+        },
+        {
+          "name": "correct_slide_count",
+          "check": "包含至少5个 <section> 元素"
+        },
+        {
+          "name": "has_design_direction",
+          "check": "包含明确的 CSS 样式或主题设置"
+        },
+        {
+          "name": "initialization_code",
+          "check": "包含 Reveal.initialize() 调用"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "mermaid-architecture-slide",
+      "prompt": "为一个微服务架构演示文稿创建一个幻灯片，展示用户认证流程。使用 Mermaid 序列图。",
+      "expected_output": "生成包含 Mermaid 图表的 reveal.js 幻灯片，正确配置 Mermaid 插件。",
+      "files": [],
+      "assertions": [
+        {
+          "name": "has_mermaid_block",
+          "check": "包含 <pre class=\"mermaid\"> 元素"
+        },
+        {
+          "name": "mermaid_plugin_registered",
+          "check": "正确注册 RevealMermaid 插件"
+        },
+        {
+          "name": "valid_sequence_syntax",
+          "check": "Mermaid 代码使用 sequenceDiagram 语法"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "fragment-animation",
+      "prompt": "创建一个产品特性介绍幻灯片，使用 fragment 动画逐条显示4个产品特性。",
+      "expected_output": "生成使用 fragment 类的幻灯片，正确配置动画效果。",
+      "files": [],
+      "assertions": [
+        {
+          "name": "has_fragment_elements",
+          "check": "包含至少4个带有 class=\"fragment\" 的元素"
+        },
+        {
+          "name": "proper_fragment_syntax",
+          "check": "fragment 类正确应用在内容元素上"
+        },
+        {
+          "name": "animation_variety",
+          "check": "建议使用不同的 fragment 动画类型（fade-up, fade-in 等）"
+        }
+      ]
+    }
+  ]
+}
