@@ -1,54 +1,52 @@
 #!/usr/bin/env node
 
 /**
- * Reveal.js Slide Overflow Checker (Playwright)
+ * Reveal.js Slide Overflow Checker (Browser Injection)
  *
- * Checks each slide for content overflow using Playwright browser automation.
+ * Injects a detection script into a reveal.js HTML file. When you open the
+ * file in a browser, it automatically checks every slide for content overflow
+ * and prints a report to the browser console.
+ *
+ * No external dependencies required — pure Node.js + browser APIs.
  *
  * Usage:
- *   node check-overflow.js <html-file-or-url> [options]
+ *   node check-overflow.js <html-file>           # Inject detection code
+ *   node check-overflow.js <html-file> --restore  # Remove injected code
+ *   node check-overflow.js <html-file> --check    # Inject & open in browser
  *
  * Options:
- *   --browser <browser>     Browser to use: chromium, firefox, webkit (default: chromium)
- *   --threshold <pixels>    Minimum overflow to report (default: 5)
- *   --json                  Output results as JSON
- *   --verbose               Show detailed output
- *
- * Examples:
- *   node check-overflow.js ./presentation/index.html
- *   node check-overflow.js http://localhost:3000 --browser firefox
- *   node check-overflow.js ./slides/index.html --json > results.json
+ *   --restore     Remove previously injected detection code
+ *   --check       Inject detection code and open in default browser
+ *   --threshold   Minimum overflow pixels to report (default: 5)
  */
 
-const { chromium, firefox, webkit } = require('playwright');
+const fs = require('fs');
+const path = require('path');
+const { exec } = require('child_process');
 
 // Parse command line arguments
 function parseArgs() {
   const args = process.argv.slice(2);
   const options = {
     target: null,
-    browser: 'chromium',
+    restore: false,
+    check: false,
     threshold: 5,
-    json: false,
-    verbose: false,
   };
 
   let i = 0;
   while (i < args.length) {
     const arg = args[i];
-
-    if (arg === '--browser' && args[i + 1]) {
-      options.browser = args[i + 1];
-      i += 2;
+    if (arg === '--restore') {
+      options.restore = true;
+      i += 1;
+    } else if (arg === '--check') {
+      options.check = true;
+      i += 1;
     } else if (arg === '--threshold' && args[i + 1]) {
-      options.threshold = parseInt(args[i + 1], 10);
+      const val = parseInt(args[i + 1], 10);
+      options.threshold = (isNaN(val) || val < 0) ? 5 : val;
       i += 2;
-    } else if (arg === '--json') {
-      options.json = true;
-      i += 1;
-    } else if (arg === '--verbose') {
-      options.verbose = true;
-      i += 1;
     } else if (!arg.startsWith('--')) {
       options.target = arg;
       i += 1;
@@ -60,221 +58,172 @@ function parseArgs() {
   return options;
 }
 
-// Get browser instance
-function getBrowser(name) {
-  switch (name) {
-    case 'firefox':
-      return firefox;
-    case 'webkit':
-      return webkit;
-    default:
-      return chromium;
-  }
-}
+// Marker comments used to identify injected code
+const START_MARKER = '<!-- OVERFLOW-CHECK-START -->';
+const END_MARKER = '<!-- OVERFLOW-CHECK-END -->';
 
-// Main overflow check function
-async function checkOverflow(options) {
-  const browserType = getBrowser(options.browser);
-  const browser = await browserType.launch({ headless: true });
-  const context = await browser.newContext({
-    viewport: { width: 1920, height: 1080 },
-  });
-  const page = await context.newPage();
+// Generate the browser-side detection script
+function generateDetectionScript(threshold) {
+  return `
+${START_MARKER}
+<script data-overflow-checker>
+(function() {
+  function checkOverflow() {
+    var sections = document.querySelectorAll('.reveal .slides section');
+    var results = [];
+    var hasOverflow = false;
 
-  const results = {
-    url: options.target,
-    browser: options.browser,
-    timestamp: new Date().toISOString(),
-    slides: [],
-    summary: {
-      total: 0,
-      withOverflow: 0,
-      maxVerticalOverflow: 0,
-      maxHorizontalOverflow: 0,
-    },
-  };
+    sections.forEach(function(section, index) {
+      // Skip nested sections (they are measured as part of their parent)
+      if (section.parentElement.closest('section')) return;
 
-  try {
-    // Resolve target path/URL
-    let targetUrl = options.target;
-    if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
-      const path = require('path');
-      targetUrl = 'file://' + path.resolve(targetUrl);
-    }
+      var rect = section.getBoundingClientRect();
+      var overflowV = Math.max(0, section.scrollHeight - rect.height);
+      var overflowH = Math.max(0, section.scrollWidth - rect.width);
 
-    if (options.verbose && !options.json) {
-      console.log(`Loading: ${targetUrl}`);
-    }
-
-    await page.goto(targetUrl, { waitUntil: 'networkidle' });
-
-    // Wait for Reveal.js to initialize
-    await page.waitForFunction(() => {
-      return typeof Reveal !== 'undefined' && Reveal.isReady();
-    }, { timeout: 10000 });
-
-    // Get total slide count
-    const totalSlides = await page.evaluate(() => Reveal.getTotalSlides());
-    results.summary.total = totalSlides;
-
-    if (options.verbose && !options.json) {
-      console.log(`Found ${totalSlides} slides`);
-    }
-
-    // Check each slide
-    for (let i = 0; i < totalSlides; i++) {
-      // Navigate to slide
-      await page.evaluate((index) => {
-        Reveal.slide(index);
-      }, i);
-
-      // Wait for slide transition
-      await page.waitForTimeout(300);
-
-      // Check for overflow
-      const slideInfo = await page.evaluate(() => {
-        const currentSlide = Reveal.getCurrentSlide();
-        if (!currentSlide) return null;
-
-        // Get slide dimensions
-        const slideRect = currentSlide.getBoundingClientRect();
-        const slideContent = currentSlide.querySelector('.slide-content') || currentSlide;
-
-        // Check vertical overflow
-        const verticalOverflow = Math.max(
-          0,
-          slideContent.scrollHeight - slideRect.height
-        );
-
-        // Check horizontal overflow
-        const horizontalOverflow = Math.max(
-          0,
-          slideContent.scrollWidth - slideRect.width
-        );
-
-        // Get slide identifier
-        const slideId = currentSlide.id || `slide-${Reveal.getIndices().h}-${Reveal.getIndices().v || 0}`;
-        const indices = Reveal.getIndices();
-
-        return {
-          id: slideId,
-          h: indices.h,
-          v: indices.v || 0,
-          verticalOverflow: Math.round(verticalOverflow),
-          horizontalOverflow: Math.round(horizontalOverflow),
-          slideHeight: Math.round(slideRect.height),
-          contentHeight: Math.round(slideContent.scrollHeight),
-        };
-      });
-
-      if (slideInfo) {
-        const hasOverflow =
-          slideInfo.verticalOverflow > options.threshold ||
-          slideInfo.horizontalOverflow > options.threshold;
-
-        if (hasOverflow) {
-          results.summary.withOverflow++;
-          results.summary.maxVerticalOverflow = Math.max(
-            results.summary.maxVerticalOverflow,
-            slideInfo.verticalOverflow
-          );
-          results.summary.maxHorizontalOverflow = Math.max(
-            results.summary.maxHorizontalOverflow,
-            slideInfo.horizontalOverflow
-          );
-        }
-
-        results.slides.push(slideInfo);
-
-        if (options.verbose && !options.json && hasOverflow) {
-          console.log(
-            `  Slide ${slideInfo.h}.${slideInfo.v}: ` +
-              `V=${slideInfo.verticalOverflow}px, ` +
-              `H=${slideInfo.horizontalOverflow}px`
-          );
-        }
-      }
-    }
-  } catch (error) {
-    results.error = error.message;
-    if (!options.json) {
-      console.error(`Error: ${error.message}`);
-    }
-  } finally {
-    await browser.close();
-  }
-
-  return results;
-}
-
-// Format human-readable output
-function formatOutput(results, threshold) {
-  const lines = [];
-
-  lines.push('='.repeat(60));
-  lines.push('Reveal.js Overflow Check Results');
-  lines.push('='.repeat(60));
-  lines.push(`Target: ${results.url}`);
-  lines.push(`Browser: ${results.browser}`);
-  lines.push(`Timestamp: ${results.timestamp}`);
-  lines.push('');
-
-  lines.push('Summary:');
-  lines.push(`  Total slides: ${results.summary.total}`);
-  lines.push(`  Slides with overflow: ${results.summary.withOverflow}`);
-  lines.push(`  Max vertical overflow: ${results.summary.maxVerticalOverflow}px`);
-  lines.push(`  Max horizontal overflow: ${results.summary.maxHorizontalOverflow}px`);
-  lines.push('');
-
-  if (results.summary.withOverflow > 0) {
-    lines.push('Slides with overflow:');
-    results.slides.forEach((slide) => {
-      if (
-        slide.verticalOverflow > threshold ||
-        slide.horizontalOverflow > threshold
-      ) {
-        lines.push(
-          `  [${slide.h}.${slide.v}] ${slide.id}: ` +
-            `V=${slide.verticalOverflow}px, H=${slide.horizontalOverflow}px`
-        );
+      if (overflowV > ${threshold} || overflowH > ${threshold}) {
+        hasOverflow = true;
+        var id = section.id || ('slide-' + index);
+        results.push({
+          id: id,
+          index: index,
+          vertical: Math.round(overflowV),
+          horizontal: Math.round(overflowH),
+        });
       }
     });
-  } else {
-    lines.push('No overflow detected in any slide.');
+
+    // Also check visible slides specifically
+    var currentSlide = Reveal ? Reveal.getCurrentSlide() : null;
+    var totalSlides = Reveal ? Reveal.getTotalSlides() : sections.length;
+
+    console.log('');
+    console.log('%c══════ Slide Overflow Check ══════', 'font-weight:bold; font-size:14px; color:#268bd2;');
+    console.log('Total slides: ' + totalSlides);
+    console.log('Threshold: ${threshold}px');
+
+    if (hasOverflow) {
+      console.log('%c' + results.length + ' slide(s) with overflow:', 'color:#dc322f; font-weight:bold;');
+      results.forEach(function(r) {
+        console.log(
+          '  [%c' + r.id + '%c] V=%c' + r.vertical + 'px%c  H=%c' + r.horizontal + 'px',
+          'color:#b58900', '',
+          r.vertical > 30 ? 'color:#dc322f;font-weight:bold' : 'color:#cb4b16', '',
+          r.horizontal > 30 ? 'color:#dc322f;font-weight:bold' : 'color:#cb4b16'
+        );
+      });
+    } else {
+      console.log('%c\u2713 No overflow detected.', 'color:#859900; font-weight:bold;');
+    }
+    console.log('%c═════════════════════════════════', 'font-weight:bold; color:#268bd2;');
+    console.log('');
+
+    return results;
   }
 
-  lines.push('='.repeat(60));
+  // Run after Reveal.js is ready
+  function runCheck() {
+    if (typeof Reveal !== 'undefined') {
+      if (Reveal.isReady && Reveal.isReady()) {
+        checkOverflow();
+      } else {
+        Reveal.on('ready', checkOverflow);
+      }
+    } else {
+      // Fallback: wait a bit for Reveal to load
+      setTimeout(checkOverflow, 1000);
+    }
+  }
 
-  return lines.join('\n');
+  // Also re-check on slide change for verification
+  if (typeof Reveal !== 'undefined') {
+    Reveal.on('slidechanged', function(e) {
+      var section = e.currentSlide;
+      var rect = section.getBoundingClientRect();
+      var overflowV = Math.max(0, section.scrollHeight - rect.height);
+      var overflowH = Math.max(0, section.scrollWidth - rect.width);
+      if (overflowV > ${threshold} || overflowH > ${threshold}) {
+        console.warn('[Overflow] Slide ' + (e.indexh) + ': V=' + Math.round(overflowV) + 'px H=' + Math.round(overflowH) + 'px');
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', runCheck);
+  } else {
+    runCheck();
+  }
+})();
+</script>
+${END_MARKER}`;
 }
 
-// Main execution
-async function main() {
+// Remove injected code from HTML
+function removeInjectedCode(html) {
+  const startIdx = html.indexOf(START_MARKER);
+  const endIdx = html.indexOf(END_MARKER);
+  if (startIdx === -1 || endIdx === -1) {
+    return null; // Nothing to remove
+  }
+  return html.slice(0, startIdx) + html.slice(endIdx + END_MARKER.length);
+}
+
+// Main
+function main() {
   const options = parseArgs();
 
   if (!options.target) {
-    console.error('Usage: node check-overflow.js <html-file-or-url> [options]');
-    console.error('Options:');
-    console.error('  --browser <name>     Browser: chromium, firefox, webkit');
-    console.error('  --threshold <px>     Minimum overflow to report (default: 5)');
-    console.error('  --json               Output as JSON');
-    console.error('  --verbose            Show detailed progress');
+    console.error('Usage: node check-overflow.js <html-file> [--restore] [--check] [--threshold <px>]');
     process.exit(1);
   }
 
-  const results = await checkOverflow(options);
-
-  if (options.json) {
-    console.log(JSON.stringify(results, null, 2));
-  } else {
-    console.log(formatOutput(results, options.threshold));
+  const filePath = path.resolve(options.target);
+  if (!fs.existsSync(filePath)) {
+    console.error('Error: File not found: ' + filePath);
+    process.exit(2);
   }
 
-  // Exit with error code if overflow detected
-  process.exit(results.summary.withOverflow > 0 ? 1 : 0);
+  let html = fs.readFileSync(filePath, 'utf8');
+
+  if (options.restore) {
+    const cleaned = removeInjectedCode(html);
+    if (cleaned) {
+      fs.writeFileSync(filePath, cleaned, 'utf8');
+      console.log('Removed overflow detection code from: ' + filePath);
+    } else {
+      console.log('No injected detection code found in: ' + filePath);
+    }
+    return;
+  }
+
+  // Remove any previously injected code first
+  const cleaned = removeInjectedCode(html);
+  if (cleaned) {
+    html = cleaned;
+  }
+
+  // Inject detection script before </body>
+  const detectionCode = generateDetectionScript(options.threshold);
+  const bodyCloseIdx = html.lastIndexOf('</body>');
+  if (bodyCloseIdx === -1) {
+    console.error('Error: No </body> tag found in: ' + filePath);
+    process.exit(2);
+  }
+
+  html = html.slice(0, bodyCloseIdx) + '\n' + detectionCode + '\n' + html.slice(bodyCloseIdx);
+
+  // Create backup before modifying user's file
+  fs.writeFileSync(filePath + '.bak', fs.readFileSync(filePath, 'utf8'), 'utf8');
+  fs.writeFileSync(filePath, html, 'utf8');
+  console.log('Injected overflow detection code into: ' + filePath);
+  console.log('Open the file in a browser and check the console for results.');
+
+  if (options.check) {
+    const cmd = process.platform === 'darwin' ? 'open' : process.platform === 'win32' ? 'start' : 'xdg-open';
+    exec(cmd + ' "' + filePath + '"', function(err) {
+      if (err) console.error('Could not open browser: ' + err.message);
+    });
+  }
 }
 
-main().catch((error) => {
-  console.error('Fatal error:', error.message);
-  process.exit(2);
-});
+main();

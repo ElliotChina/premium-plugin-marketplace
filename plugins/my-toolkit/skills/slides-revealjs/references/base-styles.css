@@ -273,3 +273,51 @@
 .reveal .delay-3 { transition-delay: 0.3s; }
 .reveal .delay-4 { transition-delay: 0.4s; }
 .reveal .delay-5 { transition-delay: 0.5s; }
+
+/* ==========================================================================
+   Overflow Prevention
+   ========================================================================== */
+
+/* Prevent slide content from overflowing the visible area */
+.reveal .slides > section,
+.reveal .slides > section > section {
+  overflow: hidden;
+}
+
+/* Code blocks: allow internal scrolling for long code, but cap height */
+.reveal pre {
+  max-height: 500px;
+  overflow: auto;
+}
+
+/* Tables: cap height to prevent overflow, allow scroll within */
+.reveal .table-scroll {
+  max-height: 420px;
+  overflow: auto;
+}
+
+/* Scrollable container for intentionally long content (lists, data, logs) */
+.reveal .scrollable {
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+/* Compact layout: tighter spacing when content is slightly over */
+.reveal .compact h2,
+.reveal .compact h3 {
+  margin-bottom: 0.3em;
+}
+
+.reveal .compact p {
+  margin: 0.3em 0;
+}
+
+.reveal .compact ul,
+.reveal .compact ol {
+  margin: 0.3em 0;
+}
+
+.reveal .compact li {
+  margin: 0.15em 0;
+}

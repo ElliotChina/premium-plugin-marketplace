@@ -67,6 +67,169 @@
           "check": "建议使用不同的 fragment 动画类型（fade-up, fade-in 等）"
         }
       ]
+    },
+    {
+      "id": 4,
+      "name": "two-column-layout",
+      "prompt": "创建一个对比幻灯片，左侧展示传统方案的优缺点，右侧展示新方案的优缺点。使用双栏布局。",
+      "expected_output": "生成使用双栏布局的幻灯片，使用 .cols 和 .col-50 类或等效的 CSS flexbox 布局。",
+      "files": [],
+      "assertions": [
+        {
+          "name": "has_column_layout",
+          "check": "包含双栏布局结构（.cols 或 flexbox）"
+        },
+        {
+          "name": "balanced_columns",
+          "check": "两栏宽度比例合理（50/50 或 60/40 等）"
+        },
+        {
+          "name": "proper_spacing",
+          "check": "栏之间有适当的间距（gap）"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "theme-customization",
+      "prompt": "创建一个科技公司品牌风格的幻灯片，使用深蓝色主色调和橙色强调色。需要自定义 CSS 变量。",
+      "expected_output": "生成带有自定义主题的幻灯片，使用 CSS 变量定义颜色系统。",
+      "files": [],
+      "assertions": [
+        {
+          "name": "has_css_variables",
+          "check": "定义了 CSS 自定义属性（--primary-color, --accent-color 等）"
+        },
+        {
+          "name": "dark_blue_primary",
+          "check": "主色调使用深蓝色系"
+        },
+        {
+          "name": "orange_accent",
+          "check": "强调色使用橙色系"
+        },
+        {
+          "name": "consistent_application",
+          "check": "颜色变量在整个文档中一致应用"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "speaker-notes-tts",
+      "prompt": "创建一个关于时间管理的3页幻灯片，每页都需要包含适合文字转语音（TTS）的演讲者备注。",
+      "expected_output": "生成带有 TTS 优化演讲者备注的幻灯片，包含时长、开场、要点、过渡等结构化内容。",
+      "files": [],
+      "assertions": [
+        {
+          "name": "has_notes_elements",
+          "check": "每个幻灯片包含 <aside class=\"notes\"> 元素"
+        },
+        {
+          "name": "tts_structured_format",
+          "check": "备注包含结构化格式（时长、开场、要点、过渡）"
+        },
+        {
+          "name": "complete_sentences",
+          "check": "使用完整句子，避免缩写"
+        },
+        {
+          "name": "notes_plugin_enabled",
+          "check": "RevealNotes 插件已注册"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "auto-animate-slides",
+      "prompt": "创建一个展示代码演变的幻灯片组，使用 auto-animate 功能展示代码从初始版本到优化版本的变化。",
+      "expected_output": "生成使用 data-auto-animate 属性的连续幻灯片，代码块使用 data-id 进行匹配。",
+      "files": [],
+      "assertions": [
+        {
+          "name": "has_auto_animate_attr",
+          "check": "幻灯片包含 data-auto-animate 属性"
+        },
+        {
+          "name": "matching_data_ids",
+          "check": "需要动画的元素使用相同的 data-id"
+        },
+        {
+          "name": "code_highlight_plugin",
+          "check": "RevealHighlight 插件已注册"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "react-integration",
+      "prompt": "创建一个 React 组件，封装 reveal.js 幻灯片功能，支持动态幻灯片内容和销毁时的清理。",
+      "expected_output": "生成正确的 React 组件，使用 useEffect 管理 reveal.js 生命周期，包含 destroy 清理。",
+      "files": [],
+      "assertions": [
+        {
+          "name": "uses_effect_hook",
+          "check": "使用 useEffect 管理 reveal.js 初始化"
+        },
+        {
+          "name": "has_cleanup",
+          "check": "effect 包含清理函数调用 deck.destroy()"
+        },
+        {
+          "name": "proper_imports",
+          "check": "正确导入 reveal.js ESM 模块"
+        },
+        {
+          "name": "embedded_config",
+          "check": "配置 embedded: true 用于组件内嵌"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "overflow-prevention",
+      "prompt": "创建一个内容密集的技术分享幻灯片（5页），每页包含多个要点，确保内容不会溢出幻灯片边界。",
+      "expected_output": "生成内容密度合理的幻灯片，遵循字数限制，必要时分拆内容到多页。",
+      "files": [],
+      "assertions": [
+        {
+          "name": "reasonable_content_density",
+          "check": "每页要点不超过5-6个"
+        },
+        {
+          "name": "appropriate_font_size",
+          "check": "使用 pt 单位定义字体大小"
+        },
+        {
+          "name": "content_split_when_needed",
+          "check": "内容过多时正确分拆到多页"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "markdown-mode",
+      "prompt": "创建一个使用 Markdown 模式的 reveal.js 幻灯片，包含标题页、3个内容页（使用 Markdown 语法），正确配置 Markdown 插件。",
+      "expected_output": "生成使用 data-markdown 和 <textarea data-template> 的幻灯片，正确注册 RevealMarkdown 插件。",
+      "files": [],
+      "assertions": [
+        {
+          "name": "has_markdown_section",
+          "check": "包含 data-markdown 属性的 section"
+        },
+        {
+          "name": "template_textarea",
+          "check": "使用 <textarea data-template> 包含 Markdown 内容"
+        },
+        {
+          "name": "markdown_plugin_registered",
+          "check": "RevealMarkdown 插件已注册"
+        },
+        {
+          "name": "slide_separators",
+          "check": "使用 --- 正确分隔幻灯片"
+        }
+      ]
     }
   ]
 }

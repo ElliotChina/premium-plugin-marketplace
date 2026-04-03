@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced Presentation Example</title>
+
+  <!-- Reveal.js Core Styles (CDN) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/theme/solarized.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/zenburn.css" />
+
+  <!-- Google Fonts -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:opsz@9..40&family=Manrope:wght@400;500;700&display=swap');
+  </style>
+
+  <!-- Custom Design Tokens -->
+  <style>
+    :root {
+      --deck-bg: #f6f3ea;
+      --deck-surface: rgba(255, 255, 255, 0.72);
+      --deck-text: #1b1a18;
+      --deck-accent: #c0392b;
+      --deck-muted: #6f6a61;
+      --deck-shadow: 0 20px 50px rgba(20, 16, 10, 0.18);
+      --deck-radius: 18px;
+      --deck-gap: 1.2rem;
+    }
+
+    .reveal {
+      font-family: 'Manrope', 'Helvetica Neue', Arial, sans-serif;
+      color: var(--deck-text);
+      background:
+        radial-gradient(circle at 12% 18%, rgba(192, 57, 43, 0.12), transparent 45%),
+        radial-gradient(circle at 88% 82%, rgba(27, 26, 24, 0.1), transparent 42%),
+        var(--deck-bg);
+    }
+
+    .reveal h1, .reveal h2, .reveal h3 {
+      font-family: 'DM Serif Display', Georgia, 'Times New Roman', serif;
+      text-transform: none;
+      letter-spacing: 0.01em;
+      line-height: 1.05;
+    }
+
+    .reveal p, .reveal li {
+      line-height: 1.45;
+      max-width: 58ch;
+    }
+
+    /* Panel Component */
+    .reveal .panel {
+      background: var(--deck-surface);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: var(--deck-radius);
+      box-shadow: var(--deck-shadow);
+      backdrop-filter: blur(6px);
+      padding: calc(var(--deck-gap) * 1.2);
+    }
+
+    /* Highlight Mark */
+    .reveal mark {
+      background: transparent;
+      border-bottom: 0.15em solid var(--deck-accent);
+      padding: 0 0.08em;
+      color: inherit;
+    }
+
+    /* Accent Links */
+    .reveal a {
+      color: var(--deck-accent);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <!-- Title Slide with Background -->
+      <section
+        id="title-slide"
+        data-background-gradient="linear-gradient(135deg, #1b1a18 0%, #2c2c2c 100%)"
+      >
+        <h1 style="color: #f6f3ea;">Product Launch</h1>
+        <p style="font-size: 20pt; color: rgba(246, 243, 234, 0.7);">2024 Annual New Product Event</p>
+        <aside class="notes">
+          <p><strong>Duration:</strong> 30 seconds</p>
+          <p><strong>Opening:</strong> Welcome everyone to today's product launch event...</p>
+        </aside>
+      </section>
+
+      <!-- Section Divider -->
+      <section>
+        <h2 class="r-fit-text" style="color: var(--deck-accent);">Market Insights</h2>
+      </section>
+
+      <!-- Content with Fragments -->
+      <section>
+        <h2>User Pain Points</h2>
+        <div class="cols" style="margin-top: 2rem;">
+          <div class="panel fragment fade-up" style="flex: 1;">
+            <h3 style="font-size: 22pt; color: var(--deck-accent);">Low Efficiency</h3>
+            <p style="font-size: 16pt;">Existing solutions require multiple tools</p>
+          </div>
+          <div class="panel fragment fade-up" style="flex: 1;">
+            <h3 style="font-size: 22pt; color: var(--deck-accent);">High Cost</h3>
+            <p style="font-size: 16pt;">Enterprises invest significant budgets annually</p>
+          </div>
+          <div class="panel fragment fade-up" style="flex: 1;">
+            <h3 style="font-size: 22pt; color: var(--deck-accent);">Fragmented Experience</h3>
+            <p style="font-size: 16pt;">Data scattered across silos</p>
+          </div>
+        </div>
+        <aside class="notes">
+          <p><strong>Duration:</strong> 90 seconds</p>
+          <p><strong>Points:</strong> Walk through each pain point with a 5-second pause for the audience to absorb.</p>
+        </aside>
+      </section>
+
+      <!-- Architecture with Mermaid -->
+      <section>
+        <h2>System Architecture</h2>
+        <pre class="mermaid" style="font-size: 14pt;">
+flowchart LR
+  Client["Client"] -->|HTTPS| API["API Gateway"]
+  API --> Auth["Auth Service"]
+  API --> Core["Core Service"]
+  Core --> DB[("PostgreSQL")]
+  Core --> Cache[("Redis")]
+        </pre>
+        <p style="font-size: 16pt; margin-top: 1rem;">Microservices architecture with horizontal scaling</p>
+      </section>
+
+      <!-- Code Slide with Highlight -->
+      <section>
+        <h2>Quick Integration</h2>
+        <pre><code class="language-javascript" data-trim data-line-numbers="1-2|3-4|6-8">
+import { createClient } from '@acme/sdk';
+
+const client = createClient({
+  apiKey: process.env.API_KEY,
+});
+
+// Initialize with a single line
+await client.connect();
+        </code></pre>
+      </section>
+
+      <!-- Comparison Table -->
+      <section>
+        <h2>Solution Comparison</h2>
+        <table style="font-size: 16pt;">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Legacy</th>
+              <th>Our Solution</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Deployment</td>
+              <td>2-4 weeks</td>
+              <td><mark>5 minutes</mark></td>
+            </tr>
+            <tr>
+              <td>Learning Curve</td>
+              <td>High</td>
+              <td><mark>Low</mark></td>
+            </tr>
+            <tr>
+              <td>Scalability</td>
+              <td>Limited</td>
+              <td><mark>Unlimited</mark></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Quote Slide -->
+      <section data-background-color="#1b1a18">
+        <blockquote style="font-size: 28pt; color: #f6f3ea; border-left: 4px solid var(--deck-accent); padding-left: 1.5rem;">
+          "This is the best product we've ever used"<br/>
+          <span style="font-size: 18pt; color: rgba(246, 243, 234, 0.6);">-- CTO, Leading Enterprise</span>
+        </blockquote>
+      </section>
+
+      <!-- Metrics Dashboard -->
+      <section>
+        <h2>Key Metrics</h2>
+        <div class="cols" style="text-align: center;">
+          <div class="panel fragment fade-in">
+            <p style="font-size: 48pt; font-weight: 700; color: var(--deck-accent); margin: 0;">99.9%</p>
+            <p style="font-size: 16pt; color: var(--deck-muted);">Availability</p>
+          </div>
+          <div class="panel fragment fade-in">
+            <p style="font-size: 48pt; font-weight: 700; color: var(--deck-accent); margin: 0;">&lt;50ms</p>
+            <p style="font-size: 16pt; color: var(--deck-muted);">Response Latency</p>
+          </div>
+          <div class="panel fragment fade-in">
+            <p style="font-size: 48pt; font-weight: 700; color: var(--deck-accent); margin: 0;">10M+</p>
+            <p style="font-size: 16pt; color: var(--deck-muted);">Daily Requests</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Call to Action -->
+      <section data-background-gradient="linear-gradient(135deg, var(--deck-accent) 0%, #a93226 100%)">
+        <h1 style="color: #f6f3ea;">Get Started</h1>
+        <p style="font-size: 22pt; color: rgba(246, 243, 234, 0.9);">
+          Visit <a href="https://example.com" style="color: #f6f3ea; text-decoration: underline;">example.com</a> for a free trial
+        </p>
+      </section>
+    </div>
+  </div>
+
+  <!-- Reveal.js Scripts (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/notes/notes.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/highlight.js"></script>
+  <!--
+    Mermaid plugin requires the reveal.js-mermaid-plugin (not bundled in reveal.js core).
+    Install from: https://github.com/dmitryweiner/reveal.js-mermaid-plugin
+    Or include via: <script src="https://cdn.jsdelivr.net/npm/reveal.js-mermaid-plugin/plugin/mermaid/mermaid.js"></script>
+  -->
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: 'c/t',
+      transition: 'slide',
+      backgroundTransition: 'fade',
+      autoAnimateEasing: 'ease-out',
+      autoAnimateDuration: 0.6,
+      plugins: [RevealNotes, RevealHighlight],
+    });
+  </script>
+</body>
+</html>

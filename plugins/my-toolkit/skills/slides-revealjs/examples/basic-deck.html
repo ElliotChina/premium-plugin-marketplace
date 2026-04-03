@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Basic Presentation Example</title>
+
+  <!-- Reveal.js Core Styles (CDN) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/theme/solarized.css" />
+
+  <!-- Custom Styles -->
+  <style>
+    :root {
+      --deck-bg: #fdf6e3;
+      --deck-accent: #b58900;
+      --deck-text: #657b83;
+      --deck-muted: #93a1a1;
+    }
+
+    .reveal h1, .reveal h2, .reveal h3 {
+      text-transform: none;
+      font-family: "Source Sans Pro", Helvetica, sans-serif;
+    }
+
+    .reveal .highlight-box {
+      background: linear-gradient(135deg, rgba(181, 137, 0, 0.1), transparent);
+      border-left: 4px solid var(--deck-accent);
+      padding: 1rem 1.5rem;
+      margin: 1rem 0;
+    }
+
+    .reveal .cols {
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+
+    .reveal .col-50 {
+      flex: 0 0 50%;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <!-- Title Slide -->
+      <section id="title-slide">
+        <h1>Presentation Title</h1>
+        <p style="font-size: 18pt; color: var(--deck-muted);">Subtitle or speaker info</p>
+      </section>
+
+      <!-- Content Slide with List -->
+      <section>
+        <h2>Core Concepts</h2>
+        <ul style="font-size: 20pt;">
+          <li class="fragment">First key point</li>
+          <li class="fragment">Second key point</li>
+          <li class="fragment">Third key point</li>
+        </ul>
+        <aside class="notes">
+          <p><strong>Duration:</strong> 60 seconds</p>
+          <p><strong>Points:</strong> Explain each concept one by one, making sure the audience understands before moving on.</p>
+        </aside>
+      </section>
+
+      <!-- Two-Column Layout -->
+      <section>
+        <h2>Comparison</h2>
+        <div class="cols">
+          <div class="col-50">
+            <h3 style="color: var(--deck-accent);">Option A</h3>
+            <ul style="font-size: 16pt;">
+              <li>Advantage one</li>
+              <li>Advantage two</li>
+            </ul>
+          </div>
+          <div class="col-50">
+            <h3 style="color: var(--deck-accent);">Option B</h3>
+            <ul style="font-size: 16pt;">
+              <li>Advantage one</li>
+              <li>Advantage two</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Highlight Box -->
+      <section>
+        <h2>Key Takeaway</h2>
+        <div class="highlight-box">
+          <p style="font-size: 22pt; margin: 0;">
+            This is content that needs special emphasis, highlighted with a styled box.
+          </p>
+        </div>
+      </section>
+
+      <!-- Closing Slide -->
+      <section>
+        <h2>Thank You</h2>
+        <p style="font-size: 18pt; color: var(--deck-muted);">Q &amp; A</p>
+      </section>
+    </div>
+  </div>
+
+  <!-- Reveal.js Scripts (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/notes/notes.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: 'c/t',
+      transition: 'slide',
+      backgroundTransition: 'fade',
+      plugins: [RevealNotes],
+    });
+  </script>
+</body>
+</html>

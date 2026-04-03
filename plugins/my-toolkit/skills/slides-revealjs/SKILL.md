@@ -1,6 +1,10 @@
 ---
 name: slides-revealjs
-description: Create reveal.js presentations with expert design. Triggers when users mention slides, presentations, decks, slide decks, slide shows, speaker notes, or want to present content visually — even without explicitly naming reveal.js. Covers HTML/Markdown authoring, themes, animations, fragments, Mermaid diagrams, PDF export, and full design system setup.
+description: Create professional reveal.js presentations with expert design and interactive features. **ALWAYS use this skill when users mention:** slides, presentation, deck, slide deck, slideshow, 幻灯片, 演示文稿, 演讲, or want to present/展示 content visually — even without explicitly naming reveal.js. Also trigger for speaker notes, lecture materials, workshop content, conference talks, product demos, training materials, or any scenario requiring visual storytelling with animations, diagrams, code highlighting, or step-by-step reveals. Covers HTML/Markdown authoring, themes, animations, fragments, Mermaid diagrams, speaker view, PDF export, and full design system setup. **Do NOT use for:** regular web pages, dashboards, or static documentation.
+compatibility:
+  scripts:
+    create-presentation.js: "Node.js 16+"
+    check-overflow.js: "Node.js 16+ (no external dependencies)"
 ---
 
 # Slides Skill for reveal.js
@@ -21,11 +25,24 @@ This skill guides AI to create and update reveal.js slides quickly and reliably.
 1. Analyze the content first and state a content-informed design approach before writing code (topic, tone, audience, branding, and palette rationale).
 2. Choose the integration mode: Static HTML (fastest) or npm/ESM (engineering).
 3. If converting from an existing doc, inventory all source sections/items first and map each item to at least one slide.
-4. Build the minimal deck structure: `.reveal > .slides > section`.
-5. Register only required plugins (Markdown, Highlight, Notes, Math, Search, Zoom, etc.).
-6. Author content and interactions: horizontal/vertical slides, fragments, backgrounds, transitions, media.
+4. Build the minimal deck structure: `.reveal > .slides > section`. Default to `solarized` theme unless user explicitly requires otherwise.
+5. Register only required plugins (Markdown, Highlight, Notes, Math, Mermaid, Search, Zoom, etc.).
+6. Author content and interactions:
+   - Use Mermaid diagrams for architecture/process/flow content to increase clarity and visual consistency
+   - Build horizontal/vertical slides, fragments, backgrounds, transitions, media
 7. Configure runtime behavior: navigation, keyboard, `hash`, `slideNumber`, `autoSlide`, `view: 'scroll'`.
-8. Validate and ship: local preview, overflow check, Speaker View, print/PDF export, and optional API control code.
+8. Validate content quality:
+   - Run overflow check (`node scripts/check-overflow.js <file> --check`)
+   - Review composition rhythm (avoid 3 consecutive slides with same layout pattern)
+   - Verify all slides fit within viewport; adjust content or split slides if overflow detected
+9. Verify customizations (if applicable):
+   - If custom CSS was added, verify selector scope is limited to `.reveal` or slide-level classes
+   - Check impact scope (which slides/components each rule affects)
+10. Final delivery:
+    - Local preview with no console errors
+    - Test speaker view (press S)
+    - Verify PDF export workflow
+    - For React components: verify mount/unmount cleanup
 
 ## Helper Scripts
 
@@ -46,7 +63,10 @@ node scripts/create-presentation.js ./my-deck --structure 1,1,d,3,1,d,1 --title 
 - `--structure <pattern>` - Slide layout pattern (default: "1")
 - `--title <title>` - Presentation title (default: "Presentation")
 - `--theme <theme>` - Reveal.js theme (default: "solarized")
-- `--no-css` - Skip copying base-styles.css
+- `--no-css` - Skip generating custom.css
+- `--local` - Use local reveal.js files instead of CDN (requires reveal.js installed nearby)
+
+**Note:** By default, the scaffold uses CDN links for reveal.js (jsDelivr). This ensures the presentation works immediately without installing dependencies. Use `--local` only if you have reveal.js installed and need offline access or custom builds.
 
 **Example:** `--structure 1,1,d,3,1` creates:
 - 1 title slide
@@ -59,25 +79,29 @@ The scaffold is a **starting point**, not a constraint. After generation, freely
 
 ### Overflow Checker
 
-Validate that slide content fits within bounds using Playwright:
+Inject a browser-side detection script into a presentation, then open it in a browser to check every slide for content overflow. No external dependencies (no Playwright needed).
 
+**Usage:**
 ```bash
+# Inject detection code into HTML
 node scripts/check-overflow.js ./presentation/index.html
-node scripts/check-overflow.js http://localhost:3000 --browser firefox
+
+# Inject and immediately open in browser
+node scripts/check-overflow.js ./presentation/index.html --check
+
+# Remove injected code after review
+node scripts/check-overflow.js ./presentation/index.html --restore
+
+# Adjust minimum overflow threshold (default: 5px)
+node scripts/check-overflow.js ./presentation/index.html --threshold 10
 ```
 
 **Options:**
-- `--browser <name>` - Browser: chromium, firefox, webkit (default: chromium)
+- `--check` - Inject and open in default browser
+- `--restore` - Remove injected detection code
 - `--threshold <px>` - Minimum overflow to report (default: 5)
-- `--json` - Output as JSON for programmatic processing
-- `--verbose` - Show detailed progress
 
-**Exit codes:**
-- `0` - No overflow detected
-- `1` - Overflow detected in one or more slides
-- `2` - Error during execution
-
-Run this before finalizing presentations to catch content density issues.
+Results appear in the browser's developer console, showing which slides overflow and by how many pixels.
 
 ### Base Styles
 
@@ -99,6 +123,84 @@ Copy and customize these variables for your design direction:
   --h2-size: 36pt;
 }
 ```
+
+## Content Strategy
+
+### Word Limits per Slide
+
+Keep slides clear and readable by respecting these limits:
+
+| Slide Type | Title | Body | Bullet Points |
+|-----------|------|------|--------|
+| Title | 3-6 words | 0-15 words (subtitle) | none |
+| Content | 3-8 words | 30-50 words | 3-5 items |
+| Divider | 2-5 words | 0-10 words | none |
+| Diagram | 3-6 words | 10-20 words (caption) | none |
+| Summary | 3-6 words | 20-35 words | 3-4 key points |
+
+**Guidelines:**
+- One core idea per slide
+- Prefer short phrases over long paragraphs
+- Split across multiple slides when limits are exceeded
+
+### Slide Type Preferences
+
+Choose the right slide structure based on content type:
+
+- **Concept intro**: Title + 3-4 bullet points + optional icons
+- **Process / Architecture**: Mermaid diagram + brief explanation
+- **Data showcase**: Chart or table + key insight
+- **Comparison**: Two-column layout (`.cols` + `.col-50`)
+- **Case study**: Left-image-right-text or top-image-bottom-text
+- **Quote / Testimonial**: Large quotation + attribution
+- **Call to action**: Centered large text + accent color
+
+---
+
+## Speaker Notes
+
+### Basic Notes
+
+```html
+<section>
+  <h2>Key Insight</h2>
+  <p>Content visible to audience</p>
+  <aside class="notes">
+    This is only visible in speaker view (press S).
+    Include talking points, timing cues, and transitions.
+  </aside>
+</section>
+```
+
+### TTS-Optimized Notes
+
+For text-to-speech (TTS) or video recording, structure speaker notes as follows:
+
+```html
+<aside class="notes">
+  <p><strong>Duration:</strong> 45 seconds</p>
+
+  <p><strong>Opening:</strong> Let's look at this key insight...</p>
+
+  <p><strong>Key Points:</strong></p>
+  <ul>
+    <li>Point 1: Clear and concise explanation</li>
+    <li>Point 2: Supporting data or example</li>
+    <li>Point 3: Practical application scenario</li>
+  </ul>
+
+  <p><strong>Transition:</strong> Next we'll discuss how to apply this insight...</p>
+</aside>
+```
+
+**TTS formatting guidelines:**
+- Use complete sentences; avoid abbreviations
+- Spell out numbers in full words ("three" not "3")
+- Include pause cues ("..." for a brief pause)
+- Annotate pronunciation of difficult terms (jargon, acronyms)
+- Avoid tables and complex formatting
+
+---
 
 ## Implementation Templates
 
@@ -182,224 +284,13 @@ await deck.initialize();
 
 ## Reveal.js Tips
 
-The items below should be preferred in this skill.
+For common reveal.js techniques including title slides with backgrounds, logo positioning, column layouts, fragments, emoji support, and more, see [Reveal.js Tips](./references/revealjs-tips.md).
 
-### Design & Visual Quality
-
-For comprehensive design guidance including color palette selection, typography hierarchy, slide archetypes, content density limits, and visual review checklists, see [Slide Design Guide](./references/slide-design-guide.md).
-
-Key requirements:
+Key design requirements:
 - State your design approach before writing slide code.
 - Use `pt` units for font sizes in slide CSS/inline styles.
 - Prefer official reveal `solarized` theme for light-tone decks unless explicitly overridden.
 - Each deck must have a deliberate aesthetic direction, not generic styling.
-
-### 1) Title slide with custom background
-
-Use an explicit first `<section>` as a title slide and style it with reveal data attributes.
-
-```html
-<section
-  id="title-slide"
-  data-background-image="./img/background.jpg"
-  data-background-size="cover"
-  data-background-opacity="0.9"
->
-  <h1>My Slide Show</h1>
-</section>
-```
-
-### 2) Move/resize a logo after leaving title slide
-
-Use CSS classes plus the `slidechanged` event.
-Add a persistent logo element in your HTML, e.g. `<img class="slide-logo" src="./images/my-logo.svg" alt="Logo" />`.
-
-```css
-.reveal .slide-logo {
-  position: fixed;
-  display: block;
-  max-width: none !important;
-}
-
-.reveal .slide-logo-bottom-right {
-  right: 12px !important;
-  bottom: 0 !important;
-  left: auto !important;
-  max-height: 2.2rem !important;
-}
-
-.slide-logo-max-size {
-  top: 5px;
-  left: 12px;
-  right: auto !important;
-  bottom: auto !important;
-  height: 100px !important;
-  max-height: none !important;
-}
-```
-
-```js
-function syncLogoForSlide(currentSlide) {
-  const logos = document.querySelectorAll('.slide-logo');
-  const onTitle = currentSlide && currentSlide.id === 'title-slide';
-  logos.forEach((el) => {
-    el.classList.toggle('slide-logo-max-size', onTitle);
-    el.classList.toggle('slide-logo-bottom-right', !onTitle);
-  });
-}
-
-Reveal.on('ready', (event) => syncLogoForSlide(event.currentSlide));
-Reveal.on('slidechanged', (event) => syncLogoForSlide(event.currentSlide));
-```
-
-### 3) Background image sizing (`cover` vs `contain`)
-
-`cover` fills the slide and may crop. `contain` preserves the entire image.
-
-```html
-<section data-background-image="images/2024.jpg" data-background-size="cover"></section>
-<section data-background-image="images/2024.jpg" data-background-size="contain"></section>
-```
-
-### 4) Slide structure control (replacement for Quarto `slide-level`)
-
-Pure reveal.js does not use Pandoc `slide-level`. Control structure explicitly:
-
-- HTML mode: one `<section>` per slide, nested `<section>` for vertical slides.
-- Markdown mode: use configured separators (`---`, `--`) to split slides.
-
-### 5) Emoji support
-
-Quarto's `from: markdown+emoji` is not a reveal.js feature. In reveal.js:
-
-- Use native Unicode emoji directly.
-- Or render emoji through your markdown/HTML pipeline before reveal initializes.
-
-### 6) Fit large text and stretch media
-
-`r-fit-text` and `r-stretch` are reveal classes and work directly.
-
-```html
-<section>
-  <div class="r-fit-text">Big Text</div>
-</section>
-
-<section>
-  <p>Here is an image:</p>
-  <img class="r-stretch" src="image.webp" alt="Demo image" />
-  <p>Some text after the image.</p>
-</section>
-```
-
-### 7) Reveal content on key press with fragments
-
-```html
-<section>
-  <h2>It's a candy dog</h2>
-  <p style="font-size: 44pt; color: #75aadb;">Would you like to see a candy dog?</p>
-  <img class="fragment fade-up" src="./images/dog.webp" alt="Candy dog" />
-</section>
-```
-
-### 8) Two-column and 4-quadrant layouts
-
-Quarto `::: columns` is not native reveal syntax. Use HTML/CSS layout wrappers.
-
-```html
-<section>
-  <div class="cols">
-    <div class="col col-70"><img src="./images/image_1.webp" alt="Left" /></div>
-    <div class="col col-30">
-      <img src="./images/image_2.webp" alt="Right top" />
-      <img src="./images/image_3.webp" alt="Right bottom" />
-    </div>
-  </div>
-</section>
-```
-
-```css
-.reveal .cols {
-  display: flex;
-  gap: 1.5rem;
-  align-items: flex-start;
-}
-
-.reveal .col-70 { flex: 0 0 70%; }
-.reveal .col-30 { flex: 0 0 30%; }
-```
-
-For 4 quadrants, use a 2x2 CSS grid and reveal each cell with fragment classes (`fade-in-then-semi-out` or similar).
-
-### 9) Custom inline short-code transform (`==text==` -> `<mark>text</mark>`)
-
-```js
-function convertMarkedTextInSlide(slide) {
-  if (!slide) return;
-  slide.innerHTML = slide.innerHTML.replace(/==([^=]+)==/g, '<mark>$1</mark>');
-}
-
-Reveal.on('ready', (event) => convertMarkedTextInSlide(event.currentSlide));
-Reveal.on('slidechanged', (event) => convertMarkedTextInSlide(event.currentSlide));
-```
-
-### 10) Inline style and custom CSS
-
-In reveal markdown, use inline HTML for precise text styling:
-
-```html
-<p>
-  Make this <span style="color: red;">red</span> and this
-  <span style="background: yellow;">highlighted</span>.
-</p>
-```
-
-Load custom CSS in static HTML:
-
-```html
-<link rel="stylesheet" href="./assets/custom.css" />
-```
-
-Or import it in ESM:
-
-```js
-import './assets/custom.css';
-```
-
-### 11) Hide captions and style callouts from generated output
-
-Some pipelines generate caption or callout markup. Hide if not needed:
-```css
-.reveal p.caption,
-.reveal figcaption {
-  display: none;
-}
-```
-
-### 12) Vertical flow, slide IDs, menu labels, numbering, and notes
-
-- Vertical chapters: nest sections (`<section><section>Child</section></section>`).
-- Navigation behavior: use `navigationMode: 'default' | 'linear' | 'grid'`.
-- Stable slide URL names: set section `id` and enable `hash: true`.
-- Menu labels (when using the menu plugin): set `data-menu-title`.
-- Slide number with total: `slideNumber: 'c/t'`.
-- Speaker notes: `<aside class="notes">...</aside>` and press `S`.
-- Overview mode shortcut: `Esc`.
-
-```html
-<section id="intro" data-menu-title="Introduction">
-  <h2>Intro</h2>
-  <aside class="notes">Presenter-only notes</aside>
-</section>
-```
-
-```js
-Reveal.initialize({
-  hash: true,
-  slideNumber: 'c/t',
-  navigationMode: 'default',
-  plugins: [RevealNotes],
-});
-```
 
 For detailed design guidance (aesthetic direction, design tokens, typography hierarchy, palette strategy, atmosphere, motion, layouts, slide archetypes, content density limits, and typography baselines), see [Slide Design Guide](./references/slide-design-guide.md).
 
@@ -428,7 +319,7 @@ For detailed design guidance (aesthetic direction, design tokens, typography hie
 - Source-to-slide coverage check was completed for conversion tasks (no major source section dropped).
 - Composition rhythm was reviewed (no 3 consecutive slides with the same layout pattern).
 - Density limits were respected or split across additional slides.
-- Overflow check passed (run `node scripts/check-overflow.js <file>` to verify).
+- Overflow check passed (run `node scripts/check-overflow.js <file> --check` to verify).
 - If export is requested, verify print/PDF workflow end-to-end.
 
 ## References
@@ -528,15 +419,24 @@ For detailed design guidance (aesthetic direction, design tokens, typography hie
 | Topic              | Description                                                                           | Reference                                              |
 | ------------------ | ------------------------------------------------------------------------------------- | ------------------------------------------------------ |
 | Slide Design Guide | Visual design, typography, color, layout, content pacing, and review checklists.     | [Slide Design Guide](./references/slide-design-guide.md) |
+| Reveal.js Tips     | Common techniques: backgrounds, layouts, fragments, emoji, custom transforms.        | [Reveal.js Tips](./references/revealjs-tips.md) |
 | Quarto Migration   | Migrating from Quarto `.qmd` to pure reveal.js HTML.                                  | [Quarto Migration](./references/quarto-migration.md) |
 | Base Styles        | CSS variables, text utilities, layout helpers, and components for presentations.      | [Base Styles](./references/base-styles.css) |
+| Anti-Patterns      | Common Reveal.js pitfalls and solutions (CSS specificity, layout, fragments).         | [Anti-Patterns](./references/anti-patterns.md) |
 
 ### Helper Scripts
 
 | Script              | Description                                                                           | Path                                              |
 | ------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------- |
 | Scaffold Generator  | Generate presentation skeleton with predefined slide structure.                       | [create-presentation.js](./scripts/create-presentation.js) |
-| Overflow Checker    | Validate slide content fits within bounds using Playwright.                           | [check-overflow.js](./scripts/check-overflow.js) |
+| Overflow Checker    | Inject browser-side overflow detection into presentations (no dependencies).        | [check-overflow.js](./scripts/check-overflow.js) |
+
+### Examples
+
+| File           | Description                                                                           | Path                                              |
+| -------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| Basic Deck     | Simple presentation with fragments, columns, and speaker notes.                      | [basic-deck.html](./examples/basic-deck.html) |
+| Advanced Deck  | Full-featured deck with Mermaid, code highlighting, and custom design tokens.          | [advanced-deck.html](./examples/advanced-deck.html) |
 
 ### Other
 
