@@ -25,7 +25,80 @@ This skill guides AI to create and update reveal.js slides quickly and reliably.
 5. Register only required plugins (Markdown, Highlight, Notes, Math, Search, Zoom, etc.).
 6. Author content and interactions: horizontal/vertical slides, fragments, backgrounds, transitions, media.
 7. Configure runtime behavior: navigation, keyboard, `hash`, `slideNumber`, `autoSlide`, `view: 'scroll'`.
-8. Validate and ship: local preview, Speaker View, print/PDF export, and optional API control code.
+8. Validate and ship: local preview, overflow check, Speaker View, print/PDF export, and optional API control code.
+
+## Helper Scripts
+
+### Scaffold Generator
+
+Quickly generate a reveal.js presentation skeleton with predefined structure:
+
+```bash
+node scripts/create-presentation.js ./my-deck --structure 1,1,d,3,1,d,1 --title "My Talk"
+```
+
+**Structure pattern syntax:**
+- `1` = single slide
+- `N` = vertical stack of N slides
+- `d` = divider/title slide
+
+**Options:**
+- `--structure <pattern>` - Slide layout pattern (default: "1")
+- `--title <title>` - Presentation title (default: "Presentation")
+- `--theme <theme>` - Reveal.js theme (default: "solarized")
+- `--no-css` - Skip copying base-styles.css
+
+**Example:** `--structure 1,1,d,3,1` creates:
+- 1 title slide
+- 1 content slide
+- 1 section divider
+- 1 vertical stack with 3 slides
+- 1 final slide
+
+The scaffold is a **starting point**, not a constraint. After generation, freely adjust structure, styling, and content.
+
+### Overflow Checker
+
+Validate that slide content fits within bounds using Playwright:
+
+```bash
+node scripts/check-overflow.js ./presentation/index.html
+node scripts/check-overflow.js http://localhost:3000 --browser firefox
+```
+
+**Options:**
+- `--browser <name>` - Browser: chromium, firefox, webkit (default: chromium)
+- `--threshold <px>` - Minimum overflow to report (default: 5)
+- `--json` - Output as JSON for programmatic processing
+- `--verbose` - Show detailed progress
+
+**Exit codes:**
+- `0` - No overflow detected
+- `1` - Overflow detected in one or more slides
+- `2` - Error during execution
+
+Run this before finalizing presentations to catch content density issues.
+
+### Base Styles
+
+The scaffold automatically includes `references/base-styles.css` which provides:
+
+- **CSS Variables** for theming (colors, fonts, sizes)
+- **Text size utilities**: `.text-sm`, `.text-lg`, `.text-xl`, `.text-2xl`, etc.
+- **Color utilities**: `.text-primary`, `.text-accent`, `.bg-surface`, etc.
+- **Layout utilities**: `.cols`, `.col-50`, `.grid-2`, `.center`
+- **Components**: `.panel`, `.callout`, `.divider-slide`
+
+Copy and customize these variables for your design direction:
+
+```css
+:root {
+  --primary-color: #b58900;
+  --accent-color: #d33682;
+  --h1-size: 48pt;
+  --h2-size: 36pt;
+}
+```
 
 ## Implementation Templates
 
@@ -355,6 +428,7 @@ For detailed design guidance (aesthetic direction, design tokens, typography hie
 - Source-to-slide coverage check was completed for conversion tasks (no major source section dropped).
 - Composition rhythm was reviewed (no 3 consecutive slides with the same layout pattern).
 - Density limits were respected or split across additional slides.
+- Overflow check passed (run `node scripts/check-overflow.js <file>` to verify).
 - If export is requested, verify print/PDF workflow end-to-end.
 
 ## References
@@ -455,6 +529,14 @@ For detailed design guidance (aesthetic direction, design tokens, typography hie
 | ------------------ | ------------------------------------------------------------------------------------- | ------------------------------------------------------ |
 | Slide Design Guide | Visual design, typography, color, layout, content pacing, and review checklists.     | [Slide Design Guide](./references/slide-design-guide.md) |
 | Quarto Migration   | Migrating from Quarto `.qmd` to pure reveal.js HTML.                                  | [Quarto Migration](./references/quarto-migration.md) |
+| Base Styles        | CSS variables, text utilities, layout helpers, and components for presentations.      | [Base Styles](./references/base-styles.css) |
+
+### Helper Scripts
+
+| Script              | Description                                                                           | Path                                              |
+| ------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| Scaffold Generator  | Generate presentation skeleton with predefined slide structure.                       | [create-presentation.js](./scripts/create-presentation.js) |
+| Overflow Checker    | Validate slide content fits within bounds using Playwright.                           | [check-overflow.js](./scripts/check-overflow.js) |
 
 ### Other
 
