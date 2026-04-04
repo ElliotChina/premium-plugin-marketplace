@@ -1,6 +1,6 @@
 ---
 name: project-config
-argument-hint: "[项目名称]"
+argument-hint: "[项目名称和简要描述]"
 description: >
   This skill should be used when the user runs "/my-toolkit:project-config" to configure project
   development environment. Provides a structured workflow for plugin and skill setup.
@@ -31,12 +31,51 @@ description: >
 
 优先级：项目配置 > 全局配置。合并两层配置后，得出各插件的最终启用状态
 
+3. 结合**插件推荐列表**，筛选出已安装插件和适合当前项目的推荐插件，整理为表格，示例：
+
+**插件检查结果**
+
+| 插件名称 | 已安装 | 全局启用 | 项目启用 | 最终状态 |
+|---|---|---|---|---|
+| superpowers | ✅ | ✅ | — | ✅ 启用 |
+| context7-plugin | ✅ | ✅ | ✅ | ✅ 启用 |
+| chrome-devtools-mcp | ✅ | ✅ | ❌ | ❌ 禁用 |
+| playwright | ❌ | — | — | ❌ 未安装 |
+| agent-browser | ❌ | — | — | ❌ 未安装 |
+| typescript-lsp | ❌ | — | — | ❌ 未安装 |
+
+> `—` 表示该层级未显式配置，继承上层状态。
+
+**注意：** 仅展示已安装的插件和适合当前项目的推荐插件，不列出全部插件。
+
 #### 检查已安装技能
 
 1. 读取以下目录，获取已安装技能列表：
 - **全局技能配置** `~/.claude/skills/` — 用户级别的已安装技能列表
 - **项目技能配置** `.claude/skills/` — 当前项目级别的已安装技能列表
 - **插件技能配置** `{plugin-name}/skills/` — 插件下的技能，插件启用后技能才算安装
+
+2. 结合**技能推荐列表**，筛选出已安装技能和适合当前项目的推荐技能，整理为表格，示例：
+
+**技能检查结果**
+
+独立技能（通过 `npx skills add` 安装）：
+
+| 技能名称 | 来源 | 状态 |
+|---|---|---|
+| slides-revealjs | 项目 `.claude/skills/` | ✅ 已安装 |
+| brainstorm | 全局 `~/.claude/skills/` | ✅ 已安装 |
+| vercel-react-best-practices | — | ❌ 未安装 |
+| antd | — | ❌ 未安装 |
+
+已启用插件的技能：
+
+| 技能名称 | 所属插件 | 状态 |
+|---|---|---|
+| pdf | document-skills | ✅ 可用 |
+| pptx | document-skills | ✅ 可用 |
+
+**注意：** 仅展示已安装的技能和适合当前项目的推荐技能，不列出全部技能。
 
 ### 2. 收集项目信息
 
@@ -116,7 +155,7 @@ description: >
 
 1. 如果在**技能推荐列表**里有适合项目的技能但用户未安装，提示用户安装技能。
 2. 安装技能使用 `npx skills add <skill-name>` 命令，安装后技能会自动启用，无需额外启用步骤。
-2. 如果有以上需求，使用 AskUserQuestion 工具询问用户：
+3. 如果有以上需求，使用 AskUserQuestion 工具询问用户：
 ```
 根据当前项目，建议以下技能调整：
 - 安装：[技能列表及原因]
