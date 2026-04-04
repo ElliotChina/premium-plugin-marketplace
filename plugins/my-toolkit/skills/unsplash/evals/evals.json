@@ -1,0 +1,23 @@
+{
+  "skill_name": "unsplash",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "帮我写一个搜索 Unsplash 照片的函数，搜索关键词是 'mountain'，需要横向风景照，每页 10 张",
+      "expected_output": "提供一个正确使用 Unsplash API 搜索照片的代码示例，包含正确的认证方式、查询参数（query=mountain, orientation=landscape, per_page=10）",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "我需要为我的网站首页获取一张随机背景图，帮我调用 Unsplash API 获取一张风景类的随机照片",
+      "expected_output": "提供获取随机照片的代码，使用 /photos/random 端点，包含 orientation=landscape 参数，并展示如何使用返回的 URL",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "我有一个 Unsplash 照片 URL：https://images.unsplash.com/photo-abc123?ixid=xyz789，我需要获取 800x600 的裁剪版本，格式为 webp",
+      "expected_output": "解释如何在 URL 上添加 w=800&h=600&fit=crop&fm=webp 参数，同时强调保留 ixid 参数的重要性",
+      "files": []
+    }
+  ]
+}
