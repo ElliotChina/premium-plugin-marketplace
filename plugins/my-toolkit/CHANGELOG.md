@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.10] - 2026-04-05
+### Added
+- 新增 `code-review` 技能
+### Changed
+- 更新 `new-feature` 技能
+### Added
+- 新增 `plan-review` 技能
+### Changed
+- 更新 `review` 技能
+### Added
+- 新增 `spec-review` 技能
+
+
 ## [0.1.9] - 2026-04-04
 ### Changed
 - 更新 `project-config` 技能

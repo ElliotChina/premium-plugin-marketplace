@@ -9,7 +9,7 @@ description: >
 
 # Review - 审查
 
-结构化的审查工作流，支持多种审查类型。代码、Spec 和计划审查采用 3 agent 并发审查模式。
+结构化的审查工作流，支持多种审查类型。代码、Spec 和计划审查支持多 agent 并发审查模式。
 
 ## 触发方式
 
@@ -39,41 +39,24 @@ description: >
 - **React 技术栈**：按需加载 `vercel-react-best-practices`（性能优化）、`vercel-composition-patterns`（组件组合模式）、`vercel-react-native-skills`（React Native 开发）
 - **UI 组件库**：按需加载 `antd`（Ant Design 组件使用）、`ant-design`（Ant Design 架构决策与主题定制）、`shadcn`（shadcn/ui 组件管理）
 
-### 3. 并发执行审查（并发3次）
+### 3. 执行审查
 
-根据审查类型，启用合适的审查技能，派发 3 个并发审查 subagent。
+根据审查类型，启用对应的编排技能（内部已完成派发并发 agent → 合并反馈 → 修复的全流程）：
 
 **代码审查 / PR 审查：**
-- 前端项目审查时加载 `web-design-guidelines` — 基于 Web Interface Guidelines 进行 UI/UX 合规审查。
-- 启用 `superpowers:requesting-code-review`技能
+- 前端项目审查时加载 `web-design-guidelines` — 基于 Web Interface Guidelines 进行 UI/UX 合规审查
+- 启用 `my-toolkit:code-review` 技能（并发数 3）
 
 **Spec 审查：**
-- 启用 `my-toolkit:requesting-spec-review`技能
+- 启用 `my-toolkit:spec-review` 技能（并发数 3）
 
 **计划审查：**
-- 启用 `my-toolkit:requesting-plan-review`技能
+- 启用 `my-toolkit:plan-review` 技能（并发数 3）
 
 **文档审查 / UI/UX 设计审查（直接分析）：**
 
 - **文档审查**：读取文档内容，对照代码验证准确性
 - **UI/UX 设计审查**：读取前端代码和组件结构
-
-#### 代码审查 / PR 审查关注点
-
-- 破坏性变更或安全漏洞 → 立即修复
-- 变更范围不合理（过大或与 PR 描述不匹配） → 标记并建议拆分或对齐
-- 测试覆盖不足 → 补充必要测试
-- 与 PR 描述不匹配的低优先级变更 → 评估后处理或跳过
-- 审查 agent 误解 PR 上下文的误报 → 跳过并附理由
-
-#### Spec 审查关注点
-
-- 无障碍合规性缺失 → 立即修复
-- 交互不合理或用户体验问题 → 评估影响后修复
-- 视觉层次混乱或信息架构不清 → 重构优化
-- 响应式适配缺失 → 补充适配方案
-- 设计系统不一致 → 对齐设计规范
-- 审查 agent 对设计意图误解的误判 → 跳过并附理由
 
 #### 文档审查关注点
 
@@ -82,21 +65,16 @@ description: >
 - 示例代码无法运行 → 修正或补充可运行的示例
 - 格式不规范、排版不一致 → 统一格式
 - 遗漏或过时信息 → 更新至最新状态
-- 审查 agent 对文档上下文理解的误判 → 跳过并附理由
 
-### 4. 审查问题修复
+#### UI/UX 设计审查关注点
 
-根据审查类型，启用对应的 `receiving-*-review` 技能处理反馈。
+- 无障碍合规性缺失 → 立即修复
+- 交互不合理或用户体验问题 → 评估影响后修复
+- 视觉层次混乱或信息架构不清 → 重构优化
+- 响应式适配缺失 → 补充适配方案
+- 设计系统不一致 → 对齐设计规范
 
-**代码审查 / PR 审查：** 启用 `superpowers:receiving-code-review`技能
-
-**Spec 审查：** 启用 `my-toolkit:receiving-spec-review`技能
-
-**计划审查：** 启用 `my-toolkit:receiving-plan-review`技能
-
-**文档审查 / UI/UX 设计审查（直接输出）：**
-
-按严重程度分类输出审查报告：
+完成后按以下格式输出审查报告：
 
 ```
 ## 审查报告
