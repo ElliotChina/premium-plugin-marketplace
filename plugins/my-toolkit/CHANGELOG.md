@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.11] - 2026-04-08
+### Changed
+- 更新 `slides-revealjs` 技能
+
+
 ## [0.1.10] - 2026-04-05
 ### Added
 - 新增 `code-review` 技能

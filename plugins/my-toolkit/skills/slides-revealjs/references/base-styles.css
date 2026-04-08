@@ -1,323 +1,305 @@
-/**
- * Base Styles for Reveal.js Presentations
+/* Base reveal.js styles
  *
- * This file provides CSS variables for theming, text size utilities,
- * and common layout components for reveal.js slides.
+ * Copy this file as styles.css for each new presentation.
+ * Customize the CSS variables (especially colors) for your theme.
  *
- * Usage:
- *   1. Copy this file to your presentation's assets directory
- *   2. Link it in your HTML: <link rel="stylesheet" href="./assets/custom.css" />
- *   3. Customize CSS variables to match your design direction
+ * IMPORTANT: All font sizes use pt (points) for predictable sizing.
+ * Base text is intentionally small (16pt) to fit content-heavy slides.
+ * Use .text-lg, .text-xl, etc. classes when slides have less content.
  */
 
-/* ==========================================================================
-   CSS Variables for Theming
-   ========================================================================== */
-
+/* ===========================================
+   CSS VARIABLES - Customize these for each presentation
+   =========================================== */
 :root {
-  /* Colors - Customize these for your design */
-  --background-color: #fdf6e3;
-  --surface-color: rgba(255, 255, 255, 0.72);
-  --heading-font: "Source Sans Pro", Helvetica, sans-serif;
-  --body-font: "Source Sans Pro", Helvetica, sans-serif;
+  /* ===========================================
+     BACKGROUND COLORS
+     For dark presentations, change to dark colors (e.g., #1a1a2e, #0d1117)
+     Then update --text-color and --muted-color to light colors below.
+     =========================================== */
+  --background-color: #ffffff;              /* Main slide background */
+  --section-divider-bg: #ffffff;            /* Section divider background (set different for contrast) */
 
-  /* Typography Scale (using pt units for presentation readability) */
-  --text-size: 16pt;
-  --text-sm: 14pt;
-  --text-lg: 18pt;
-  --text-xl: 20pt;
+  /* Typography - ALWAYS use pt for font sizes */
+  --heading-font: "Source Sans 3", Helvetica, sans-serif;
+  --body-font: "Source Sans 3", Helvetica, sans-serif;
+  --base-font-size: 32px;   /* px is intentional: reveal.js uses .reveal font-size as the em-base for CSS transform scaling. All other sizes use pt (absolute, unaffected by scaling). */
+  --text-size: 16pt;        /* Base body text - intentionally small */
   --h1-size: 48pt;
   --h2-size: 36pt;
-  --h3-size: 28pt;
-  --h4-size: 24pt;
+  --h3-size: 24pt;
+  --footnote-size: 11pt;
 
-  /* Semantic Colors */
-  --primary-color: #b58900;
-  --secondary-color: #cb4b16;
-  --accent-color: #d33682;
-  --text-color: #657b83;
-  --muted-color: #93a1a1;
-  --success-color: #859900;
-  --warning-color: #b58900;
-  --error-color: #dc322f;
+  /* Colors - CUSTOMIZE THESE */
+  --primary-color: #2196F3;    /* Main accent color */
+  --secondary-color: #ff9800;  /* Secondary accent */
+  --text-color: #222;          /* Main text - use light color (e.g., #f0f0f0) for dark backgrounds */
+  --muted-color: #666;         /* Secondary text - use lighter color for dark backgrounds */
+  --line-color: #333;          /* Decorative lines */
 
-  /* Spacing & Layout */
-  --box-radius: 8px;
-  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  --gap: 1.5rem;
+  /* Layout */
+  --slide-padding: 60px;
+  --slide-padding-top: 40px;
+  --content-gap: 30px;
+
+  /* Border radius for custom components */
+  --box-radius: 8px;           /* Set to 0 for sharp corners */
 }
 
-/* ==========================================================================
-   Text Size Utilities
-   ========================================================================== */
+/* Dark theme example — uncomment to switch to a dark presentation:
+:root {
+  --background-color: #1a1a2e;
+  --section-divider-bg: #16213e;
+  --primary-color: #4fc3f7;
+  --secondary-color: #ffb74d;
+  --text-color: #f0f0f0;
+  --muted-color: #aaa;
+  --line-color: #555;
+}
+*/
 
-.text-xs   { font-size: 12pt !important; }
-.text-sm   { font-size: 14pt !important; }
-.text-base { font-size: 16pt !important; }
-.text-lg   { font-size: 18pt !important; }
-.text-xl   { font-size: 20pt !important; }
-.text-2xl  { font-size: 24pt !important; }
-.text-3xl  { font-size: 28pt !important; }
-.text-4xl  { font-size: 32pt !important; }
-.text-5xl  { font-size: 36pt !important; }
-.text-6xl  { font-size: 42pt !important; }
+/* ===========================================
+   BASE STYLES - Override reveal.js defaults
+   =========================================== */
 
-/* ==========================================================================
-   Color Utilities
-   ========================================================================== */
-
-/* Text Colors */
-.text-primary   { color: var(--primary-color) !important; }
-.text-secondary { color: var(--secondary-color) !important; }
-.text-accent    { color: var(--accent-color) !important; }
-.text-muted     { color: var(--muted-color) !important; }
-.text-success   { color: var(--success-color) !important; }
-.text-warning   { color: var(--warning-color) !important; }
-.text-error     { color: var(--error-color) !important; }
-
-/* Background Colors */
-.bg-primary   { background-color: var(--primary-color) !important; }
-.bg-secondary { background-color: var(--secondary-color) !important; }
-.bg-accent    { background-color: var(--accent-color) !important; }
-.bg-surface   { background-color: var(--surface-color) !important; }
-
-/* ==========================================================================
-   Layout Utilities
-   ========================================================================== */
-
-/* Flexbox Columns */
-.reveal .cols {
-  display: flex;
-  gap: var(--gap);
-  align-items: flex-start;
-  width: 100%;
+.reveal {
+  font-family: var(--body-font);
+  font-size: var(--base-font-size);
 }
 
-.reveal .col       { flex: 1; }
-.reveal .col-70    { flex: 0 0 70%; }
-.reveal .col-66    { flex: 0 0 66.666%; }
-.reveal .col-60    { flex: 0 0 60%; }
-.reveal .col-50    { flex: 0 0 50%; }
-.reveal .col-40    { flex: 0 0 40%; }
-.reveal .col-33    { flex: 0 0 33.333%; }
-.reveal .col-30    { flex: 0 0 30%; }
-.reveal .col-25    { flex: 0 0 25%; }
+/* Restore bold after reset.css strips it with font: inherit */
+.reveal strong,
+.reveal b {
+  font-weight: bold;
+}
 
-/* Center Content */
-.reveal .center {
+/* Apply background colors */
+.reveal-viewport {
+  background-color: var(--background-color);
+}
+
+/* Section divider background via data-state */
+.reveal-viewport.is-section-divider .slide-background.present {
+  background-color: var(--section-divider-bg) !important;
+}
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4,
+.reveal h5,
+.reveal h6 {
+  font-family: var(--heading-font);
+  text-transform: none;
+  color: var(--text-color);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.reveal h1 { font-size: var(--h1-size); }
+.reveal h2 { font-size: var(--h2-size); margin-bottom: 0; }
+.reveal h3 { font-size: var(--h3-size); }
+
+.reveal p,
+.reveal li,
+.reveal td,
+.reveal th,
+.reveal blockquote {
+  font-size: var(--text-size);
+  color: var(--text-color);
+  line-height: 1.5;
+}
+
+/* ===========================================
+   LISTS
+   =========================================== */
+
+.reveal ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 15px 0;
+}
+
+.reveal ul li {
+  position: relative;
+  padding-left: 25px;
+  margin-bottom: 10px;
+}
+
+.reveal ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 8px;
+  height: 8px;
+  background: var(--text-color);
+  border-radius: 50%;
+}
+
+.reveal ul ul li::before {
+  background: var(--muted-color);
+  width: 6px;
+  height: 6px;
+}
+
+/* Prevent double-sizing for nested elements */
+.reveal blockquote p {
+  font-size: inherit;
+}
+
+/* ===========================================
+   SLIDE LAYOUT
+   =========================================== */
+
+.reveal .slides section {
+  height: 100%;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: var(--slide-padding-top) var(--slide-padding) var(--slide-padding) var(--slide-padding) !important;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+/* Vertical stack wrapper - no padding, just pass through */
+.reveal .slides section.stack {
+  padding: 0 !important;
+}
+
+/* Content area - fills remaining space */
+.reveal .slides section > .content {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
+  justify-content: flex-start;
+  padding-top: var(--content-gap);
+  text-align: left;
 }
 
-/* Grid Layout */
-.reveal .grid {
-  display: grid;
-  gap: var(--gap);
+/* Direct children of .content stretch to fill available vertical space.
+   This prevents card grids from bunching at the top with empty space below. */
+.reveal .slides section > .content > div {
+  flex: 1;
+  min-height: 0;
 }
 
-.reveal .grid-2 {
-  grid-template-columns: repeat(2, 1fr);
-}
-
-.reveal .grid-3 {
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.reveal .grid-4 {
-  grid-template-columns: repeat(4, 1fr);
-}
-
-/* ==========================================================================
-   Panel/Box Component
-   ========================================================================== */
-
-.reveal .panel {
-  background: var(--surface-color);
-  border-radius: var(--box-radius);
-  box-shadow: var(--box-shadow);
-  padding: calc(var(--gap) * 1.2);
-  margin: 0.5rem 0;
-}
-
-.reveal .panel-outline {
-  border: 2px solid var(--primary-color);
-  background: transparent;
-  box-shadow: none;
-}
-
-.reveal .panel-accent {
-  border-left: 4px solid var(--accent-color);
-}
-
-/* ==========================================================================
-   Section Divider Styling
-   ========================================================================== */
-
-.reveal .divider-slide,
-.reveal section.divider-slide {
-  text-align: center;
-}
-
-.reveal .divider-slide h2,
-.reveal section.divider-slide h2 {
-  font-size: var(--h1-size);
-  color: var(--primary-color);
-  margin-bottom: 0.5em;
-}
-
-.reveal .divider-slide p,
-.reveal section.divider-slide p {
-  font-size: var(--text-lg);
+/* Footnotes at bottom */
+.reveal .slides section > .footnote {
+  position: absolute;
+  bottom: 15px;
+  left: var(--slide-padding);
+  right: var(--slide-padding);
+  font-size: var(--footnote-size);
   color: var(--muted-color);
 }
 
-/* ==========================================================================
-   Asymmetric Layouts
-   ========================================================================== */
+/* ===========================================
+   SECTION DIVIDERS - Centered title slides
+   =========================================== */
 
-.reveal .asym {
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 2rem;
-  align-items: end;
+.reveal .slides section.section-divider {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center;
 }
 
-.reveal .asym .media {
-  transform: translateY(1rem);
+.reveal .slides section.section-divider h1 {
+  font-size: 56pt;
+  text-align: center;
 }
 
-.reveal .asym-reverse {
-  grid-template-columns: 0.8fr 1.2fr;
+.reveal .slides section.section-divider p {
+  font-size: 20pt;
+  color: var(--muted-color);
 }
 
-/* ==========================================================================
-   Highlight/Mark Styling
-   ========================================================================== */
+/* ===========================================
+   TEXT SIZE UTILITIES
 
-.reveal mark {
-  background: transparent;
-  border-bottom: 0.15em solid var(--accent-color);
-  padding: 0 0.05em;
-  color: inherit;
-}
+   Base text is 16pt - use these to scale UP when
+   slides have less content and you want to fill space.
+   =========================================== */
 
-.reveal .highlight {
-  background: linear-gradient(
-    to bottom,
-    transparent 60%,
-    color-mix(in srgb, var(--accent-color) 35%, transparent) 60%
-  );
-}
+.text-lg { font-size: 18pt !important; }   /* Slightly larger */
+.text-xl { font-size: 20pt !important; }   /* Medium emphasis */
+.text-2xl { font-size: 24pt !important; }  /* Strong emphasis */
+.text-3xl { font-size: 28pt !important; }  /* Very large */
+.text-4xl { font-size: 32pt !important; }  /* Maximum body text */
 
-/* ==========================================================================
-   Callout/Note Boxes
-   ========================================================================== */
+/* Other text utilities */
+.text-muted { color: var(--muted-color) !important; }
+.text-center { text-align: center !important; }
+.text-uppercase { text-transform: uppercase; letter-spacing: 0.1em; }
+.font-light { font-weight: 300; }
+.font-bold { font-weight: 600; }
 
-.reveal .callout {
-  padding: 1rem 1.5rem;
-  border-radius: var(--box-radius);
-  margin: 1rem 0;
-}
+/* ===========================================
+   BLOCKQUOTES
+   =========================================== */
 
-.reveal .callout-note {
-  background: color-mix(in srgb, var(--primary-color) 10%, transparent);
+.reveal blockquote {
   border-left: 4px solid var(--primary-color);
+  padding-left: 20px;
+  margin: 20px 0;
+  font-style: italic;
+  background: none;
+  box-shadow: none;
+  width: 100%;
+  max-width: none;
 }
 
-.reveal .callout-warning {
-  background: color-mix(in srgb, var(--warning-color) 10%, transparent);
-  border-left: 4px solid var(--warning-color);
+.reveal blockquote cite {
+  display: block;
+  margin-top: 10px;
+  font-style: normal;
+  color: var(--muted-color);
 }
 
-.reveal .callout-tip {
-  background: color-mix(in srgb, var(--success-color) 10%, transparent);
-  border-left: 4px solid var(--success-color);
+/* ===========================================
+   OPTIONAL: TITLE WITH UNDERLINE
+
+   Add this to presentations where you want
+   a line under the slide title.
+   =========================================== */
+
+/*
+.reveal .slides section > h1,
+.reveal .slides section > h2 {
+  flex-shrink: 0;
+  margin: 0;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--line-color);
 }
+*/
 
-/* ==========================================================================
-   Code Block Enhancements
-   ========================================================================== */
+/* ===========================================
+   OPTIONAL: DECORATIVE ELEMENTS
+   =========================================== */
 
-.reveal pre {
-  font-size: var(--text-sm);
-  line-height: 1.4;
+/* Top decorative line on all slides */
+/*
+.reveal .slides section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--primary-color);
 }
+*/
 
-.reveal code {
-  font-family: "Fira Code", "Source Code Pro", monospace;
+/* Bottom decorative line */
+/*
+.reveal .slides section::after {
+  content: '';
+  position: absolute;
+  bottom: 40px;
+  left: var(--slide-padding);
+  right: var(--slide-padding);
+  height: 2px;
+  background: var(--line-color);
 }
-
-/* ==========================================================================
-   List Styling
-   ========================================================================== */
-
-.reveal ul.tight,
-.reveal ol.tight {
-  margin: 0.5rem 0;
-}
-
-.reveal ul.tight li,
-.reveal ol.tight li {
-  margin: 0.25rem 0;
-}
-
-/* ==========================================================================
-   Animation Helpers
-   ========================================================================== */
-
-.reveal .delay-1 { transition-delay: 0.1s; }
-.reveal .delay-2 { transition-delay: 0.2s; }
-.reveal .delay-3 { transition-delay: 0.3s; }
-.reveal .delay-4 { transition-delay: 0.4s; }
-.reveal .delay-5 { transition-delay: 0.5s; }
-
-/* ==========================================================================
-   Overflow Prevention
-   ========================================================================== */
-
-/* Prevent slide content from overflowing the visible area */
-.reveal .slides > section,
-.reveal .slides > section > section {
-  overflow: hidden;
-}
-
-/* Code blocks: allow internal scrolling for long code, but cap height */
-.reveal pre {
-  max-height: 500px;
-  overflow: auto;
-}
-
-/* Tables: cap height to prevent overflow, allow scroll within */
-.reveal .table-scroll {
-  max-height: 420px;
-  overflow: auto;
-}
-
-/* Scrollable container for intentionally long content (lists, data, logs) */
-.reveal .scrollable {
-  max-height: 420px;
-  overflow-y: auto;
-  padding-right: 0.5rem;
-}
-
-/* Compact layout: tighter spacing when content is slightly over */
-.reveal .compact h2,
-.reveal .compact h3 {
-  margin-bottom: 0.3em;
-}
-
-.reveal .compact p {
-  margin: 0.3em 0;
-}
-
-.reveal .compact ul,
-.reveal .compact ol {
-  margin: 0.3em 0;
-}
-
-.reveal .compact li {
-  margin: 0.15em 0;
-}
+*/

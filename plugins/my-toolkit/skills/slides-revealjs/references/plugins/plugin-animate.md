@@ -9,10 +9,10 @@ A plugin for [Reveal.js](https://github.com/hakimel/reveal.js) allowing to add a
 To use the plugin include
 ```html
 <!-- Load content plugin -->
-<script src="https://jsd.onmicrosoft.cn/npm/reveal.js-plugins@latest/loadcontent/plugin.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js-plugins@4.6.0/loadcontent/plugin.js"></script>
 <!-- Animate plugin -->
-<script src="https://jsd.onmicrosoft.cn/npm/reveal.js-plugins@latest/animate/plugin.js"></script>
-<script src="https://jsd.onmicrosoft.cn/npm/@svgdotjs/svg.js@latest/dist/svg.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js-plugins@4.6.0/animate/plugin.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@svgdotjs/svg.js@3.2.4/dist/svg.min.js"></script>
 ```
 to the header of your presentation and configure reveal.js and the plugin by
 
@@ -27,7 +27,7 @@ Reveal.initialize({
 });
 ```
 
-By default animations only play when using the [Auto-Slide](https://revealjs.com/auto-slide/) feature or when playing (or recording) an [Audio-Slideshow](https://github.com/rajgoel/reveal.js-plugins/tree/master/audio-slideshow). In order to always play an animation when moving to a slide, the plugin can be configured by setting the `autoplay` parameter to `true`.
+By default animations only play when using the [Auto-Slide](../official-docs/auto-slide.md) feature or when playing (or recording) an [Audio-Slideshow](https://github.com/rajgoel/reveal.js-plugins/tree/master/audio-slideshow). In order to always play an animation when moving to a slide, the plugin can be configured by setting the `autoplay` parameter to `true`.
 
 The `loadcontent` plugin is only required when svg are loaded from an external file using the `data-load="..."` attributes (see examples below). It is important that `RevealLoadContent` is listed before `RevealAnimate`.
 

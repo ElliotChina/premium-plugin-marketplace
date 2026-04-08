@@ -10,15 +10,15 @@ A [Mermaid](https://mermaid.js.org/) plugin for reveal.js.
 ```html
 <link
   rel="stylesheet"
-  href="https://jsd.onmicrosoft.cn/npm/reveal.js@5.0.5/dist/reset.css"
+  href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reset.css"
 />
 <link
   rel="stylesheet"
-  href="https://jsd.onmicrosoft.cn/npm/reveal.js@5.0.5/dist/reveal.css"
+  href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css"
 />
 <link
   rel="stylesheet"
-  href="https://jsd.onmicrosoft.cn/npm/reveal.js@5.0.5/dist/theme/black.css"
+  href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/theme/black.css"
   id="theme"
 />
 
@@ -41,8 +41,8 @@ A [Mermaid](https://mermaid.js.org/) plugin for reveal.js.
   </div>
 </div>
 
-<script src="https://jsd.onmicrosoft.cn/npm/reveal.js@5.0.5/dist/reveal.js"></script>
-<script src="https://jsd.onmicrosoft.cn/npm/reveal.js-mermaid-plugin@11.12.3/plugin/mermaid/mermaid.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js-mermaid-plugin@11.12.3/plugin/mermaid/mermaid.js"></script>
 <script>
   Reveal.initialize({
     controls: true,

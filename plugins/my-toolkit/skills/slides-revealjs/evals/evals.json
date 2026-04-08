@@ -3,231 +3,133 @@
   "evals": [
     {
       "id": 1,
-      "name": "create-basic-deck",
-      "prompt": "创建一个关于人工智能发展历史的简单幻灯片，包含标题页、3个内容页和结尾页。使用静态HTML格式。",
-      "expected_output": "生成一个完整的 reveal.js HTML 文件，包含5个幻灯片，使用正确的结构（.reveal > .slides > section），有明确的设计方向和调色板。",
+      "prompt": "帮我创建一个关于2024年团队年度回顾的演示文稿，大约8张幻灯片。内容包括：封面、年度目标回顾（3个核心OKR达成情况）、重点项目成果（4个项目的简要总结）、团队成长（招聘了5位新成员、举办了12场技术分享）、明年展望（3个战略方向）、结尾感谢页。使用温暖的配色方案。",
+      "expected_output": "一个完整的 reveal.js HTML 演示文稿，包含8张幻灯片，使用温暖色调（如 Warm Blush 或 Terracotta），每张幻灯片有不同布局（stat boxes、card grid、timeline 等），通过 overflow 检查无布局问题。",
       "files": [],
       "assertions": [
         {
-          "name": "valid_html_structure",
-          "check": "输出包含 <div class=\"reveal\"><div class=\"slides\"> 结构"
+          "name": "HTML file exists and is valid",
+          "check": "The output HTML file exists, contains <!doctype html>, <div class=\"reveal\">, and Reveal.initialize"
         },
         {
-          "name": "correct_slide_count",
-          "check": "包含至少5个 <section> 元素"
+          "name": "Correct slide count",
+          "check": "HTML contains at least 8 <section> elements (may include vertical stack wrappers)"
         },
         {
-          "name": "has_design_direction",
-          "check": "包含明确的 CSS 样式或主题设置"
+          "name": "CSS variables customized",
+          "check": "The styles.css file has non-default values for --primary-color and --background-color (not #2196F3 and #ffffff)"
         },
         {
-          "name": "initialization_code",
-          "check": "包含 Reveal.initialize() 调用"
+          "name": "Diverse layouts used",
+          "check": "HTML uses at least 3 different layout patterns: grid (grid-template-columns), flex, and stat boxes or card containers"
+        },
+        {
+          "name": "Section divider for title slide",
+          "check": "First section has class=\"section-divider\""
+        },
+        {
+          "name": "All slides have unique IDs",
+          "check": "Each <section> has a unique id attribute, no duplicates"
+        },
+        {
+          "name": "Uses pt for font sizes",
+          "check": "Inline styles and CSS use pt units for font-size, not px/em/rem (except the reveal.js base)"
+        },
+        {
+          "name": "No overflow issues",
+          "check": "Running check-overflow.js reports no overflow, or Puppeteer is not installed (graceful skip)"
+        },
+        {
+          "name": "Scaffold script was used",
+          "check": "The HTML structure matches scaffold output pattern (contains section-divider class, content divs, RevealChart plugin)"
+        },
+        {
+          "name": "Warm color palette",
+          "check": "CSS uses warm tones — primary or secondary color contains warm hues (reds, oranges, yellows, pinks, or earth tones), not blue/green defaults"
         }
       ]
     },
     {
       "id": 2,
-      "name": "mermaid-architecture-slide",
-      "prompt": "为一个微服务架构演示文稿创建一个幻灯片，展示用户认证流程。使用 Mermaid 序列图。",
-      "expected_output": "生成包含 Mermaid 图表的 reveal.js 幻灯片，正确配置 Mermaid 插件。",
+      "prompt": "Create a technical architecture presentation for a microservices system. It should cover: system overview with a diagram showing 6 services, API gateway pattern, data flow with a sequence diagram, performance metrics shown as bar charts comparing Q1-Q4, and a tech stack overview. Use a dark theme. About 10 slides.",
+      "expected_output": "一个深色主题的 reveal.js 演示文稿，约10张幻灯片，包含 Mermaid 图表（架构图和时序图）、Chart.js 柱状图、代码高亮（可能展示 API 配置），使用 Dark Neon 或 Midnight 配色，图表通过 check-charts.js 验证无问题。",
       "files": [],
       "assertions": [
         {
-          "name": "has_mermaid_block",
-          "check": "包含 <pre class=\"mermaid\"> 元素"
+          "name": "HTML file exists and is valid",
+          "check": "The output HTML file exists, contains <!doctype html>, <div class=\"reveal\">, and Reveal.initialize"
         },
         {
-          "name": "mermaid_plugin_registered",
-          "check": "正确注册 RevealMermaid 插件"
+          "name": "Dark theme applied",
+          "check": "CSS has dark background (--background-color is a dark color like #1a1a2e, #0d1117, or similar) and light text (--text-color is light like #f0f0f0)"
         },
         {
-          "name": "valid_sequence_syntax",
-          "check": "Mermaid 代码使用 sequenceDiagram 语法"
+          "name": "Contains charts",
+          "check": "HTML contains at least one <canvas data-chart=\"bar\"> element with valid JSON configuration in an HTML comment"
+        },
+        {
+          "name": "Charts pass validation",
+          "check": "Running check-charts.js reports no errors"
+        },
+        {
+          "name": "Mermaid plugin loaded",
+          "check": "HTML includes the RevealMermaid plugin script and contains at least one <div class=\"mermaid\"> element"
+        },
+        {
+          "name": "Correct slide count",
+          "check": "HTML contains approximately 10 slide sections (8-12 range acceptable)"
+        },
+        {
+          "name": "Chart maintainAspectRatio false",
+          "check": "All chart configurations include maintainAspectRatio: false in options"
+        },
+        {
+          "name": "Chart uses flexbox layout",
+          "check": "Chart sections use the required flexbox pattern: section with display:flex and container with flex:1 and position:relative"
+        },
+        {
+          "name": "RevealMermaid registered",
+          "check": "RevealMermaid is included in the plugins array of Reveal.initialize"
+        },
+        {
+          "name": "Chart colors readable on dark background",
+          "check": "Chart defaults in Reveal.initialize use light colors (not default black/dark)"
         }
       ]
     },
     {
       "id": 3,
-      "name": "fragment-animation",
-      "prompt": "创建一个产品特性介绍幻灯片，使用 fragment 动画逐条显示4个产品特性。",
-      "expected_output": "生成使用 fragment 类的幻灯片，正确配置动画效果。",
+      "prompt": "I have an existing presentation at /tmp/product-launch.html. It's a reveal.js deck with 5 slides about our new product. Can you add 2 more slides: one with a pricing comparison table (Free vs Pro vs Enterprise tiers) and one with customer testimonials (3 quotes)? Keep the existing styling consistent.",
+      "expected_output": "正确地在现有 HTML 文件中追加2张新幻灯片，使用 Edit 工具而非重写整个文件。定价对比表使用合适的 grid 或 table 布局，客户评价使用 quote/card 布局，新幻灯片沿用现有 CSS 变量和配色方案。",
       "files": [],
       "assertions": [
         {
-          "name": "has_fragment_elements",
-          "check": "包含至少4个带有 class=\"fragment\" 的元素"
+          "name": "Edit tool used not Write",
+          "check": "The skill uses Edit tool to insert new slides into the existing file, not Write tool to rewrite the entire file"
         },
         {
-          "name": "proper_fragment_syntax",
-          "check": "fragment 类正确应用在内容元素上"
+          "name": "Pricing comparison layout",
+          "check": "New slide contains a 3-column grid layout (grid-template-columns: repeat(3)) with tier names (Free, Pro, Enterprise)"
         },
         {
-          "name": "animation_variety",
-          "check": "建议使用不同的 fragment 动画类型（fade-up, fade-in 等）"
-        }
-      ]
-    },
-    {
-      "id": 4,
-      "name": "two-column-layout",
-      "prompt": "创建一个对比幻灯片，左侧展示传统方案的优缺点，右侧展示新方案的优缺点。使用双栏布局。",
-      "expected_output": "生成使用双栏布局的幻灯片，使用 .cols 和 .col-50 类或等效的 CSS flexbox 布局。",
-      "files": [],
-      "assertions": [
-        {
-          "name": "has_column_layout",
-          "check": "包含双栏布局结构（.cols 或 flexbox）"
+          "name": "Testimonials layout",
+          "check": "New slide contains at least 3 quote or testimonial elements (blockquote, testimonial cards, or similar)"
         },
         {
-          "name": "balanced_columns",
-          "check": "两栏宽度比例合理（50/50 或 60/40 等）"
+          "name": "Existing styles preserved",
+          "check": "No changes to existing CSS variables, section IDs, or previously existing slides — only additions"
         },
         {
-          "name": "proper_spacing",
-          "check": "栏之间有适当的间距（gap）"
-        }
-      ]
-    },
-    {
-      "id": 5,
-      "name": "theme-customization",
-      "prompt": "创建一个科技公司品牌风格的幻灯片，使用深蓝色主色调和橙色强调色。需要自定义 CSS 变量。",
-      "expected_output": "生成带有自定义主题的幻灯片，使用 CSS 变量定义颜色系统。",
-      "files": [],
-      "assertions": [
-        {
-          "name": "has_css_variables",
-          "check": "定义了 CSS 自定义属性（--primary-color, --accent-color 等）"
+          "name": "New slides inserted before closing tags",
+          "check": "New <section> elements are added before </div></div> (end of .slides container), not outside the slides structure"
         },
         {
-          "name": "dark_blue_primary",
-          "check": "主色调使用深蓝色系"
+          "name": "Consistent CSS variable usage",
+          "check": "New slide content uses var(--primary-color), var(--secondary-color), etc. instead of hardcoded colors"
         },
         {
-          "name": "orange_accent",
-          "check": "强调色使用橙色系"
-        },
-        {
-          "name": "consistent_application",
-          "check": "颜色变量在整个文档中一致应用"
-        }
-      ]
-    },
-    {
-      "id": 6,
-      "name": "speaker-notes-tts",
-      "prompt": "创建一个关于时间管理的3页幻灯片，每页都需要包含适合文字转语音（TTS）的演讲者备注。",
-      "expected_output": "生成带有 TTS 优化演讲者备注的幻灯片，包含时长、开场、要点、过渡等结构化内容。",
-      "files": [],
-      "assertions": [
-        {
-          "name": "has_notes_elements",
-          "check": "每个幻灯片包含 <aside class=\"notes\"> 元素"
-        },
-        {
-          "name": "tts_structured_format",
-          "check": "备注包含结构化格式（时长、开场、要点、过渡）"
-        },
-        {
-          "name": "complete_sentences",
-          "check": "使用完整句子，避免缩写"
-        },
-        {
-          "name": "notes_plugin_enabled",
-          "check": "RevealNotes 插件已注册"
-        }
-      ]
-    },
-    {
-      "id": 7,
-      "name": "auto-animate-slides",
-      "prompt": "创建一个展示代码演变的幻灯片组，使用 auto-animate 功能展示代码从初始版本到优化版本的变化。",
-      "expected_output": "生成使用 data-auto-animate 属性的连续幻灯片，代码块使用 data-id 进行匹配。",
-      "files": [],
-      "assertions": [
-        {
-          "name": "has_auto_animate_attr",
-          "check": "幻灯片包含 data-auto-animate 属性"
-        },
-        {
-          "name": "matching_data_ids",
-          "check": "需要动画的元素使用相同的 data-id"
-        },
-        {
-          "name": "code_highlight_plugin",
-          "check": "RevealHighlight 插件已注册"
-        }
-      ]
-    },
-    {
-      "id": 8,
-      "name": "react-integration",
-      "prompt": "创建一个 React 组件，封装 reveal.js 幻灯片功能，支持动态幻灯片内容和销毁时的清理。",
-      "expected_output": "生成正确的 React 组件，使用 useEffect 管理 reveal.js 生命周期，包含 destroy 清理。",
-      "files": [],
-      "assertions": [
-        {
-          "name": "uses_effect_hook",
-          "check": "使用 useEffect 管理 reveal.js 初始化"
-        },
-        {
-          "name": "has_cleanup",
-          "check": "effect 包含清理函数调用 deck.destroy()"
-        },
-        {
-          "name": "proper_imports",
-          "check": "正确导入 reveal.js ESM 模块"
-        },
-        {
-          "name": "embedded_config",
-          "check": "配置 embedded: true 用于组件内嵌"
-        }
-      ]
-    },
-    {
-      "id": 9,
-      "name": "overflow-prevention",
-      "prompt": "创建一个内容密集的技术分享幻灯片（5页），每页包含多个要点，确保内容不会溢出幻灯片边界。",
-      "expected_output": "生成内容密度合理的幻灯片，遵循字数限制，必要时分拆内容到多页。",
-      "files": [],
-      "assertions": [
-        {
-          "name": "reasonable_content_density",
-          "check": "每页要点不超过5-6个"
-        },
-        {
-          "name": "appropriate_font_size",
-          "check": "使用 pt 单位定义字体大小"
-        },
-        {
-          "name": "content_split_when_needed",
-          "check": "内容过多时正确分拆到多页"
-        }
-      ]
-    },
-    {
-      "id": 10,
-      "name": "markdown-mode",
-      "prompt": "创建一个使用 Markdown 模式的 reveal.js 幻灯片，包含标题页、3个内容页（使用 Markdown 语法），正确配置 Markdown 插件。",
-      "expected_output": "生成使用 data-markdown 和 <textarea data-template> 的幻灯片，正确注册 RevealMarkdown 插件。",
-      "files": [],
-      "assertions": [
-        {
-          "name": "has_markdown_section",
-          "check": "包含 data-markdown 属性的 section"
-        },
-        {
-          "name": "template_textarea",
-          "check": "使用 <textarea data-template> 包含 Markdown 内容"
-        },
-        {
-          "name": "markdown_plugin_registered",
-          "check": "RevealMarkdown 插件已注册"
-        },
-        {
-          "name": "slide_separators",
-          "check": "使用 --- 正确分隔幻灯片"
+          "name": "Existing slide count preserved",
+          "check": "Original 5 slides remain intact with their original content unchanged"
         }
       ]
     }

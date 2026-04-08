@@ -9,7 +9,7 @@ A plugin for [Reveal.js](https://github.com/hakimel/reveal.js) allowing allowing
 To use the plugin include
 ```html
 <!-- Fullscreen plugin -->
-<script src="https://jsd.onmicrosoft.cn/npm/reveal.js-plugins@latest/fullscreen/plugin.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js-plugins@4.6.0/fullscreen/plugin.js"></script>
 ```
 to the header of your presentation and configure reveal.js and the plugin by
 

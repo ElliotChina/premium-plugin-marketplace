@@ -9,7 +9,7 @@ A plugin for [Reveal.js](https://github.com/hakimel/reveal.js) allowing to easil
 To use the plugin include
 ```html
 <!-- Chart plugin -->
-<script src="https://jsd.onmicrosoft.cn/npm/reveal.js-plugins@latest/chart/plugin.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js-plugins@4.6.0/chart/plugin.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.0/chart.min.js"></script>
 ```
 to the header of your presentation and configure reveal.js and the plugin by

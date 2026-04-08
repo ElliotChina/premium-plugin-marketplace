@@ -1,371 +1,256 @@
 #!/usr/bin/env node
 
 /**
- * Reveal.js Presentation Scaffold Generator
- *
- * Generates a basic reveal.js HTML structure with optional slide layout.
- *
- * Usage:
- *   node create-presentation.js [output-dir] [options]
- *
- * Options:
- *   --structure <pattern>   Slide structure pattern (e.g., "1,1,d,3,1,d,1")
- *                           1 = single slide, N = vertical stack of N slides,
- *                           d = divider/title slide
- *   --title <title>         Presentation title (default: "Presentation")
- *   --theme <theme>         Reveal.js theme (default: "solarized")
- *   --no-css                Skip copying base-styles.css
- *   --local                 Use local reveal.js files instead of CDN
- *                           (requires reveal.js to be installed in parent directory)
- *
- * Examples:
- *   node create-presentation.js ./my-deck --structure 1,1,d,3,1
- *   node create-presentation.js ./slides --title "My Talk" --theme black
+ * Creates a reveal.js presentation scaffold with the specified options.
+ * Usage: node create-presentation.js [options]
  */
 
 const fs = require('fs');
 const path = require('path');
 
-// Reveal.js CDN version (5.x stable; 6.x available but switches build tooling to Vite)
-const REVEAL_CDN_VERSION = '5.2.1';
+// Path to the base styles file (relative to this script)
+const BASE_STYLES_PATH = path.join(__dirname, '..', 'references', 'base-styles.css');
 
-// Parse command line arguments
-function parseArgs() {
-  const args = process.argv.slice(2);
+function parseArgs(args) {
   const options = {
-    outputDir: './presentation',
-    structure: '1',
+    slides: null,
+    structure: null,
+    output: 'presentation.html',
     title: 'Presentation',
-    theme: 'solarized',
-    includeCss: true,
-    useCdn: true,  // Default to CDN for better portability
+    stylesFile: 'styles.css',
   };
 
-  let i = 0;
-  while (i < args.length) {
+  for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-
-    if (arg === '--structure' && args[i + 1]) {
-      options.structure = args[i + 1];
-      i += 2;
-    } else if (arg === '--title' && args[i + 1]) {
-      options.title = args[i + 1];
-      i += 2;
-    } else if (arg === '--theme' && args[i + 1]) {
-      options.theme = args[i + 1];
-      i += 2;
-    } else if (arg === '--no-css') {
-      options.includeCss = false;
-      i += 1;
-    } else if (arg === '--local') {
-      options.useCdn = false;
-      i += 1;
-    } else if (!arg.startsWith('--')) {
-      options.outputDir = arg;
-      i += 1;
-    } else {
-      i += 1;
+    if (arg === '--slides' || arg === '-s') {
+      options.slides = parseInt(args[++i], 10);
+    } else if (arg === '--structure') {
+      options.structure = args[++i].split(',').map(n => n === 'd' ? 'd' : parseInt(n, 10));
+    } else if (arg === '--output' || arg === '-o') {
+      options.output = args[++i];
+    } else if (arg === '--title') {
+      options.title = args[++i];
+    } else if (arg === '--styles') {
+      options.stylesFile = args[++i];
+    } else if (arg === '--help' || arg === '-h') {
+      printHelp();
+      process.exit(0);
     }
   }
 
   return options;
 }
 
-// Parse structure pattern
-function parseStructure(pattern) {
-  return pattern.split(',').map((item) => {
-    const trimmed = item.trim().toLowerCase();
-    if (trimmed === 'd') return { type: 'divider' };
-    const count = parseInt(trimmed, 10);
-    if (isNaN(count) || count < 1) return { type: 'single', count: 1 };
-    if (count === 1) return { type: 'single', count: 1 };
-    return { type: 'vertical', count };
-  });
+function printHelp() {
+  console.log(`
+create-presentation.js - Generate a reveal.js presentation scaffold
+
+Usage: node create-presentation.js [options]
+
+Options:
+  --slides, -s <num>    Number of horizontal slides (simple mode)
+  --structure <list>    Mixed layout: comma-separated values (e.g., "1,1,d,3,1,d,1")
+                        - Number 1 = single horizontal slide
+                        - Number >1 = vertical stack of that many slides
+                        - 'd' = section divider slide
+                        Cannot be used with --slides
+  --output, -o <file>   Output HTML filename (default: presentation.html)
+  --title <text>        Presentation title (default: Presentation)
+  --styles <file>       Custom CSS filename (default: styles.css)
+  --help, -h            Show this help message
+
+Examples:
+  node create-presentation.js --slides 10 -o my-deck.html
+  node create-presentation.js --structure 1,1,d,3,1,d,1 -o my-deck.html
+  node create-presentation.js --structure 1,1,1,d,3,d,1,1 --title "Q4 Review"
+`);
 }
 
-// Generate slide HTML
-function generateSlideContent(structure, slideIndex) {
-  const slides = [];
-  let currentSlide = slideIndex || 1;
+/** Generates slides from a structure array (e.g., [1, 1, 'd', 5, 1, 2]) */
+function generateSlides(structure) {
+  let slides = '';
+  let hIndex = 1; // Horizontal index (1-based for display)
+  let dividerCount = 1;
 
-  structure.forEach((item, idx) => {
-    if (item.type === 'divider') {
-      slides.push(`  <!-- Section Divider -->
-  <section id="section-${idx + 1}">
-    <h2 class="r-fit-text">Section ${idx + 1}</h2>
-  </section>`);
-      currentSlide++;
-    } else if (item.type === 'vertical') {
-      const verticalSlides = [];
-      for (let i = 0; i < item.count; i++) {
-        verticalSlides.push(`    <section id="slide-${currentSlide}">
-      <h2>Slide ${currentSlide}</h2>
-      <p>Content for slide ${currentSlide}</p>
-    </section>`);
-        currentSlide++;
+  for (let colIndex = 0; colIndex < structure.length; colIndex++) {
+    const item = structure[colIndex];
+
+    if (item === 'd') {
+      // Section divider
+      slides += `
+      <section id="divider-${dividerCount}" class="section-divider" data-state="is-section-divider">
+        <h1>Section ${dividerCount} Title</h1>
+      </section>
+`;
+      dividerCount++;
+      hIndex++;
+    } else if (item === 1) {
+      // Single horizontal slide
+      if (hIndex === 1) {
+        slides += `
+      <section id="title" class="section-divider" data-state="is-section-divider">
+        <h1>Presentation Title</h1>
+      </section>
+`;
+      } else {
+        slides += `
+      <section id="slide-${hIndex}">
+        <h2>Slide ${hIndex} Title Here</h2>
+        <div class="content">
+        </div>
+      </section>
+`;
       }
-      slides.push(`  <!-- Vertical Stack -->
-  <section>
-${verticalSlides.join('\n')}
-  </section>`);
+      hIndex++;
     } else {
-      slides.push(`  <section id="slide-${currentSlide}">
-    <h2>Slide ${currentSlide}</h2>
-    <p>Content for slide ${currentSlide}</p>
-  </section>`);
-      currentSlide++;
+      // Vertical stack
+      slides += `
+      <section>
+`;
+      for (let vIndex = 1; vIndex <= item; vIndex++) {
+        slides += `        <section id="slide-${hIndex}-${vIndex}">
+          <h2>Slide ${hIndex}.${vIndex} Title Here</h2>
+          <div class="content">
+          </div>
+        </section>
+`;
+      }
+      slides += `      </section>
+`;
+      hIndex++;
     }
-  });
+  }
 
-  return { html: slides.join('\n\n'), totalSlides: currentSlide - 1 };
+  return slides;
 }
 
-// Generate full HTML document
-function generateHtml(options) {
-  const structure = parseStructure(options.structure);
-  const { html: slidesHtml } = generateSlideContent(structure);
+function escapeHtml(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
 
-  const customCssLink = options.includeCss
-    ? '    <link rel="stylesheet" href="./assets/custom.css" />\n'
-    : '';
+function generateHTML(options) {
+  const slidesContent = generateSlides(options.structure);
 
-  // Use CDN by default for easier setup
-  const basePath = options.useCdn
-    ? `https://cdn.jsdelivr.net/npm/reveal.js@${REVEAL_CDN_VERSION}`
-    : '.';
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${escapeHtml(options.title)}</title>
 
-  const revealCss = options.useCdn
-    ? `<link rel="stylesheet" href="${basePath}/dist/reveal.css" />`
-    : `<link rel="stylesheet" href="dist/reveal.css" />`;
+  <!-- Reveal.js core -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css">
 
-  const themeCss = options.useCdn
-    ? `<link rel="stylesheet" href="${basePath}/dist/theme/${options.theme}.css" />`
-    : `<link rel="stylesheet" href="dist/theme/${options.theme}.css" />`;
+  <!-- Google Fonts: Source Sans 3 (used in base styles) -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&display=swap">
 
-  const revealJs = options.useCdn
-    ? `<script src="${basePath}/dist/reveal.js"></script>`
-    : `<script src="dist/reveal.js"></script>`;
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  const notesJs = options.useCdn
-    ? `<script src="${basePath}/plugin/notes/notes.js"></script>`
-    : `<script src="plugin/notes/notes.js"></script>`;
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="${options.stylesFile}">
 
-  return `<!DOCTYPE html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>${options.title}</title>
-
-    ${revealCss}
-    ${themeCss}
-${customCssLink}
-    <style>
-      /* Inline customizations */
-      .reveal h1, .reveal h2, .reveal h3 {
-        text-transform: none;
-      }
-    </style>
-  </head>
-
-  <body>
-    <div class="reveal">
-      <div class="slides">
-        <!-- Title Slide -->
-        <section id="title-slide">
-          <h1>${options.title}</h1>
-        </section>
-
-${slidesHtml}
-      </div>
+  <!-- Chart.js for data visualization -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7"></script>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+${slidesContent}
     </div>
+  </div>
 
-    ${revealJs}
-    ${notesJs}
-    <script>
-      Reveal.initialize({
-        hash: true,
-        slideNumber: 'c/t',
-        plugins: [RevealNotes],
-      });
-    </script>
-  </body>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js-plugins@4.6.0/chart/plugin.js"></script>
+  <script>
+    Reveal.initialize({
+      width: 1280,
+      height: 720,
+      margin: 0,
+      controls: true,
+      progress: true,
+      slideNumber: false,
+      hash: true,
+      transition: 'slide',
+      center: false,
+      plugins: [ RevealChart ],
+      chart: {
+        defaults: Object.assign({
+          color: 'rgba(0, 0, 0, 0.8)',
+          borderColor: 'rgba(0, 0, 0, 0.8)',
+          devicePixelRatio: 2
+        }, window.location.search.includes('export') ? { animation: false } : {})
+      }
+    });
+  </script>
+</body>
 </html>
 `;
 }
 
-// Generate base CSS file (aligned with references/base-styles.css)
-function generateBaseCss() {
-  return `/* Base Styles for Reveal.js Presentations */
-
-/* CSS Variables for Theming */
-:root {
-  --background-color: #fdf6e3;
-  --surface-color: rgba(255, 255, 255, 0.72);
-  --heading-font: "Source Sans Pro", Helvetica, sans-serif;
-  --body-font: "Source Sans Pro", Helvetica, sans-serif;
-
-  /* Typography Scale (pt units for presentation readability) */
-  --text-size: 16pt;
-  --h1-size: 48pt;
-  --h2-size: 36pt;
-  --h3-size: 28pt;
-
-  /* Semantic Colors */
-  --primary-color: #b58900;
-  --secondary-color: #cb4b16;
-  --accent-color: #d33682;
-  --text-color: #657b83;
-  --muted-color: #93a1a1;
-
-  /* Spacing & Layout */
-  --box-radius: 8px;
-  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  --gap: 1.5rem;
-}
-
-/* Text Size Utilities */
-.text-sm   { font-size: 14pt !important; }
-.text-base { font-size: 16pt !important; }
-.text-lg   { font-size: 18pt !important; }
-.text-xl   { font-size: 20pt !important; }
-.text-2xl  { font-size: 24pt !important; }
-.text-3xl  { font-size: 28pt !important; }
-.text-4xl  { font-size: 32pt !important; }
-.text-5xl  { font-size: 36pt !important; }
-
-/* Color Utilities */
-.text-primary   { color: var(--primary-color) !important; }
-.text-secondary { color: var(--secondary-color) !important; }
-.text-accent    { color: var(--accent-color) !important; }
-.text-muted     { color: var(--muted-color) !important; }
-
-.bg-primary   { background-color: var(--primary-color) !important; }
-.bg-secondary { background-color: var(--secondary-color) !important; }
-.bg-accent    { background-color: var(--accent-color) !important; }
-.bg-surface   { background-color: var(--surface-color) !important; }
-
-/* Layout Utilities */
-.reveal .cols {
-  display: flex;
-  gap: var(--gap);
-  align-items: flex-start;
-  width: 100%;
-}
-
-.reveal .col    { flex: 1; }
-.reveal .col-70 { flex: 0 0 70%; }
-.reveal .col-60 { flex: 0 0 60%; }
-.reveal .col-50 { flex: 0 0 50%; }
-.reveal .col-40 { flex: 0 0 40%; }
-.reveal .col-30 { flex: 0 0 30%; }
-
-.reveal .grid   { display: grid; gap: var(--gap); }
-.reveal .grid-2 { grid-template-columns: repeat(2, 1fr); }
-.reveal .grid-3 { grid-template-columns: repeat(3, 1fr); }
-
-.reveal .center {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-}
-
-/* Panel Component */
-.reveal .panel {
-  background: var(--surface-color);
-  border-radius: var(--box-radius);
-  box-shadow: var(--box-shadow);
-  padding: calc(var(--gap) * 1.2);
-}
-
-/* Section Divider Styling */
-.reveal .divider-slide {
-  text-align: center;
-}
-
-.reveal .divider-slide h2 {
-  font-size: var(--h1-size);
-  color: var(--primary-color);
-}
-
-/* Callout Boxes */
-.reveal .callout {
-  padding: 1rem 1.5rem;
-  border-radius: var(--box-radius);
-  margin: 1rem 0;
-}
-
-.reveal .callout-note {
-  background: rgba(181, 137, 0, 0.1);
-  border-left: 4px solid var(--primary-color);
-}
-
-/* Tight Lists */
-.reveal ul.tight li,
-.reveal ol.tight li {
-  margin: 0.25rem 0;
-}
-
-/* Overflow Prevention */
-.reveal pre {
-  max-height: 500px;
-  overflow: auto;
-}
-
-.reveal .scrollable {
-  max-height: 420px;
-  overflow-y: auto;
-}
-
-.reveal .compact h2,
-.reveal .compact h3 {
-  margin-bottom: 0.3em;
-}
-
-.reveal .compact li {
-  margin: 0.15em 0;
-}
-`;
-}
-
-// Main execution
 function main() {
-  const options = parseArgs();
+  const args = process.argv.slice(2);
+  const options = parseArgs(args);
 
-  // Create output directory
-  const outputDir = path.resolve(options.outputDir);
-  if (!fs.existsSync(outputDir)) {
+  // Validate mutually exclusive options
+  if (options.slides !== null && options.structure !== null) {
+    console.error('Error: Cannot use both --slides and --structure. Choose one.');
+    process.exit(1);
+  }
+
+  // Default to 5 horizontal slides if neither specified
+  if (options.slides === null && options.structure === null) {
+    options.structure = [1, 1, 1, 1, 1];
+  } else if (options.slides !== null) {
+    // Convert --slides N to structure of N ones
+    if (options.slides < 1 || isNaN(options.slides)) {
+      console.error('Error: Slide count must be at least 1.');
+      process.exit(1);
+    }
+    options.structure = Array(options.slides).fill(1);
+  } else {
+    // Validate structure
+    if (options.structure.some(n => n !== 'd' && (n < 1 || isNaN(n)))) {
+      console.error('Error: Structure values must be positive integers or "d" for dividers.');
+      process.exit(1);
+    }
+  }
+
+  const totalSlides = options.structure.reduce((a, b) => a + (b === 'd' ? 1 : b), 0);
+
+  // Determine output directory from the output path
+  const outputDir = path.dirname(options.output);
+
+  // Ensure output directory exists
+  if (outputDir && outputDir !== '.') {
     fs.mkdirSync(outputDir, { recursive: true });
   }
 
-  // Generate and write HTML file
-  const html = generateHtml(options);
-  const htmlPath = path.join(outputDir, 'index.html');
-  fs.writeFileSync(htmlPath, html, 'utf8');
-  console.log(`Created: ${htmlPath}`);
+  // Generate and write HTML
+  const html = generateHTML(options);
+  fs.writeFileSync(options.output, html);
+  console.log(`Created ${options.output}`);
 
-  // Generate and write CSS file if requested
-  if (options.includeCss) {
-    const assetsDir = path.join(outputDir, 'assets');
-    if (!fs.existsSync(assetsDir)) {
-      fs.mkdirSync(assetsDir, { recursive: true });
+  // Copy example-styles.css to output directory as styles.css (if it doesn't exist)
+  const stylesOutputPath = outputDir && outputDir !== '.'
+    ? path.join(outputDir, options.stylesFile)
+    : options.stylesFile;
+
+  if (!fs.existsSync(stylesOutputPath)) {
+    if (fs.existsSync(BASE_STYLES_PATH)) {
+      fs.copyFileSync(BASE_STYLES_PATH, stylesOutputPath);
+      console.log(`Copied base-styles.css to ${stylesOutputPath}`);
+    } else {
+      console.warn(`Warning: Could not find ${BASE_STYLES_PATH}`);
+      console.warn(`Please manually copy the base styles to ${stylesOutputPath}`);
     }
-    const css = generateBaseCss();
-    const cssPath = path.join(assetsDir, 'custom.css');
-    fs.writeFileSync(cssPath, css, 'utf8');
-    console.log(`Created: ${cssPath}`);
+  } else {
+    console.log(`${stylesOutputPath} already exists, skipping`);
   }
 
-  console.log(`\nPresentation scaffold created at: ${outputDir}`);
-  console.log(`Total slides: ${options.structure.split(',').reduce((acc, item) => {
-    const val = item.trim().toLowerCase();
-    if (val === 'd') return acc + 1;
-    return acc + parseInt(val, 10);
-  }, 1)} (including title)`);
-  console.log(`\nTo preview, serve the directory with a local web server:`);
-  console.log(`  npx serve ${outputDir}`);
+  console.log(`\nPresentation created with ${totalSlides} slides (structure: ${options.structure.join(',')}).`);
+  console.log(`Customize colors in ${stylesOutputPath}, then open ${options.output} in a browser to view.`);
 }
 
 main();
