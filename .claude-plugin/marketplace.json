@@ -239,6 +239,20 @@
         "components"
       ],
       "homepage": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill"
+    },
+    {
+      "name": "claude-hud",
+      "description": "Real-time statusline showing context usage, active tools, running agents, and todo progress. Always visible below your input, zero config required.",
+      "category": "monitoring",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/jarrodwatts/claude-hud.git"
+      },
+      "author": {
+        "name": "Jarrod Watts",
+        "email": "jarrodwattsyt@gmail.com"
+      },
+      "homepage": "https://github.com/jarrodwatts/claude-hud"
     }
   ]
 }
