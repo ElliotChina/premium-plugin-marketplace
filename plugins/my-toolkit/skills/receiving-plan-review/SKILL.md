@@ -1,5 +1,6 @@
 ---
 name: receiving-plan-review
+user-invocable: false
 description: >
   Use when receiving implementation plan review feedback from multiple agents, before applying changes.
   Merge deduplicated results, verify against the spec, then apply unified fixes to the plan.

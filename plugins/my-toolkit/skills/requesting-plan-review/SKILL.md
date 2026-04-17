@@ -1,5 +1,6 @@
 ---
 name: requesting-plan-review
+user-invocable: false
 description: >
   Use after writing an implementation plan to dispatch review agents.
   Verifies the plan is complete, matches the spec, and has proper task decomposition.
