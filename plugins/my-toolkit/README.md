@@ -15,6 +15,7 @@ Elliot 的个人工具箱插件，包含日常开发中常用的命令。
 | `/my-toolkit:prd` | 写需求文档 |
 | `/my-toolkit:review` | 代码&文档审查 |
 | `/my-toolkit:ui` | 原型/UI 设计 |
+| `/my-toolkit:pencil-design` | Pencil MCP UI 设计 |
 
 ## 安装
 

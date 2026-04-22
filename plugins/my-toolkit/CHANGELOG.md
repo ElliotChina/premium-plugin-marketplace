@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.13] - 2026-04-22
+### Added
+- 新增 `pencil-design` 技能
+
+
 ## [0.1.12] - 2026-04-17
 ### Changed
 - 更新 `receiving-plan-review` 技能
