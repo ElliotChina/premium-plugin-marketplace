@@ -10,12 +10,16 @@ Elliot 的个人工具箱插件，包含日常开发中常用的命令。
 | `/devflow:new-feature` | 新功能开发 |
 | `/devflow:fix` | 问题诊断修复 & 功能调试 |
 | `/devflow:test` | 功能测试 |
-| `/devflow:commit` | 代码提交 |
-| `/devflow:docs` | 更新文档 |
+| `/devflow:sync-docs` | 更新文档 |
 | `/devflow:prd` | 写需求文档 |
 | `/devflow:review` | 代码&文档审查 |
+| `/devflow:code-review` | 代码审查 |
+| `/devflow:spec-review` | Spec 文档审查 |
+| `/devflow:plan-review` | 实现计划审查 |
 | `/devflow:ui` | 原型/UI 设计 |
 | `/devflow:pencil-design` | Pencil MCP UI 设计 |
+| `/devflow:unsplash` | Unsplash 图片搜索下载 |
+| `/devflow:slides-revealjs` | Reveal.js 幻灯片制作 |
 
 ## 安装
 

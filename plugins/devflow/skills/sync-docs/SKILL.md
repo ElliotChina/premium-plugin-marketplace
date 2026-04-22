@@ -1,8 +1,8 @@
 ---
-name: docs
+name: sync-docs
 argument-hint: "[文档类型或文件名]"
 description: >
-  This skill should be used when the user runs "/devflow:docs" to update project documentation.
+  This skill should be used when the user runs "/devflow:sync-docs" to update project documentation.
   Covers README updates, API documentation, changelogs, and other project documentation.
 ---
 
@@ -12,7 +12,7 @@ description: >
 
 ## 触发方式
 
-用户执行 `/devflow:docs` 命令时激活。传入需要更新的文档类型或文件名作为参数。
+用户执行 `/devflow:sync-docs` 命令时激活。传入需要更新的文档类型或文件名作为参数。
 
 ## 工作流程
 

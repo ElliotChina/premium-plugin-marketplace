@@ -3,7 +3,7 @@ name: plan-review
 argument-hint: "[plan 文件路径] [并发数]"
 description: >
   This skill should be used when the user runs "/devflow:plan-review" to review an implementation plan.
-  Dispatches review agents (default 1), then merges deduplicated feedback and applies fixes.
+  Dispatches review agents (default 3), then merges deduplicated feedback and applies fixes.
   Covers completeness, spec alignment, task decomposition, and buildability checks.
 ---
 
@@ -16,9 +16,9 @@ description: >
 用户执行 `/devflow:plan-review` 命令时激活。参数格式：`[plan 文件路径] [并发数]`。
 
 - **plan 文件路径**（必填）：实现计划文档的文件路径
-- **并发数**（可选，默认 1）：同时派发的审查 agent 数量。多个 agent 可提供更广泛的覆盖，但会消耗更多资源
+- **并发数**（可选，默认 3）：同时派发的审查 agent 数量。多个 agent 可提供更广泛的覆盖，但会消耗更多资源
 
-如果用户未明确指定并发数，使用默认值 1。如果并发数为 1，跳过合并去重步骤，直接进入修复。
+如果用户未明确指定并发数，使用默认值 3。如果并发数为 1，跳过合并去重步骤，直接进入修复。
 
 ## 前置条件
 

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-04-22
+### Changed
+- 移除 `commit` 技能（已由内置能力覆盖）
+- 重命名 `docs` 技能为 `sync-docs`
+- `code-review`、`plan-review`、`spec-review` 默认并发数从 1 提升至 3
+
 ## [0.2.0] - 2026-04-22
 ### Changed
 - 插件从 `my-toolkit` 重命名为 `devflow`，所有命令前缀统一更新为 `/devflow:`

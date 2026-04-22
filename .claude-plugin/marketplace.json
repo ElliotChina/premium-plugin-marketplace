@@ -197,7 +197,7 @@
     },
     {
       "name": "devflow",
-      "description": "Elliot 的个人工具箱插件，包含 15 个常用开发命令：项目配置、新功能开发、问题诊断修复、功能测试、代码提交、文档更新、PRD 编写、代码审查、Spec 审查、Plan 审查、原型设计、Pencil UI 设计、Unsplash 图片、Reveal.js 幻灯片、综合审查",
+      "description": "Elliot 的个人工具箱插件，包含 14 个常用开发命令：项目配置、新功能开发、问题诊断修复、功能测试、文档更新、PRD 编写、代码审查、Spec 审查、Plan 审查、原型设计、Pencil UI 设计、Unsplash 图片、Reveal.js 幻灯片、综合审查",
       "category": "development",
       "source": "./plugins/devflow",
       "author": {
@@ -207,7 +207,6 @@
       "keywords": [
         "toolkit",
         "workflow",
-        "commit",
         "test",
         "debug",
         "docs",
