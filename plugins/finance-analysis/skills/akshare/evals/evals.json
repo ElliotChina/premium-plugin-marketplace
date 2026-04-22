@@ -1,0 +1,228 @@
+{
+  "skill_name": "akshare",
+  "description": "AKShare 技能功能评估 - 优化版本",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "查询 A 股历史行情数据",
+      "prompt": "帮我查询贵州茅台（600519）过去一年的历史行情数据，需要日线级别的开盘价、收盘价、最高价、最低价",
+      "expected_output": "使用 akshare 的 stock_zh_a_hist 接口获取贵州茅台的历史行情数据，返回包含日期、开盘、收盘、最高、最低等字段的 DataFrame",
+      "files": [],
+      "assertions": [
+        {
+          "name": "使用正确的接口",
+          "description": "代码中应调用 stock_zh_a_hist 接口",
+          "type": "code_contains",
+          "value": "stock_zh_a_hist"
+        },
+        {
+          "name": "包含必需字段",
+          "description": "DataFrame 应包含日期、开盘、收盘、最高、最低等字段",
+          "type": "output_contains",
+          "value": ["日期", "开盘", "收盘", "最高", "最低"]
+        },
+        {
+          "name": "数据量合理",
+          "description": "过去一年的日线数据应有 200-250 个交易日",
+          "type": "data_quality",
+          "value": "row_count >= 200"
+        },
+        {
+          "name": "代码可执行",
+          "description": "提供的代码应能成功执行并返回数据",
+          "type": "executable",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "获取个股财务数据",
+      "prompt": "我想看宁德时代的财务报表数据，包括资产负债表、利润表和现金流量表",
+      "expected_output": "使用东方财富的主要财务数据接口（stock_balance_sheet_by_report_em、stock_profit_sheet_by_report_em、stock_cash_flow_sheet_by_report_em）获取宁德时代的三大财务报表数据",
+      "files": [],
+      "assertions": [
+        {
+          "name": "调用财务接口",
+          "description": "代码中应调用至少一个财务报表接口",
+          "type": "code_contains",
+          "value": ["stock_balance_sheet", "stock_profit_sheet", "stock_cash_flow"]
+        },
+        {
+          "name": "三大报表完整",
+          "description": "应提供资产负债表、利润表、现金流量表的数据或说明",
+          "type": "output_contains",
+          "value": ["资产负债", "利润", "现金流量"]
+        },
+        {
+          "name": "数据非空",
+          "description": "返回的财务数据应不为空",
+          "type": "data_quality",
+          "value": "not_empty"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "查询股东持仓信息",
+      "prompt": "查一下腾讯控股的十大股东名单和持股比例",
+      "expected_output": "使用 stock_gdfx_top_10_em 或类似接口获取腾讯控股的十大股东数据，包含股东名称、持股数量、持股比例等字段",
+      "files": [],
+      "assertions": [
+        {
+          "name": "使用股东接口",
+          "description": "代码中应调用股东相关的 AKShare 接口",
+          "type": "code_contains",
+          "value": ["stock_gdfx", "gdfx", "股东"]
+        },
+        {
+          "name": "包含股东信息",
+          "description": "输出应包含股东名称和持股信息",
+          "type": "output_contains",
+          "value": ["股东", "持股"]
+        },
+        {
+          "name": "数据条数合理",
+          "description": "十大股东应有约 10 条记录",
+          "type": "data_quality",
+          "value": "row_count >= 8"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "eval_name": "获取股票基本信息",
+      "prompt": "我需要五粮液公司的基本信息，包括公司概况、主营业务介绍等",
+      "expected_output": "使用 stock_individual_info_em、stock_individual_basic_info_xq 或 stock_zyjs_ths 接口获取五粮液的基本信息和主营介绍",
+      "files": [],
+      "assertions": [
+        {
+          "name": "使用基本信息接口",
+          "description": "代码中应调用获取基本信息的接口",
+          "type": "code_contains",
+          "value": ["stock_individual_info", "stock_zyjs", "basic_info"]
+        },
+        {
+          "name": "包含公司信息",
+          "description": "输出应包含公司名称、主营业务等信息",
+          "type": "output_contains",
+          "value": ["五粮液", "主营"]
+        },
+        {
+          "name": "信息完整",
+          "description": "应提供至少 5 个关键字段（如公司名称、行业、主营业务等）",
+          "type": "data_quality",
+          "value": "field_count >= 5"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "eval_name": "查询分红配送数据",
+      "prompt": "帮我看看招商银行历年的分红派息情况",
+      "expected_output": "使用 stock_fhps_detail_em 接口（东方财富主要接口）获取招商银行的详细分红配送数据，包含分红年度、每股分红、分红总额等信息",
+      "files": [],
+      "assertions": [
+        {
+          "name": "使用分红接口",
+          "description": "代码中应调用分红相关的接口",
+          "type": "code_contains",
+          "value": ["fhps", "分红"]
+        },
+        {
+          "name": "包含分红信息",
+          "description": "输出应包含分红年度和金额信息",
+          "type": "output_contains",
+          "value": ["分红", "年度"]
+        },
+        {
+          "name": "历史数据完整",
+          "description": "历年分红数据应有多年记录",
+          "type": "data_quality",
+          "value": "row_count >= 3"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "eval_name": "比较多个数据源",
+      "prompt": "我想获取中国平安的财务数据，哪个数据源比较可靠？",
+      "expected_output": "根据数据来源优先级，推荐使用同花顺或东方财富的财务数据接口，解释不同数据源的特点和优劣",
+      "files": [],
+      "assertions": [
+        {
+          "name": "提及数据源优先级",
+          "description": "应提及数据源优先级或推荐特定数据源",
+          "type": "output_contains",
+          "value": ["优先", "推荐", "数据源"]
+        },
+        {
+          "name": "解释优劣",
+          "description": "应解释不同数据源的特点",
+          "type": "output_contains",
+          "value": ["东方财富", "同花顺"]
+        },
+        {
+          "name": "提供实际方案",
+          "description": "应提供具体的接口或代码示例",
+          "type": "code_contains",
+          "value": "stock_"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "eval_name": "批量查询市场总貌",
+      "prompt": "查看上海证券交易所今天所有股票的总体交易情况",
+      "expected_output": "使用 stock_sse_summary 接口获取上交所股票数据总貌，返回股票市场、科创板、主板等的总体统计数据",
+      "files": [],
+      "assertions": [
+        {
+          "name": "使用市场总貌接口",
+          "description": "代码中应调用 stock_sse_summary 或类似接口",
+          "type": "code_contains",
+          "value": ["stock_sse_summary", "sse_summary"]
+        },
+        {
+          "name": "包含市场统计",
+          "description": "输出应包含市场总体统计数据",
+          "type": "output_contains",
+          "value": ["上市", "股票"]
+        },
+        {
+          "name": "数据时效性",
+          "description": "应明确数据的时间范围或更新频率",
+          "type": "output_contains",
+          "value": ["日", "时间"]
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "eval_name": "查询高管持股变动",
+      "prompt": "我想看比亚迪公司高管最近的持股变动情况",
+      "expected_output": "使用 stock_management_change_ths 或 stock_hold_management_detail_cninfo 接口获取比亚迪高管持股变动明细",
+      "files": [],
+      "assertions": [
+        {
+          "name": "使用高管持股接口",
+          "description": "代码中应调用高管持股相关的接口",
+          "type": "code_contains",
+          "value": ["management", "高管", "持股"]
+        },
+        {
+          "name": "包含变动信息",
+          "description": "输出应包含高管姓名和持股变动信息",
+          "type": "output_contains",
+          "value": ["高管", "变动"]
+        },
+        {
+          "name": "数据具体",
+          "description": "应提供具体的高管姓名和变动数量",
+          "type": "data_quality",
+          "value": "row_count >= 1"
+        }
+      ]
+    }
+  ]
+}

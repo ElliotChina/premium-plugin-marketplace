@@ -1,0 +1,17 @@
+{
+  "name": "finance-analysis",
+  "version": "0.1.0",
+  "description": "股票与金融分析插件，提供行情数据获取和估值分析能力",
+  "author": {
+    "name": "elliot",
+    "url": "https://github.com/ElliotChina"
+  },
+  "license": "MIT",
+  "keywords": [
+    "stock",
+    "finance",
+    "analysis",
+    "akshare",
+    "valuation"
+  ]
+}

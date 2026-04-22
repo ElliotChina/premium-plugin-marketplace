@@ -217,6 +217,23 @@
       ]
     },
     {
+      "name": "finance-analysis",
+      "description": "股票与金融分析插件，提供 A股/港股/美股行情数据获取（akshare）和全面的股票估值分析能力",
+      "category": "finance",
+      "source": "./plugins/finance-analysis",
+      "author": {
+        "name": "elliot",
+        "url": "https://github.com/ElliotChina"
+      },
+      "keywords": [
+        "stock",
+        "finance",
+        "analysis",
+        "akshare",
+        "valuation"
+      ]
+    },
+    {
       "name": "ui-ux-pro-max",
       "description": "Professional UI/UX design intelligence for AI coding assistants. Includes searchable databases of styles, colors, typography, charts, and UX guidelines for React, Next.js, Astro, Vue, Nuxt.js, Nuxt UI, Svelte, SwiftUI, React Native, Flutter, Tailwind, shadcn/ui, and Jetpack Compose.",
       "category": "design",
