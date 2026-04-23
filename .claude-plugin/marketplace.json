@@ -151,6 +151,31 @@
       "homepage": "https://github.com/obra/superpowers"
     },
     {
+      "name": "compound-engineering",
+      "description": "AI-powered development tools that get smarter with every use. Make each unit of engineering work easier than the last.",
+      "category": "development",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/EveryInc/compound-engineering-plugin.git",
+        "path": "plugins/compound-engineering"
+      },
+      "author": {
+        "name": "Kieran Klaassen",
+        "url": "https://github.com/kieranklaassen",
+        "email": "kieran@every.to"
+      },
+      "homepage": "https://github.com/EveryInc/compound-engineering-plugin",
+      "tags": [
+        "ai-powered",
+        "compound-engineering",
+        "workflow-automation",
+        "code-review",
+        "quality",
+        "knowledge-management",
+        "image-generation"
+      ]
+    },
+    {
       "name": "vue-volar",
       "description": "Vue.js language server integration (Volar)",
       "category": "development",
