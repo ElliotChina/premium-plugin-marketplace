@@ -20,38 +20,73 @@ disable-model-invocation: true
 
 这个流水线的设计理念是"思考先行，实现随后"：先通过 ce-brainstorm 把模糊的想法变成清晰的需求文档，然后通过 ce-doc-review 发现需求中的逻辑漏洞，接着用 ce-plan 把需求拆解为可执行的任务，再次 ce-doc-review 确保 plan 质量。只有在这四步都完成后才开始写代码（ce-work）。代码审查使用 autofix 模式自动修复问题，修复后立即持久化到 git（步骤 8），确保审查成果不会丢失在 working tree 中。残余问题自动移交到 tracker 或 PR body（步骤 9），保证所有发现都有持久化记录，不会因为会话结束而丢失。最后通过 ce-test-browser / ce-test-xcode 验证功能正确性。跳过前面的思考阶段直接写代码是产生低质量输出的最常见原因。
 
+## 审查模式说明
+
+流水线中有 3 个审查环节，每个环节支持两种模式：
+
+| 环节 | 自动模式（默认） | 人工模式 |
+|------|-----------------|---------|
+| 需求文档审查 | `ce-doc-review mode:headless` — 静默审查，自动应用安全修复，非安全发现以结构化文本返回 | `ce-doc-review`（无 mode 参数）— 交互式审查，逐条呈现发现，用户决定每个问题的处理方式 |
+| 计划文档审查 | `ce-doc-review mode:headless` — 同上 | `ce-doc-review`（无 mode 参数）— 同上 |
+| 代码审查 | `ce-code-review mode:autofix` — 静默审查，仅自动修复 safe_auto 级别问题，残余问题移交下游 | `ce-code-review`（无 mode 参数）— 交互式审查，自动修复 safe_auto 问题后，用户对每个剩余发现选择处理方式（逐条审查 / LFG / 提工单 / 仅报告） |
+
+**自动模式**适合对流水线产出有信心、追求效率的场景。**人工模式**适合关键需求或首次使用流水线、希望深度参与审查决策的场景。
+
 ## 步骤
+
+0. **模式选择**
+
+   向用户展示审查模式选择，使用 `AskUserQuestion` 一次性收集所有审查环节的模式偏好。问题格式：
+
+   > 以下是流水线中的 3 个审查环节，请为每个环节选择审查模式。**自动模式**（默认）静默运行不中断流程；**人工模式**会在审查后暂停，由你逐条确认发现。
+
+   提供以下选项：
+   - `人工审查需求`（推荐）— 需求文档人工审查，后续自动
+   - `人工审查需求与计划` — 需求和计划人工审查，代码审查自动
+   - `全自动审查` — 所有审查自动完成，流水线不中断
+   - `全人工审查` — 所有环节人工确认，每步暂停等待
+
+   用户也可以通过 `Other` 自由组合，例如"仅人工审查代码"。
+
+   将用户选择记录为流水线变量，后续步骤 2、5、7 根据变量决定调用方式。模式选择完成后继续步骤 1。
 
 1. **头脑风暴**
    `/compound-engineering:ce-brainstorm [feature idea or problem to explore]`
    记录所有产物文件路径供后续步骤使用。
 
 2. **需求文档审查**
-   `/compound-engineering:ce-doc-review mode:headless <brainstorm-path>`
+   根据步骤 0 的模式选择调用：
+   - **自动模式**：`/compound-engineering:ce-doc-review mode:headless <brainstorm-path>`
+   - **人工模式**：`/compound-engineering:ce-doc-review <brainstorm-path>`
    确认需求文档无关键问题。
 
-3. **迭代循环（可选）**
-   如果 `ralph-loop` 插件可用，运行：
-   `/ralph-loop:ralph-loop "<目标描述>" --max-iterations 3 --completion-promise "DONE"`
-   循环范围覆盖步骤 4（制定计划）到步骤 10（功能验证），每次迭代从 plan 开始重新执行完整实现流程。
-   不可用或执行失败则跳过，继续步骤 4。
-
-4. **制定计划**
+3. **制定计划**
    `/compound-engineering:ce-plan <brainstorm-path>`
    记录所有产物文件路径供后续步骤使用。
 
-5. **计划文档审查**
-   `/compound-engineering:ce-doc-review mode:headless <plan-path>`
-   确认计划无关键问题。发现问题则回到步骤 4 重新 plan，再重复本步骤（最多重试 2 次，仍未通过则停止流水线并向用户报告）。
+4. **计划文档审查**
+   根据步骤 0 的模式选择调用：
+   - **自动模式**：`/compound-engineering:ce-doc-review mode:headless <plan-path>`
+   - **人工模式**：`/compound-engineering:ce-doc-review <plan-path>`
+   确认计划文档无关键问题。
+
+5. **迭代循环（可选）**
+   如果 `ralph-loop` 插件可用，运行：
+   `/ralph-loop:ralph-loop "<目标描述>" --max-iterations 3 --completion-promise "DONE"`
+   循环范围覆盖步骤 6（实现代码）到步骤 10（功能验证）。
+   不可用或执行失败则跳过，继续步骤 6。
 
 6. **实现代码**
    `/compound-engineering:ce-work <plan-path>`
    验证有文件被创建或修改。如果没有代码变更，不要进入步骤 7。
 
-7. **代码审查（自动修复）**
-   `/compound-engineering:ce-code-review mode:autofix <plan-path>`
-   传入步骤 4 的计划文件路径，验证实现完整性并自动修复发现的问题。
-   读取 skill 输出的 Residual Actionable Work 摘要。
+7. **代码审查**
+   根据步骤 0 的模式选择调用：
+   - **自动模式**：`/compound-engineering:ce-code-review mode:autofix <plan-path>`
+     传入步骤 4 的计划文件路径，验证实现完整性并自动修复发现的问题。
+     读取 skill 输出的 Residual Actionable Work 摘要。
+   - **人工模式**：`/compound-engineering:ce-code-review <plan-path>`
+     传入步骤 4 的计划文件路径，审查完成后进入交互式路由：自动应用 safe_auto 修复，然后由用户对每个剩余发现选择处理方式（逐条审查 / LFG / 提工单 / 仅报告）。
 
 8. **持久化审查修复**
    运行 `git status --short` 检查步骤 7 是否产生了文件变更。
@@ -87,5 +122,6 @@ disable-model-invocation: true
     如果测试失败，报告问题并回到步骤 6 重新实现，再重复步骤 7、8、9 和 10（最多重试 2 次，仍未通过则停止流水线并向用户报告）。
 
 11. **收尾**
-    输出 `<promise>DONE</promise>` 表示流水线完成。
-    如果步骤 3 启动了 ralph-loop，运行 `/ralph-loop:cancel-ralph`。
+    如果步骤 3 启动了 ralph-loop
+    - 输出 `<promise>DONE</promise>` 表示流水线完成。
+    - 运行 `/ralph-loop:cancel-ralph`。
