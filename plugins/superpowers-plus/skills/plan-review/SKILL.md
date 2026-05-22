@@ -2,7 +2,7 @@
 name: plan-review
 argument-hint: "[plan 文件路径] [并发数]"
 description: >
-  This skill should be used when the user runs "/devflow:plan-review" to review an implementation plan.
+  This skill should be used when the user runs "/superpowers-plus:plan-review" to review an implementation plan.
   Dispatches review agents (default 3), then merges deduplicated feedback and applies fixes.
   Covers completeness, spec alignment, task decomposition, and buildability checks.
 ---
@@ -13,7 +13,7 @@ description: >
 
 ## 触发方式
 
-用户执行 `/devflow:plan-review` 命令时激活。参数格式：`[plan 文件路径] [并发数]`。
+用户执行 `/superpowers-plus:plan-review` 命令时激活。参数格式：`[plan 文件路径] [并发数]`。
 
 - **plan 文件路径**（必填）：实现计划文档的文件路径
 - **并发数**（可选，默认 3）：同时派发的审查 agent 数量。多个 agent 可提供更广泛的覆盖，但会消耗更多资源
@@ -29,7 +29,7 @@ description: >
 
 ### 1. 派发审查
 
-启用 `devflow:requesting-plan-review` 技能，按指定并发数派发 `devflow:plan-reviewer` subagent。
+启用 `superpowers-plus:requesting-plan-review` 技能，按指定并发数通过 `general-purpose` agent 派发审查 subagent。
 
 替换模板占位符：
 - `{PLAN_FILE_PATH}` — 实现计划文档路径
@@ -37,7 +37,7 @@ description: >
 
 ### 2. 合并反馈（并发数 > 1 时）
 
-**所有 agent 完成后**，启用 `devflow:receiving-plan-review` 技能处理反馈：
+**所有 agent 完成后**，启用 `superpowers-plus:receiving-plan-review` 技能处理反馈：
 
 1. **合并去重** — 收集所有问题，识别共识（2+ agent 标记同一问题）
 2. **验证** — 将每个问题与 spec 和实际计划内容交叉比对

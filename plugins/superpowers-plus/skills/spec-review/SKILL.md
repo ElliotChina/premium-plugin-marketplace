@@ -2,7 +2,7 @@
 name: spec-review
 argument-hint: "[spec 文件路径] [并发数]"
 description: >
-  This skill should be used when the user runs "/devflow:spec-review" to review a spec document.
+  This skill should be used when the user runs "/superpowers-plus:spec-review" to review a spec document.
   Dispatches review agents (default 3), then merges deduplicated feedback and applies fixes.
   Covers completeness, consistency, clarity, scope, and YAGNI checks.
 ---
@@ -13,7 +13,7 @@ description: >
 
 ## 触发方式
 
-用户执行 `/devflow:spec-review` 命令时激活。参数格式：`[spec 文件路径] [并发数]`。
+用户执行 `/superpowers-plus:spec-review` 命令时激活。参数格式：`[spec 文件路径] [并发数]`。
 
 - **spec 文件路径**（必填）：Spec 文档的文件路径
 - **并发数**（可选，默认 3）：同时派发的审查 agent 数量。多个 agent 可提供更广泛的覆盖，但会消耗更多资源
@@ -29,7 +29,7 @@ description: >
 
 ### 1. 派发审查
 
-启用 `devflow:requesting-spec-review` 技能，按指定并发数派发 `devflow:spec-reviewer` subagent。
+启用 `superpowers-plus:requesting-spec-review` 技能，按指定并发数通过 `general-purpose` agent 派发审查 subagent。
 
 替换模板占位符：
 - `{SPEC_FILE_PATH}` — Spec 文档路径
@@ -38,7 +38,7 @@ description: >
 
 ### 2. 合并反馈（并发数 > 1 时）
 
-**所有 agent 完成后**，启用 `devflow:receiving-spec-review` 技能处理反馈：
+**所有 agent 完成后**，启用 `superpowers-plus:receiving-spec-review` 技能处理反馈：
 
 1. **合并去重** — 收集所有问题，识别共识（2+ agent 标记同一问题）
 2. **验证** — 将每个问题与原始用户需求交叉比对

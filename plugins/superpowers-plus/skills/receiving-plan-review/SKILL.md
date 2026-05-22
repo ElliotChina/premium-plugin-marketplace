@@ -18,7 +18,7 @@ Plan review requires technical evaluation, not blind acceptance. Multiple agents
 ## The Response Pattern
 
 ```
-WHEN all 3 plan-reviewer agents complete:
+WHEN all plan-reviewer agents complete:
 
 1. MERGE: Collect all issues, deduplicate, identify consensus (2+ agents found same issue)
 2. VERIFY: Cross-check each unique issue against the spec and actual plan
@@ -30,6 +30,7 @@ WHEN all 3 plan-reviewer agents complete:
 ## Forbidden Responses
 
 **NEVER:**
+- "Good catch!" / "Excellent point!" (performative agreement)
 - Accept all feedback without verification
 - Apply three sets of fixes independently
 - Fix issues out of dependency order
@@ -40,6 +41,7 @@ WHEN all 3 plan-reviewer agents complete:
 - Verify each issue against actual spec content
 - Fix in priority order with post-fix verification
 - Reject over-engineering with reasoning
+- Just fix it — actions speak louder than words
 
 ## Consensus Detection
 
@@ -68,9 +70,23 @@ Agent 2: "Task 3 step 2 should handle network timeout"
 Agent 3: "Task 3 needs retry logic"
 
 Your evaluation:
-  Root cause: All agents flagged Task 3's error handling
+  Root cause: All agents flagged Task 3's error handling (consensus = high confidence)
   Merge: Task 3 needs specific error handling (network timeout + retry)
   Action: Add concrete steps with actual error handling code
+```
+
+## YAGNI Verification
+
+```
+IF reviewer suggests adding tasks or complexity:
+  grep spec for the referenced requirement
+
+  IF not in spec: "This isn't in the spec. Skip (YAGNI)."
+  IF in spec but reviewer's suggestion is over-engineered: "Spec says [X], plan covers it at [Task N]. Suggestion exceeds scope."
+
+BEFORE adding any task reviewer suggested:
+  Verify the spec actually requires it
+  Verify no existing task already covers it
 ```
 
 ## Issue Type Handling
@@ -99,7 +115,7 @@ Your evaluation:
 
 ### Over-Engineering Suggestions
 - Evaluate: Does the spec require this?
-- Not in spec: Skip
+- Not in spec: Skip with reasoning
 - "Nice to have" but significantly adds scope: Document but don't add
 
 ### False Positives
@@ -132,6 +148,7 @@ After applying all fixes:
 | Mistake | Fix |
 |---------|-----|
 | Accepting all feedback blindly | Verify each issue against spec |
+| Performative agreement | State the fix or just do it |
 | Fixing issues independently | Merge first, fix once |
 | Wrong priority order | Critical (blockers) first, then Important, then Minor |
 | Breaking dependency chain | Verify ordering after each fix |
@@ -150,3 +167,22 @@ Push back when:
 - Use technical reasoning, quote the relevant plan section
 - Reference the spec requirement being addressed
 - Skip false positives with brief reasoning
+
+**Example:**
+```
+Reviewer: "Add Task 8: Implement caching layer with Redis"
+
+Push back: "Spec doesn't mention caching. Plan already covers performance in Task 5 with query optimization. Skipping (YAGNI)."
+```
+
+## Acknowledging Correct Feedback
+
+When feedback IS correct:
+```
+✅ "Fixed. [Brief description of what changed in Task X]"
+✅ [Just fix it and show the diff]
+
+❌ "Great catch!"
+❌ "Excellent point!"
+❌ "Thanks for catching that!"
+```

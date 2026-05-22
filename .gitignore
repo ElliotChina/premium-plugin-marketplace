@@ -41,3 +41,6 @@ __pycache__/
 .env
 .venv/
 venv/
+
+# .claude
+.claude/*.local.*

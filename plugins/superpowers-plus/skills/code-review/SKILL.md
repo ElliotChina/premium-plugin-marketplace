@@ -2,7 +2,7 @@
 name: code-review
 argument-hint: "[代码路径 / PR 编号 / 变更描述] [并发数]"
 description: >
-  This skill should be used when the user runs "/devflow:code-review" to review code changes.
+  This skill should be used when the user runs "/superpowers-plus:code-review" to review code changes.
   Dispatches review agents (default 3), merges deduplicated feedback, and applies fixes.
   Covers security, correctness, performance, and maintainability.
 ---
@@ -13,7 +13,7 @@ description: >
 
 ## 触发方式
 
-用户执行 `/devflow:code-review` 命令时激活。参数格式：`[代码路径 / PR 编号 / 变更描述] [并发数]`。
+用户执行 `/superpowers-plus:code-review` 命令时激活。参数格式：`[代码路径 / PR 编号 / 变更描述] [并发数]`。
 
 - **审查目标**（必填）：代码路径、PR 编号或变更描述
 - **并发数**（可选，默认 3）：同时派发的审查 agent 数量。多个 agent 可提供更广泛的覆盖，但会消耗更多资源

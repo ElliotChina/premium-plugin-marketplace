@@ -1,8 +1,8 @@
 ---
-name: new-feature
+name: dev
 argument-hint: "[功能描述]"
 description: >
-  This skill should be used when the user runs "/devflow:new-feature" to develop a new feature.
+  This skill should be used when the user runs "/superpowers-plus:dev" to develop a new feature.
   Provides a structured workflow from requirement analysis, design, implementation to verification.
 ---
 
@@ -12,7 +12,7 @@ description: >
 
 ## 触发方式
 
-用户执行 `/devflow:new-feature` 命令时激活。传入功能描述作为参数。
+用户执行 `/superpowers-plus:dev` 命令时激活。传入功能描述作为参数。
 
 ## 执行模式
 
@@ -41,7 +41,7 @@ description: >
 
 ### 2. 方案审查
 
-启用 `devflow:spec-review` 技能，传入步骤 1 生成的 spec 文件路径作为参数，并发数 3，完成并发审查、合并反馈和修复。
+启用 `superpowers-plus:spec-review` 技能，传入步骤 1 生成的 spec 文件路径作为参数，并发数 3，完成并发审查、合并反馈和修复。
 
 > **方案审查暂停点**：如果为全自动+方案审查或半自动模式，向用户展示方案审查结果摘要，等待用户确认后再进入下一步。
 
@@ -51,7 +51,7 @@ description: >
 
 ### 4. 审查实现计划
 
-启用 `devflow:plan-review` 技能，传入步骤 3 生成的 plan 文件路径作为参数，并发数 3，完成并发审查、合并反馈和修复。
+启用 `superpowers-plus:plan-review` 技能，传入步骤 3 生成的 plan 文件路径作为参数，并发数 3，完成并发审查、合并反馈和修复。
 
 > **半自动暂停点**：如果为半自动模式，向用户展示计划审查结果摘要，等待用户确认后再进入下一步。
 
@@ -81,7 +81,7 @@ description: >
 
 ### 8. 代码审查
 
-> 启用 `devflow:code-review` 技能，传入当前代码变更范围作为参数，并发数 3，完成并发审查、合并反馈和修复。
+> 启用 `superpowers-plus:code-review` 技能，传入当前代码变更范围作为参数，并发数 3，完成并发审查、合并反馈和修复。
 
 前端项目审查时加载 `web-design-guidelines` — 基于 Web Interface Guidelines 进行 UI/UX 合规审查。
 

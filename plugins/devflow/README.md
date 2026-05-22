@@ -2,20 +2,16 @@
 
 Elliot 的个人工具箱插件，包含日常开发中常用的命令。
 
+> 新功能开发、问题诊断修复、代码/Spec/Plan 审查已迁移到 [superpowers-plus](../superpowers-plus/) 插件。
+
 ## 命令列表
 
 | 命令 | 用途 |
 |------|------|
 | `/devflow:project-config` | 项目配置 |
-| `/devflow:new-feature` | 新功能开发 |
-| `/devflow:fix` | 问题诊断修复 & 功能调试 |
 | `/devflow:test` | 功能测试 |
 | `/devflow:sync-docs` | 更新文档 |
 | `/devflow:prd` | 写需求文档 |
-| `/devflow:review` | 代码&文档审查 |
-| `/devflow:code-review` | 代码审查 |
-| `/devflow:spec-review` | Spec 文档审查 |
-| `/devflow:plan-review` | 实现计划审查 |
 | `/devflow:ui` | 原型/UI 设计 |
 | `/devflow:pencil-design` | Pencil MCP UI 设计 |
 | `/devflow:unsplash` | Unsplash 图片搜索下载 |
@@ -32,8 +28,8 @@ claude plugin add /path/to/devflow
 在 Claude Code 中直接输入命令即可，例如：
 
 ```
-/devflow:new-feature 用户登录功能
-/devflow:fix 页面加载时报 500 错误
+/devflow:prd 用户登录功能需求
+/devflow:test 登录功能测试
 ```
 
 ## 许可证

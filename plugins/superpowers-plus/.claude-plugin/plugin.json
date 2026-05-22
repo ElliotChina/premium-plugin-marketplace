@@ -1,0 +1,17 @@
+{
+  "name": "superpowers-plus",
+  "version": "0.1.0",
+  "description": "Superpowers 插件扩展，提供代码、Spec 和 Plan 的并发多 agent 审查能力：派遣审查 agent、合并去重反馈、修复问题",
+  "author": {
+    "name": "elliot",
+    "url": "https://github.com/ElliotChina"
+  },
+  "license": "MIT",
+  "keywords": [
+    "review",
+    "spec",
+    "plan",
+    "code-review",
+    "superpowers"
+  ]
+}

@@ -9,7 +9,7 @@ description: >
 
 # Requesting Plan Review
 
-Dispatch devflow:plan-reviewer subagent to catch task gaps and ordering issues before coding begins. The reviewer gets precisely crafted context — the plan file path and spec reference — never your session's history. This keeps the reviewer focused on the plan quality, not your thought process, and preserves your own context for continued work.
+Dispatch a plan reviewer subagent via `general-purpose` agent type to catch task gaps and ordering issues before coding begins. The reviewer gets precisely crafted context — the plan file path and spec reference — never your session's history. This keeps the reviewer focused on the plan quality, not your thought process, and preserves your own context for continued work.
 
 **Core principle:** A bad plan wastes far more time than a good review saves.
 
@@ -25,9 +25,9 @@ Dispatch devflow:plan-reviewer subagent to catch task gaps and ordering issues b
 
 ## How to Request
 
-**1. Dispatch plan-reviewer subagent:**
+**1. Dispatch plan reviewer subagent:**
 
-Use Task tool with devflow:plan-reviewer type, fill template at `plan-reviewer.md`
+Use Agent tool with `general-purpose` type, fill template at `plan-reviewer.md`
 
 Before dispatching, replace all `{placeholders}` with actual values:
 
@@ -47,7 +47,7 @@ Before dispatching, replace all `{placeholders}` with actual values:
 
 You: Let me request plan review before proceeding.
 
-[Dispatch devflow:plan-reviewer subagent]
+[Dispatch general-purpose agent with plan-reviewer template]
   PLAN_FILE_PATH: docs/plans/user-auth-plan.md
   SPEC_FILE_PATH: docs/specs/user-auth-spec.md
 

@@ -9,7 +9,7 @@ description: >
 
 # Requesting Spec Review
 
-Dispatch devflow:spec-reviewer subagent to catch document defects before they cascade into implementation plans and code. The reviewer gets precisely crafted context — the spec file path, original request, and project context — never your session's history. This keeps the reviewer focused on the spec quality, not your thought process, and preserves your own context for continued work.
+Dispatch a spec reviewer subagent via `general-purpose` agent type to catch document defects before they cascade into implementation plans and code. The reviewer gets precisely crafted context — the spec file path, original request, and project context — never your session's history. This keeps the reviewer focused on the spec quality, not your thought process, and preserves your own context for continued work.
 
 **Core principle:** Wrong spec = wrong plan = wrong code. Fix at the source.
 
@@ -25,9 +25,9 @@ Dispatch devflow:spec-reviewer subagent to catch document defects before they ca
 
 ## How to Request
 
-**1. Dispatch spec-reviewer subagent:**
+**1. Dispatch spec reviewer subagent:**
 
-Use Task tool with devflow:spec-reviewer type, fill template at `spec-reviewer.md`
+Use Agent tool with `general-purpose` type, fill template at `spec-reviewer.md`
 
 Before dispatching, replace all `{placeholders}` with actual values:
 
@@ -48,7 +48,7 @@ Before dispatching, replace all `{placeholders}` with actual values:
 
 You: Let me request spec review before planning.
 
-[Dispatch devflow:spec-reviewer subagent]
+[Dispatch general-purpose agent with spec-reviewer template]
   SPEC_FILE_PATH: docs/specs/notification-spec.md
   ORIGINAL_REQUEST: "Add email notifications for order status changes"
   PROJECT_CONTEXT: "Next.js 14 App Router, PostgreSQL, Resend for email"

@@ -2,7 +2,7 @@
 name: fix
 argument-hint: "[问题描述]"
 description: >
-  This skill should be used when the user runs "/devflow:fix" to diagnose and fix issues.
+  This skill should be used when the user runs "/superpowers-plus:fix" to diagnose and fix issues.
   Covers problem diagnosis, root cause analysis, bug fixing, and feature debugging scenarios.
 ---
 
@@ -12,7 +12,7 @@ description: >
 
 ## 触发方式
 
-用户执行 `/devflow:fix` 命令时激活。传入问题描述或错误信息作为参数。
+用户执行 `/superpowers-plus:fix` 命令时激活。传入问题描述或错误信息作为参数。
 
 ## 执行模式
 

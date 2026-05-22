@@ -18,7 +18,7 @@ Spec review requires technical evaluation, not blind acceptance. Multiple agents
 ## The Response Pattern
 
 ```
-WHEN all 3 spec-reviewer agents complete:
+WHEN all spec-reviewer agents complete:
 
 1. MERGE: Collect all issues, deduplicate, identify consensus (2+ agents found same issue)
 2. VERIFY: Cross-check each unique issue against the actual spec and user's original request
@@ -30,6 +30,7 @@ WHEN all 3 spec-reviewer agents complete:
 ## Forbidden Responses
 
 **NEVER:**
+- "Good catch!" / "Excellent point!" (performative agreement)
 - Accept all feedback without verification
 - Apply three sets of fixes independently
 - Add features the user didn't request (even if reviewer thinks they're needed)
@@ -40,6 +41,7 @@ WHEN all 3 spec-reviewer agents complete:
 - Verify each issue against actual user request
 - Fix in priority order with post-fix verification
 - Reject YAGNI suggestions with reasoning
+- Just fix it — actions speak louder than words
 
 ## Consensus Detection
 
@@ -68,9 +70,23 @@ Agent 2: "Data format is ambiguous"
 Agent 3: "Section 5 says JSON but Section 3 shows XML example"
 
 Your evaluation:
-  Root cause: All agents flagged data format inconsistency
+  Root cause: All agents flagged data format inconsistency (consensus = high confidence)
   Merge: Section 3 and Section 5 disagree on data format
   Action: Choose one format (JSON, per modern practice), update both sections
+```
+
+## YAGNI Verification
+
+```
+IF reviewer suggests adding a feature or requirement:
+  Check user's original request for the feature
+
+  IF not requested: "User didn't ask for this. Skip (YAGNI)."
+  IF requested but reviewer's suggestion exceeds scope: "User asked for [X], reviewer suggests [X+Y]. Spec already covers [X]. Skipping extra scope."
+
+BEFORE adding anything reviewer suggested:
+  Verify the user actually asked for it
+  Verify it's not already covered elsewhere in the spec
 ```
 
 ## Issue Type Handling
@@ -89,7 +105,7 @@ Your evaluation:
 
 ### Scope Boundary Issues (Important)
 - Evaluate: Did the user actually ask for this?
-- Unrequested: Remove
+- Unrequested: Remove with reasoning
 - Potentially useful but not now: Document outside spec
 
 ### Terminology Inconsistencies (Minor)
@@ -98,7 +114,7 @@ Your evaluation:
 
 ### YAGNI Suggestions
 - Evaluate: Does the user genuinely need this?
-- Unrequested: Skip
+- Unrequested: Skip with reasoning
 - Potentially useful but not now: Document but don't add to spec
 
 ### False Positives (Reviewer Misunderstood Context)
@@ -130,6 +146,7 @@ After applying all fixes:
 | Mistake | Fix |
 |---------|-----|
 | Accepting all feedback blindly | Verify each issue against user request |
+| Performative agreement | State the fix or just do it |
 | Fixing issues independently | Merge first, fix once |
 | Wrong priority order | Critical (blockers) first, then Important, then Minor |
 | Adding features reviewer suggested | Only add what user requested |
@@ -148,3 +165,22 @@ Push back when:
 - Use technical reasoning, quote the relevant spec section
 - Reference the user's original request
 - Skip false positives with brief reasoning
+
+**Example:**
+```
+Reviewer: "Add batch notification processing with queue system"
+
+Push back: "User only asked for 'email notifications for order status changes'. Batch processing wasn't requested. Skipping (YAGNI)."
+```
+
+## Acknowledging Correct Feedback
+
+When feedback IS correct:
+```
+✅ "Fixed. [Brief description of what changed in Section X]"
+✅ [Just fix it and show the diff]
+
+❌ "Great catch!"
+❌ "Excellent point!"
+❌ "Thanks for catching that!"
+```
