@@ -3,6 +3,8 @@
 Elliot 的个人工具箱插件，包含日常开发中常用的命令。
 
 > 新功能开发、问题诊断修复、代码/Spec/Plan 审查已迁移到 [superpowers-plus](../superpowers-plus/) 插件。
+> Unsplash 图片搜索已迁移到 [image](../image/) 插件。
+> Reveal.js 幻灯片制作已迁移到 [slide](../slide/) 插件。
 
 ## 命令列表
 
@@ -14,8 +16,6 @@ Elliot 的个人工具箱插件，包含日常开发中常用的命令。
 | `/devflow:prd` | 写需求文档 |
 | `/devflow:ui` | 原型/UI 设计 |
 | `/devflow:pencil-design` | Pencil MCP UI 设计 |
-| `/devflow:unsplash` | Unsplash 图片搜索下载 |
-| `/devflow:slides-revealjs` | Reveal.js 幻灯片制作 |
 
 ## 安装
 

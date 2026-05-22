@@ -1,0 +1,15 @@
+{
+  "name": "slide",
+  "version": "0.1.0",
+  "description": "Reveal.js 幻灯片制作插件，支持创建、编辑和预览专业 HTML 演示文稿",
+  "author": {
+    "name": "elliot",
+    "url": "https://github.com/ElliotChina"
+  },
+  "license": "MIT",
+  "keywords": [
+    "slides",
+    "presentation",
+    "revealjs"
+  ]
+}

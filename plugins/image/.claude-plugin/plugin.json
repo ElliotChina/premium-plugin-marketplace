@@ -1,0 +1,15 @@
+{
+  "name": "image",
+  "version": "0.1.0",
+  "description": "Unsplash 图片搜索下载插件，快速获取高质量免费照片用于项目开发",
+  "author": {
+    "name": "elliot",
+    "url": "https://github.com/ElliotChina"
+  },
+  "license": "MIT",
+  "keywords": [
+    "image",
+    "unsplash",
+    "photo"
+  ]
+}
