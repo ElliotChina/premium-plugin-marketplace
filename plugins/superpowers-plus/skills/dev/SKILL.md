@@ -33,6 +33,8 @@ description: >
 
 ## 工作流程
 
+> 执行过程中如发现缺少必要的插件、技能或 MCP 工具，运行 `superpowers-plus:check-env` 检查并安装。
+
 ### 1. 需求探索
 
 > 启用 `superpowers:brainstorming`，在编码前强制进行需求澄清和设计探索。
@@ -55,22 +57,13 @@ description: >
 
 > **半自动暂停点**：如果为半自动模式，向用户展示计划审查结果摘要，等待用户确认后再进入下一步。
 
-### 5. 插件与技能准备
-
-根据功能涉及的技术栈，在每个环节开始前，检查并加载所需插件和技能：
-
-- **通用**：`context7-plugin` — 查阅技术栈最新文档和 API，贯穿开发全周期
-- **前端项目必选**：`frontend-design` — Web 页面设计；`ui-ux-pro-max` — 企业级 UI/UX 设计标准（需要时）
-- **React 技术栈**：按需加载 `vercel-react-best-practices`（性能优化）、`vercel-composition-patterns`（组件组合模式）、`vercel-react-native-skills`（React Native 开发）
-- **UI 组件库**：按需加载 `antd`（Ant Design 组件使用）、`ant-design`（Ant Design 架构决策与主题定制）、`shadcn`（shadcn/ui 组件管理）
-
-### 6. 环境隔离
+### 5. 环境隔离
 
 > 如果项目使用 Git 且功能涉及多文件变更，启用 `superpowers:using-git-worktrees` 创建隔离开发环境。
 
 如果变更范围较小（单文件修改），可跳过此步骤直接在当前分支工作。
 
-### 7. 代码实现
+### 6. 代码实现
 
 > 启用 `superpowers:executing-plans`，根据实现计划执行代码实现。
 
@@ -79,7 +72,7 @@ description: >
 - `context7-plugin` — 查阅框架/库的最新文档和 API
 - `code-simplifier` — 实现完成后简化复杂代码
 
-### 8. 代码审查
+### 7. 代码审查
 
 > 启用 `superpowers-plus:code-review` 技能，传入当前代码变更范围作为参数，并发数 3，完成并发审查、合并反馈和修复。
 
@@ -87,7 +80,7 @@ description: >
 
 > **半自动暂停点**：如果为半自动模式，向用户展示代码审查结果摘要和已修复的问题，等待用户确认后再进入下一步。
 
-### 9. 完成验证
+### 8. 完成验证
 
 > 启用 `superpowers:verification-before-completion`，在声称完成前必须运行验证命令并获得通过证据。
 
@@ -97,7 +90,7 @@ description: >
 - `playwright` — 执行自动化测试用例
 - `agent-browser` — 非测试/调试场景下的页面自动化操作
 
-### 10. 收尾
+### 9. 收尾
 
 > 如果使用了 worktree 隔离开发，启用 `superpowers:finishing-a-development-branch` 处理分支收尾。
 
