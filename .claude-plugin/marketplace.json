@@ -222,7 +222,7 @@
     },
     {
       "name": "devflow",
-      "description": "Elliot 的个人工具箱插件，包含 14 个常用开发命令：项目配置、新功能开发、问题诊断修复、功能测试、文档更新、PRD 编写、代码审查、Spec 审查、Plan 审查、原型设计、Pencil UI 设计、Unsplash 图片、Reveal.js 幻灯片、综合审查",
+      "description": "Elliot 的个人工具箱插件，包含 8 个常用开发命令：项目配置、功能测试、文档更新、PRD 编写、原型设计、Pencil UI 设计、Unsplash 图片、Reveal.js 幻灯片",
       "category": "development",
       "source": "./plugins/devflow",
       "author": {
@@ -233,11 +233,26 @@
         "toolkit",
         "workflow",
         "test",
-        "debug",
         "docs",
         "prd",
-        "review",
         "ui"
+      ]
+    },
+    {
+      "name": "superpowers-plus",
+      "description": "superpowers 插件扩展，提供代码、Spec 和 Plan 的并发多 agent 审查能力：派遣审查 agent、合并去重反馈、修复问题",
+      "category": "development",
+      "source": "./plugins/superpowers-plus",
+      "author": {
+        "name": "elliot",
+        "url": "https://github.com/ElliotChina"
+      },
+      "keywords": [
+        "review",
+        "code-review",
+        "spec-review",
+        "plan-review",
+        "multi-agent"
       ]
     },
     {
