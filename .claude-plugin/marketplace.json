@@ -273,6 +273,36 @@
       ]
     },
     {
+      "name": "image",
+      "description": "Unsplash 图片搜索下载插件，快速获取高质量免费照片用于项目开发",
+      "category": "design",
+      "source": "./plugins/image",
+      "author": {
+        "name": "elliot",
+        "url": "https://github.com/ElliotChina"
+      },
+      "keywords": [
+        "image",
+        "unsplash",
+        "photo"
+      ]
+    },
+    {
+      "name": "slide",
+      "description": "Reveal.js 幻灯片制作插件，支持创建、编辑和预览专业 HTML 演示文稿",
+      "category": "productivity",
+      "source": "./plugins/slide",
+      "author": {
+        "name": "elliot",
+        "url": "https://github.com/ElliotChina"
+      },
+      "keywords": [
+        "slides",
+        "presentation",
+        "revealjs"
+      ]
+    },
+    {
       "name": "ui-ux-pro-max",
       "description": "Professional UI/UX design intelligence for AI coding assistants. Includes searchable databases of styles, colors, typography, charts, and UX guidelines for React, Next.js, Astro, Vue, Nuxt.js, Nuxt UI, Svelte, SwiftUI, React Native, Flutter, Tailwind, shadcn/ui, and Jetpack Compose.",
       "category": "design",
