@@ -1,10 +1,7 @@
 ---
 name: receiving-spec-review
 user-invocable: false
-description: >
-  Use when receiving spec review feedback from multiple agents, before applying changes.
-  Merge deduplicated results, verify against the original spec and user intent,
-  then apply unified fixes. Requires technical rigor and verification, not blind acceptance.
+description: Use when receiving spec review feedback from multiple agents, before applying changes. Merge deduplicated results, verify against the original spec and user intent, then apply unified fixes. Requires technical rigor and verification, not blind acceptance.
 ---
 
 # Receiving Spec Review

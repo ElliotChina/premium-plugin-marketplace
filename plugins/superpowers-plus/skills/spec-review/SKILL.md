@@ -1,10 +1,7 @@
 ---
 name: spec-review
 argument-hint: "[spec 文件路径] [并发数]"
-description: >
-  This skill should be used when the user runs "/superpowers-plus:spec-review" to review a spec document.
-  Dispatches review agents (default 3), then merges deduplicated feedback and applies fixes.
-  Covers completeness, consistency, clarity, scope, and YAGNI checks.
+description: This skill should be used when the user asks to "review spec", "review design doc", "check spec quality", "validate spec", or mentions reviewing a requirements document. Dispatches review agents (default 3), then merges deduplicated feedback and applies fixes. Covers completeness, consistency, clarity, scope, and YAGNI checks.
 ---
 
 # Spec Review - 方案审查

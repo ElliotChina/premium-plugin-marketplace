@@ -1,12 +1,7 @@
 ---
 name: check-env
 argument-hint: "[技术栈描述]"
-description: >
-  This skill should be used when the user runs "/superpowers-plus:check-env" or asks to
-  "check environment", "check plugins", "check skills", "install missing plugins",
-  "prepare development environment", "check dependencies", or "setup dev environment".
-  Detects the project's tech stack and ensures all required plugins, skills, and MCP
-  tools are installed and properly configured.
+description: This skill should be used when the user asks to "check environment", "check plugins", "check skills", "install missing plugins", "prepare development environment", "check dependencies", or "setup dev environment". Detects the project's tech stack and ensures all required plugins, skills, and MCP tools are installed and properly configured.
 ---
 
 # 开发环境检查

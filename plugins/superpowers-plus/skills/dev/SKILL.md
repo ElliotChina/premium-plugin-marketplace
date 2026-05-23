@@ -1,9 +1,7 @@
 ---
 name: dev
 argument-hint: "[功能描述]"
-description: >
-  This skill should be used when the user runs "/superpowers-plus:dev" to develop a new feature.
-  Provides a structured workflow from requirement analysis, design, implementation to verification.
+description: This skill should be used when the user asks to "develop a feature", "build new functionality", "implement a feature", "add a new feature", or mentions creating new capabilities. Provides a structured workflow from requirement analysis, design, implementation to verification.
 ---
 
 # New Feature - 新功能开发

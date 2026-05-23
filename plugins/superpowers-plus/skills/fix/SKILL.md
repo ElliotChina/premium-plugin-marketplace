@@ -1,9 +1,7 @@
 ---
 name: fix
 argument-hint: "[问题描述]"
-description: >
-  This skill should be used when the user runs "/superpowers-plus:fix" to diagnose and fix issues.
-  Covers problem diagnosis, root cause analysis, bug fixing, and feature debugging scenarios.
+description: This skill should be used when the user asks to "fix a bug", "debug an issue", "diagnose a problem", "troubleshoot", or mentions error messages, crashes, or unexpected behavior. Covers problem diagnosis, root cause analysis, bug fixing, and feature debugging scenarios.
 ---
 
 # Fix - 问题诊断修复 & 功能调试

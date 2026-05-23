@@ -1,10 +1,7 @@
 ---
 name: requesting-spec-review
 user-invocable: false
-description: >
-  Use after writing a spec document (design doc) to dispatch review agents.
-  Verifies the spec is complete, consistent, and ready for implementation planning.
-  Dispatch after the spec document is written and saved.
+description: Use after writing a spec document (design doc) to dispatch review agents. Verifies the spec is complete, consistent, and ready for implementation planning. Dispatch after the spec document is written and saved.
 ---
 
 # Requesting Spec Review

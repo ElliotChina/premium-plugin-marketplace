@@ -1,10 +1,7 @@
 ---
 name: plan-review
 argument-hint: "[plan 文件路径] [并发数]"
-description: >
-  This skill should be used when the user runs "/superpowers-plus:plan-review" to review an implementation plan.
-  Dispatches review agents (default 3), then merges deduplicated feedback and applies fixes.
-  Covers completeness, spec alignment, task decomposition, and buildability checks.
+description: This skill should be used when the user asks to "review plan", "review implementation plan", "check plan quality", "validate plan", or mentions reviewing an implementation document. Dispatches review agents (default 3), then merges deduplicated feedback and applies fixes. Covers completeness, spec alignment, task decomposition, and buildability checks.
 ---
 
 # Plan Review - 计划审查

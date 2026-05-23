@@ -1,9 +1,7 @@
 ---
 name: prd
 argument-hint: "[产品或功能名称]"
-description: >
-  This skill should be used when the user runs "/devflow:prd" to write product requirement documents.
-  Provides a structured template and workflow for creating comprehensive PRDs.
+description: This skill should be used when the user asks to "write PRD", "create product requirements", "write requirements doc", "create PRD", "document requirements", or mentions product requirement documents. Provides a structured template and workflow for creating comprehensive PRDs.
 ---
 
 # PRD - 需求文档

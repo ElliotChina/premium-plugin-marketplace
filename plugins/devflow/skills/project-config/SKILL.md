@@ -1,9 +1,7 @@
 ---
 name: project-config
 argument-hint: "[项目名称和简要描述]"
-description: >
-  This skill should be used when the user runs "/devflow:project-config" to configure project
-  development environment. Provides a structured workflow for plugin and skill setup.
+description: This skill should be used when the user asks to "configure project", "setup dev environment", "initialize project", "setup plugins", "configure development environment", or mentions project setup and configuration. Provides a structured workflow for plugin and skill setup.
 ---
 
 # Project Config - 项目配置

@@ -1,9 +1,7 @@
 ---
 name: ui
 argument-hint: "[页面或组件描述]"
-description: >
-  This skill should be used when the user runs "/devflow:ui" to design UI prototypes and interfaces.
-  Provides guidance for UI/UX design, wireframing, and frontend implementation.
+description: This skill should be used when the user asks to "design UI", "create prototype", "build interface", "design a page", "wireframe", or mentions UI/UX design and frontend implementation. Provides guidance for UI/UX design, wireframing, and frontend implementation.
 ---
 
 # UI - 原型/UI 设计

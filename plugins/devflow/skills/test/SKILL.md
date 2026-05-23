@@ -1,9 +1,7 @@
 ---
 name: test
 argument-hint: "[测试目标]"
-description: >
-  This skill should be used when the user runs "/devflow:test" to write and run tests.
-  Provides guidance for feature testing, covering test design, implementation, and execution.
+description: This skill should be used when the user asks to "write tests", "run tests", "test a feature", "add test cases", "create unit tests", or mentions testing functionality. Provides guidance for feature testing, covering test design, implementation, and execution.
 ---
 
 # Test - 功能测试

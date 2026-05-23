@@ -1,10 +1,7 @@
 ---
 name: code-review
 argument-hint: "[代码路径 / PR 编号 / 变更描述] [并发数]"
-description: >
-  This skill should be used when the user runs "/superpowers-plus:code-review" to review code changes.
-  Dispatches review agents (default 3), merges deduplicated feedback, and applies fixes.
-  Covers security, correctness, performance, and maintainability.
+description: This skill should be used when the user asks to "review code", "code review", "review changes", "check code quality", or mentions reviewing a PR or commit. Dispatches review agents (default 3), merges deduplicated feedback, and applies fixes. Covers security, correctness, performance, and maintainability.
 ---
 
 # Code Review - 代码审查
