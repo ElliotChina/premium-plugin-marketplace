@@ -336,6 +336,16 @@
       "skills": ["./skills/remotion"],
       "keywords": ["remotion", "video", "react", "animation", "composition"],
       "homepage": "https://github.com/remotion-dev/skills"
+    },
+    {
+      "name": "hyperframes",
+      "description": "HyperFrames by HeyGen. Write HTML, render video. Compositions, GSAP and runtime adapter animations, captions, voiceovers, audio-reactive visuals, and website-to-video capture for HyperFrames.",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/heygen-com/hyperframes.git"
+      },
+      "homepage": "https://hyperframes.heygen.com",
+      "license": "Apache-2.0"
     }
   ]
 }
