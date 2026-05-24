@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-05-24
+### Added
+- 新增 `playwright-expert` 技能（来源于 [Jeffallan/claude-skills](https://github.com/Jeffallan/claude-skills)，v1.1.0）
+
 ## [0.3.0] - 2026-04-22
 ### Changed
 - 移除 `commit` 技能（已由内置能力覆盖）
