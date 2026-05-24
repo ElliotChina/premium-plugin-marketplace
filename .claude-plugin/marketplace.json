@@ -319,6 +319,23 @@
       "category": "design",
       "homepage": "https://impeccable.style",
       "tags": ["design", "frontend", "ui", "ux", "skills", "commands"]
+    },
+    {
+      "name": "remotion",
+      "description": "Remotion 视频制作最佳实践，涵盖 React 视频创建、动画、音频、字幕、3D 等领域知识",
+      "category": "development",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/remotion-dev/skills.git"
+      },
+      "author": {
+        "name": "Remotion",
+        "url": "https://remotion.dev"
+      },
+      "strict": false,
+      "skills": ["./skills/remotion"],
+      "keywords": ["remotion", "video", "react", "animation", "composition"],
+      "homepage": "https://github.com/remotion-dev/skills"
     }
   ]
 }
