@@ -346,6 +346,23 @@
       },
       "homepage": "https://hyperframes.heygen.com",
       "license": "Apache-2.0"
+    },
+    {
+      "name": "antd-skill",
+      "description": "Ant Design 生态技能集，提供 antd v6 组件决策指南和 @ant-design/cli 离线 API 查询、迁移分析工作流",
+      "category": "development",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/ant-design/antd-skill.git"
+      },
+      "author": {
+        "name": "Ant Design",
+        "url": "https://ant.design"
+      },
+      "strict": false,
+      "skills": ["./skills/ant-design", "./skills/antd"],
+      "keywords": ["antd", "ant-design", "react", "ui", "components"],
+      "homepage": "https://github.com/ant-design/antd-skill"
     }
   ]
 }
