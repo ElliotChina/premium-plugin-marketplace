@@ -7,6 +7,88 @@
   },
   "plugins": [
     {
+      "name": "devflow",
+      "description": "Elliot 的个人工具箱插件，包含 8 个常用开发命令：项目配置、功能测试、文档更新、PRD 编写、原型设计、Pencil UI 设计、Unsplash 图片、Reveal.js 幻灯片",
+      "category": "development",
+      "source": "./plugins/devflow",
+      "author": {
+        "name": "elliot",
+        "url": "https://github.com/ElliotChina"
+      },
+      "keywords": [
+        "toolkit",
+        "workflow",
+        "test",
+        "docs",
+        "prd",
+        "ui"
+      ]
+    },
+    {
+      "name": "superpowers-plus",
+      "description": "superpowers 插件扩展，提供代码、Spec 和 Plan 的并发多 agent 审查能力：派遣审查 agent、合并去重反馈、修复问题",
+      "category": "development",
+      "source": "./plugins/superpowers-plus",
+      "author": {
+        "name": "elliot",
+        "url": "https://github.com/ElliotChina"
+      },
+      "keywords": [
+        "review",
+        "code-review",
+        "spec-review",
+        "plan-review",
+        "multi-agent"
+      ]
+    },
+    {
+      "name": "finance-analysis",
+      "description": "股票与金融分析插件，提供 A股/港股/美股行情数据获取（akshare）和全面的股票估值分析能力",
+      "category": "finance",
+      "source": "./plugins/finance-analysis",
+      "author": {
+        "name": "elliot",
+        "url": "https://github.com/ElliotChina"
+      },
+      "keywords": [
+        "stock",
+        "finance",
+        "analysis",
+        "akshare",
+        "valuation"
+      ]
+    },
+    {
+      "name": "image",
+      "description": "Unsplash 图片搜索下载插件，快速获取高质量免费照片用于项目开发",
+      "category": "design",
+      "source": "./plugins/image",
+      "author": {
+        "name": "elliot",
+        "url": "https://github.com/ElliotChina"
+      },
+      "keywords": [
+        "image",
+        "unsplash",
+        "photo"
+      ]
+    },
+    {
+      "name": "slide",
+      "description": "Reveal.js 幻灯片制作插件，支持创建、编辑和预览专业 HTML 演示文稿",
+      "category": "productivity",
+      "source": "./plugins/slide",
+      "author": {
+        "name": "elliot",
+        "url": "https://github.com/ElliotChina"
+      },
+      "keywords": [
+        "slides",
+        "presentation",
+        "revealjs"
+      ]
+    },
+    {
       "name": "agent-browser",
       "description": "Automates browser interactions for web testing, form filling, screenshots, and data extraction",
       "category": "development",
@@ -185,88 +267,6 @@
       "homepage": "https://github.com/Piebald-AI/claude-code-lsps"
     },
     {
-      "name": "devflow",
-      "description": "Elliot 的个人工具箱插件，包含 8 个常用开发命令：项目配置、功能测试、文档更新、PRD 编写、原型设计、Pencil UI 设计、Unsplash 图片、Reveal.js 幻灯片",
-      "category": "development",
-      "source": "./plugins/devflow",
-      "author": {
-        "name": "elliot",
-        "url": "https://github.com/ElliotChina"
-      },
-      "keywords": [
-        "toolkit",
-        "workflow",
-        "test",
-        "docs",
-        "prd",
-        "ui"
-      ]
-    },
-    {
-      "name": "superpowers-plus",
-      "description": "superpowers 插件扩展，提供代码、Spec 和 Plan 的并发多 agent 审查能力：派遣审查 agent、合并去重反馈、修复问题",
-      "category": "development",
-      "source": "./plugins/superpowers-plus",
-      "author": {
-        "name": "elliot",
-        "url": "https://github.com/ElliotChina"
-      },
-      "keywords": [
-        "review",
-        "code-review",
-        "spec-review",
-        "plan-review",
-        "multi-agent"
-      ]
-    },
-    {
-      "name": "finance-analysis",
-      "description": "股票与金融分析插件，提供 A股/港股/美股行情数据获取（akshare）和全面的股票估值分析能力",
-      "category": "finance",
-      "source": "./plugins/finance-analysis",
-      "author": {
-        "name": "elliot",
-        "url": "https://github.com/ElliotChina"
-      },
-      "keywords": [
-        "stock",
-        "finance",
-        "analysis",
-        "akshare",
-        "valuation"
-      ]
-    },
-    {
-      "name": "image",
-      "description": "Unsplash 图片搜索下载插件，快速获取高质量免费照片用于项目开发",
-      "category": "design",
-      "source": "./plugins/image",
-      "author": {
-        "name": "elliot",
-        "url": "https://github.com/ElliotChina"
-      },
-      "keywords": [
-        "image",
-        "unsplash",
-        "photo"
-      ]
-    },
-    {
-      "name": "slide",
-      "description": "Reveal.js 幻灯片制作插件，支持创建、编辑和预览专业 HTML 演示文稿",
-      "category": "productivity",
-      "source": "./plugins/slide",
-      "author": {
-        "name": "elliot",
-        "url": "https://github.com/ElliotChina"
-      },
-      "keywords": [
-        "slides",
-        "presentation",
-        "revealjs"
-      ]
-    },
-    {
       "name": "ui-ux-pro-max",
       "description": "Professional UI/UX design intelligence for AI coding assistants. Includes searchable databases of styles, colors, typography, charts, and UX guidelines for React, Next.js, Astro, Vue, Nuxt.js, Nuxt UI, Svelte, SwiftUI, React Native, Flutter, Tailwind, shadcn/ui, and Jetpack Compose.",
       "category": "design",
@@ -303,6 +303,22 @@
         "email": "jarrodwattsyt@gmail.com"
       },
       "homepage": "https://github.com/jarrodwatts/claude-hud"
+    },
+    {
+      "name": "impeccable",
+      "description": "Design fluency for frontend development. 1 skill with 23 commands (/impeccable polish, /impeccable audit, /impeccable critique, etc.) and curated anti-pattern detection.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/pbakaus/impeccable.git",
+        "path": "plugin"
+      },
+      "author": {
+        "name": "Paul Bakaus",
+        "email": "paul@paulbakaus.com"
+      },
+      "category": "design",
+      "homepage": "https://impeccable.style",
+      "tags": ["design", "frontend", "ui", "ux", "skills", "commands"]
     }
   ]
 }
