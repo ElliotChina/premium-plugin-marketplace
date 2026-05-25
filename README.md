@@ -113,6 +113,31 @@ claude marketplace reload
 - **技能包** - 特定领域的专业知识和最佳实践
 - **语言服务器** - 代码智能补全和导航
 
+## 🔄 本地技能来源与更新
+
+以下技能从外部仓库下载到本地，更新时需从源仓库同步：
+
+| 插件 | 技能 | 来源仓库 |
+|------|------|----------|
+| devflow | playwright-expert | [Jeffallan/claude-skills](https://github.com/Jeffallan/claude-skills/tree/main/skills/playwright-expert) |
+| frontend-web | web-design-guidelines | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills/tree/main/skills/web-design-guidelines) |
+| frontend-react | composition-patterns | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills/tree/main/skills/composition-patterns) |
+| frontend-react | react-best-practices | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills/tree/main/skills/react-best-practices) |
+| frontend-react | react-view-transitions | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills/tree/main/skills/react-view-transitions) |
+
+### 同步方法
+
+```bash
+# 单文件技能（如 web-design-guidelines）
+curl -s "https://raw.githubusercontent.com/vercel-labs/agent-skills/main/skills/<skill-name>/SKILL.md" \
+  -o plugins/<plugin-name>/skills/<skill-name>/SKILL.md
+
+# 多文件技能（如 playwright-expert、react-best-practices）
+# 需同步 SKILL.md 及 rules/ 或 references/ 子目录
+curl -s "https://api.github.com/repos/<owner>/<repo>/contents/skills/<skill-name>" \
+  | jq -r '.[].name'
+```
+
 ## 🤝 贡献
 
 欢迎提交 Issue 和 Pull Request！
