@@ -380,6 +380,23 @@
       "skills": ["./skills/shadcn"],
       "keywords": ["shadcn", "ui", "components", "tailwind", "radix"],
       "homepage": "https://ui.shadcn.com"
+    },
+    {
+      "name": "playwright-cli",
+      "description": "Microsoft Playwright CLI 技能，提供基于 CLI 的高效浏览器自动化能力，适合编码 agent 的 token 节省型工作流",
+      "category": "development",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/microsoft/playwright-cli.git"
+      },
+      "author": {
+        "name": "Microsoft",
+        "url": "https://github.com/microsoft"
+      },
+      "strict": false,
+      "skills": ["./skills/playwright-cli"],
+      "keywords": ["playwright", "browser", "automation", "e2e", "testing"],
+      "homepage": "https://github.com/microsoft/playwright-cli"
     }
   ]
 }
