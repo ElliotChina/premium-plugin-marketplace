@@ -411,6 +411,28 @@
         "url": "https://github.com/antfu"
       },
       "homepage": "https://github.com/slidevjs/slidev"
+    },
+    {
+      "name": "vercel-agent-skills",
+      "description": "Vercel 前端技能集：React 最佳实践、组合模式、React Native 开发指南、Web 设计规范",
+      "category": "development",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/vercel-labs/agent-skills.git"
+      },
+      "author": {
+        "name": "Vercel",
+        "url": "https://vercel.com"
+      },
+      "strict": false,
+      "skills": [
+        "./skills/composition-patterns",
+        "./skills/react-best-practices",
+        "./skills/react-native-skills",
+        "./skills/web-design-guidelines"
+      ],
+      "keywords": ["vercel", "react", "react-native", "composition", "web-design"],
+      "homepage": "https://github.com/vercel-labs/agent-skills"
     }
   ]
 }
