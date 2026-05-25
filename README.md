@@ -1,119 +1,91 @@
-# Premium Claude Tools Marketplace
+# Premium Plugin Marketplace
 
-个人精选的 Claude Code 插件市场集合，提供高质量的插件、技能和工具，帮助你更高效地使用 Claude Code。
+个人精选的 Claude Code 插件市场集合，提供 28+ 高质量插件，涵盖开发、设计、测试、金融、视频等多个领域。
 
-## ✨ 特性
+## 特性
 
-- 🎨 **10+ 精选插件** - 涵盖开发、设计、生产力等多个领域
-- 🔧 **开箱即用** - 简单配置即可使用所有功能
-- 📦 **统一管理** - 一个市场集中管理所有插件
-- 🚀 **持续更新** - 跟随最新版本，确保功能完善
+- **28+ 精选插件** - 涵盖前端开发、设计、测试、生产力、金融等
+- **10 个本地插件** - 深度定制的个人开发工具集
+- **18+ 外部插件** - 来自 Vercel、Microsoft、Anthropic 等团队的优质插件
+- **持续更新** - 跟随社区最新版本，保持技能同步
 
-## 📦 包含的插件
+## 插件列表
 
-### 🌐 浏览器自动化
-- **agent-browser** - 浏览器交互自动化，支持测试、表单填写、截图等
-- **chrome-devtools-mcp** - Chrome DevTools 深度集成，性能分析和调试
+### 本地插件
 
-### 🔍 开发工具
-- **context7-plugin** - 实时文档查询，获取最新的 API 文档和代码示例
-- **vue-volar** - Vue.js 语言服务器，提供智能代码补全
+| 插件 | 说明 | 分类 |
+|------|------|------|
+| **devflow** | 个人工具箱：项目配置、功能测试、文档更新、PRD、原型设计、Pencil UI、Unsplash 图片、Reveal.js 幻灯片 | 开发 |
+| **superpowers-plus** | 代码 / Spec / Plan 的并发多 agent 审查，派遣审查 agent、合并去重反馈、修复问题 | 开发 |
+| **finance-analysis** | A股/港股/美股行情数据获取（akshare）和全面的股票估值分析 | 金融 |
+| **frontend-web** | UI 设计审查、可访问性审计等 Web 开发技能 | 设计 |
+| **frontend-react** | 组合模式、最佳实践和视图转场等 React 开发技能 | 开发 |
+| **frontend-react-native** | 动画、列表性能、UI 组件和状态管理等移动端开发技能 | 开发 |
+| **frontend-next** | RSC、异步模式、数据获取、路由等 Next.js 最佳实践 | 开发 |
+| **test-web** | Playwright 测试专家能力 | 测试 |
+| **image** | Unsplash 图片搜索下载 | 设计 |
+| **slide** | Reveal.js 幻灯片制作 | 生产力 |
 
-### 📄 文档处理
-- **document-skills** - Excel、Word、PowerPoint、PDF 文档处理套件
-- **obsidian** - Obsidian 知识管理集成
+### 外部插件
 
-### 🎨 设计辅助
-- **ui-ux-pro-max** - 专业 UI/UX 设计智能助手，包含样式、色彩、排版等数据库
+| 插件 | 说明 | 作者 |
+|------|------|------|
+| **agent-browser** | 浏览器交互自动化：测试、表单填写、截图、数据提取 | Vercel |
+| **chrome-devtools-mcp** | Chrome DevTools 深度集成，性能分析和调试 | Chrome DevTools Team |
+| **playwright-cli** | 基于 CLI 的高效浏览器自动化，适合 token 节省型工作流 | Microsoft |
+| **context7-plugin** | 实时文档查询，获取最新的 API 文档和代码示例 | Upstash |
+| **document-skills** | Excel、Word、PowerPoint、PDF 文档处理套件 | Anthropic |
+| **marketing-skills** | 41 个营销技能：CRO、文案、SEO、广告、定价策略等 | Corey Haines |
+| **obsidian** | Obsidian 知识管理集成 | Steph Ango |
+| **superpowers** | TDD、调试、协作模式等核心技能库 | Jesse Vincent |
+| **compound-engineering** | AI 驱动的开发工具，每次使用都更智能 | Every Inc. |
+| **vue-volar** | Vue.js 语言服务器集成 (Volar) | Piebald LLC |
+| **ui-ux-pro-max** | 专业 UI/UX 设计数据库：样式、色彩、排版、图表等 | nextlevelbuilder |
+| **impeccable** | 前端设计流畅性：23 个命令 + 反模式检测 | Paul Bakaus |
+| **claude-hud** | 实时状态栏：上下文用量、活跃工具、Agent 进度 | Jarrod Watts |
+| **remotion** | React 视频制作最佳实践：动画、音频、字幕、3D | Remotion |
+| **hyperframes** | HTML 写视频：GSAP 动画、字幕、语音、音频可视化 | HeyGen |
+| **antd-skill** | Ant Design v6 组件决策指南和离线 API 查询 | Ant Design |
+| **shadcn** | shadcn/ui 组件管理：添加、搜索、调试、样式定制 | shadcn |
+| **slidev** | Slidev 幻灯片创建与演示 | Anthony Fu |
 
-### 💼 营销技能
-- **marketing-skills** - 33 个营销技能：CRO、文案、SEO、广告、定价策略等
-
-### 🛠️ 开发最佳实践
-- **superpowers** - TDD、调试、协作模式等核心技能库
-
-## 📁 目录结构
+## 目录结构
 
 ```
-premium-claude-tools/
-├── .claude-plugin/          # 插件市场配置
-│   └── marketplace.json     # 插件清单配置
-└── README.md               # 本文件
+premium-plugin-marketplace/
+├── .claude-plugin/
+│   └── marketplace.json          # 插件市场清单
+├── plugins/                      # 本地插件
+│   ├── devflow/
+│   ├── superpowers-plus/
+│   ├── finance-analysis/
+│   ├── frontend-web/
+│   ├── frontend-react/
+│   ├── frontend-react-native/
+│   ├── frontend-next/
+│   ├── test-web/
+│   ├── image/
+│   └── slide/
+└── README.md
 ```
 
-## 🚀 快速开始
+## 快速开始
 
-### 方法一：使用 Git 克隆
+### 方法一：Git 克隆
 
 ```bash
-# 1. 克隆仓库
-git clone https://github.com/ElliotChina/premium-claude-tools.git
+git clone https://github.com/ElliotChina/premium-plugin-marketplace.git
 
-# 2. 在 Claude Code 中添加市场
-claude marketplace add /path/to/premium-claude-tools
+claude marketplace add /path/to/premium-plugin-marketplace
 ```
 
 ### 方法二：直接添加
 
 ```bash
-# 直接通过 GitHub URL 添加市场
-claude marketplace add https://github.com/ElliotChina/premium-claude-tools
+claude marketplace add https://github.com/ElliotChina/premium-plugin-marketplace
 ```
 
-## 📖 使用说明
-
-### 查看已安装的插件
-
-```bash
-claude plugin list
-```
-
-### 启用/禁用插件
-
-```bash
-# 启用插件
-claude plugin enable <plugin-name>
-
-# 禁用插件
-claude plugin disable <plugin-name>
-```
-
-### 更新市场
-
-```bash
-# 拉取最新更新
-git pull origin main
-
-# 重新加载市场
-claude marketplace reload
-```
-
-## 🔧 插件分类
-
-### 按功能分类
-
-- **开发工具** (Development)
-  - agent-browser
-  - chrome-devtools-mcp
-  - context7-plugin
-  - vue-volar
-  - superpowers
-
-- **生产力** (Productivity)
-  - document-skills
-  - obsidian
-  - marketing-skills
-
-- **设计** (Design)
-  - ui-ux-pro-max
-
-### 按类型分类
-
-- **MCP 服务器** - 提供额外的工具和能力
-- **技能包** - 特定领域的专业知识和最佳实践
-- **语言服务器** - 代码智能补全和导航
-
-## 🔄 本地技能来源与更新
+## 本地技能来源与更新
 
 以下技能从外部仓库下载到本地，更新时需从源仓库同步：
 
@@ -130,33 +102,36 @@ claude marketplace reload
 ### 同步方法
 
 ```bash
-# 单文件技能（如 web-design-guidelines）
-curl -s "https://raw.githubusercontent.com/vercel-labs/agent-skills/main/skills/<skill-name>/SKILL.md" \
+# 单文件技能
+curl -s "https://raw.githubusercontent.com/<owner>/<repo>/main/skills/<skill-name>/SKILL.md" \
   -o plugins/<plugin-name>/skills/<skill-name>/SKILL.md
 
-# 多文件技能（如 playwright-expert、react-best-practices）
-# 需同步 SKILL.md 及 rules/ 或 references/ 子目录
+# 多文件技能（需同步 SKILL.md 及 rules/ 或 references/ 子目录）
 curl -s "https://api.github.com/repos/<owner>/<repo>/contents/skills/<skill-name>" \
   | jq -r '.[].name'
 ```
 
-## 🤝 贡献
+## 插件分类
 
-欢迎提交 Issue 和 Pull Request！
+### 按领域分类
 
-## 📄 许可证
+- **前端开发** - frontend-web, frontend-react, frontend-react-native, frontend-next, vue-volar, antd-skill, shadcn
+- **测试与自动化** - test-web, agent-browser, playwright-cli, chrome-devtools-mcp
+- **设计与 UI** - ui-ux-pro-max, impeccable, image
+- **文档与内容** - document-skills, obsidian, slide, slidev
+- **视频制作** - remotion, hyperframes
+- **开发工作流** - devflow, superpowers, superpowers-plus, compound-engineering, context7-plugin, claude-hud
+- **金融分析** - finance-analysis
+- **营销** - marketing-skills
+
+### 按来源分类
+
+- **本地插件** (10) - devflow, superpowers-plus, finance-analysis, frontend-web, frontend-react, frontend-react-native, frontend-next, test-web, image, slide
+- **外部插件** (18) - agent-browser, chrome-devtools-mcp, playwright-cli, context7-plugin, document-skills, marketing-skills, obsidian, superpowers, compound-engineering, vue-volar, ui-ux-pro-max, impeccable, claude-hud, remotion, hyperframes, antd-skill, shadcn, slidev
+
+## 许可证
 
 MIT License
-
-## 🔗 相关链接
-
-- [Claude Code 官方文档](https://docs.claude.com/en/docs/claude-code)
-- [Claude 插件开发指南](https://github.com/anthropics/claude-plugins-official)
-- [Claude Code GitHub](https://github.com/anthropics/claude-code)
-
-## ⭐ Star History
-
-如果这个项目对你有帮助，请给个 Star！
 
 ---
 

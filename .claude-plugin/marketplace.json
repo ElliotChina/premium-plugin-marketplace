@@ -106,37 +106,20 @@
       ]
     },
     {
-      "name": "test-web",
-      "description": "前端 Web 测试技能集，包含 Playwright 测试专家能力",
+      "name": "frontend-react",
+      "description": "前端 React 开发技能集，包含组合模式、最佳实践和视图转场等能力",
       "category": "development",
-      "source": "./plugins/test-web",
-      "author": {
-        "name": "elliot",
-        "url": "https://github.com/ElliotChina"
-      },
-      "keywords": [
-        "testing",
-        "playwright",
-        "e2e",
-        "frontend",
-        "web"
-      ]
-    },
-    {
-      "name": "frontend-next",
-      "description": "前端 Next.js 开发技能集，包含 RSC、异步模式、数据获取、路由等最佳实践",
-      "category": "development",
-      "source": "./plugins/frontend-next",
+      "source": "./plugins/frontend-react",
       "author": {
         "name": "elliot",
         "url": "https://github.com/ElliotChina"
       },
       "keywords": [
         "frontend",
-        "nextjs",
-        "rsc",
-        "app-router",
-        "ssr"
+        "react",
+        "composition",
+        "best-practices",
+        "view-transitions"
       ]
     },
     {
@@ -157,20 +140,37 @@
       ]
     },
     {
-      "name": "frontend-react",
-      "description": "前端 React 开发技能集，包含组合模式、最佳实践和视图转场等能力",
+      "name": "frontend-next",
+      "description": "前端 Next.js 开发技能集，包含 RSC、异步模式、数据获取、路由等最佳实践",
       "category": "development",
-      "source": "./plugins/frontend-react",
+      "source": "./plugins/frontend-next",
       "author": {
         "name": "elliot",
         "url": "https://github.com/ElliotChina"
       },
       "keywords": [
         "frontend",
-        "react",
-        "composition",
-        "best-practices",
-        "view-transitions"
+        "nextjs",
+        "rsc",
+        "app-router",
+        "ssr"
+      ]
+    },
+    {
+      "name": "test-web",
+      "description": "前端 Web 测试技能集，包含 Playwright 测试专家能力",
+      "category": "development",
+      "source": "./plugins/test-web",
+      "author": {
+        "name": "elliot",
+        "url": "https://github.com/ElliotChina"
+      },
+      "keywords": [
+        "testing",
+        "playwright",
+        "e2e",
+        "frontend",
+        "web"
       ]
     },
     {
@@ -202,6 +202,23 @@
         "email": "devtools-dev@chromium.org"
       },
       "homepage": "https://github.com/ChromeDevTools/chrome-devtools-mcp"
+    },
+    {
+      "name": "playwright-cli",
+      "description": "Microsoft Playwright CLI 技能，提供基于 CLI 的高效浏览器自动化能力，适合编码 agent 的 token 节省型工作流",
+      "category": "development",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/microsoft/playwright-cli.git"
+      },
+      "author": {
+        "name": "Microsoft",
+        "url": "https://github.com/microsoft"
+      },
+      "strict": false,
+      "skills": ["./skills/playwright-cli"],
+      "keywords": ["playwright", "browser", "automation", "e2e", "testing"],
+      "homepage": "https://github.com/microsoft/playwright-cli"
     },
     {
       "name": "context7-plugin",
@@ -467,26 +484,9 @@
       "homepage": "https://ui.shadcn.com"
     },
     {
-      "name": "playwright-cli",
-      "description": "Microsoft Playwright CLI 技能，提供基于 CLI 的高效浏览器自动化能力，适合编码 agent 的 token 节省型工作流",
-      "category": "development",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/microsoft/playwright-cli.git"
-      },
-      "author": {
-        "name": "Microsoft",
-        "url": "https://github.com/microsoft"
-      },
-      "strict": false,
-      "skills": ["./skills/playwright-cli"],
-      "keywords": ["playwright", "browser", "automation", "e2e", "testing"],
-      "homepage": "https://github.com/microsoft/playwright-cli"
-    },
-    {
       "name": "slidev",
       "description": "Claude Code skill for creating and presenting Slidev slidedecks",
-      "category": "development",
+      "category": "productivity",
       "source": {
         "source": "url",
         "url": "https://github.com/slidevjs/slidev.git"
