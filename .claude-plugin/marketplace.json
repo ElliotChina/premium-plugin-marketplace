@@ -174,6 +174,23 @@
       ]
     },
     {
+      "name": "deepwiki",
+      "description": "DeepWiki MCP 插件，提供 AI 驱动的 GitHub 仓库文档查询，支持文档结构浏览、内容阅读和智能问答",
+      "category": "development",
+      "source": "./plugins/deepwiki",
+      "author": {
+        "name": "elliot",
+        "url": "https://github.com/ElliotChina"
+      },
+      "keywords": [
+        "deepwiki",
+        "documentation",
+        "github",
+        "mcp",
+        "wiki"
+      ]
+    },
+    {
       "name": "agent-browser",
       "description": "Automates browser interactions for web testing, form filling, screenshots, and data extraction",
       "category": "development",

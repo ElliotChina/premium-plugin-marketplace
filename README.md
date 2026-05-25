@@ -1,11 +1,11 @@
 # Premium Plugin Marketplace
 
-个人精选的 Claude Code 插件市场集合，提供 28+ 高质量插件，涵盖开发、设计、测试、金融、视频等多个领域。
+个人精选的 Claude Code 插件市场集合，提供 29+ 高质量插件，涵盖开发、设计、测试、金融、视频等多个领域。
 
 ## 特性
 
-- **28+ 精选插件** - 涵盖前端开发、设计、测试、生产力、金融等
-- **10 个本地插件** - 深度定制的个人开发工具集
+- **29+ 精选插件** - 涵盖前端开发、设计、测试、生产力、金融等
+- **11 个本地插件** - 深度定制的个人开发工具集
 - **18+ 外部插件** - 来自 Vercel、Microsoft、Anthropic 等团队的优质插件
 - **持续更新** - 跟随社区最新版本，保持技能同步
 
@@ -25,6 +25,7 @@
 | **test-web** | Playwright 测试专家能力 | 测试 |
 | **image** | Unsplash 图片搜索下载 | 设计 |
 | **slide** | Reveal.js 幻灯片制作 | 生产力 |
+| **deepwiki** | AI 驱动的 GitHub 仓库文档查询 | 开发 |
 
 ### 外部插件
 
@@ -65,7 +66,8 @@ premium-plugin-marketplace/
 │   ├── frontend-next/
 │   ├── test-web/
 │   ├── image/
-│   └── slide/
+│   ├── slide/
+│   └── deepwiki/
 └── README.md
 ```
 
@@ -120,13 +122,13 @@ curl -s "https://api.github.com/repos/<owner>/<repo>/contents/skills/<skill-name
 - **设计与 UI** - ui-ux-pro-max, impeccable, image
 - **文档与内容** - document-skills, obsidian, slide, slidev
 - **视频制作** - remotion, hyperframes
-- **开发工作流** - devflow, superpowers, superpowers-plus, compound-engineering, context7-plugin, claude-hud
+- **开发工作流** - devflow, superpowers, superpowers-plus, compound-engineering, context7-plugin, claude-hud, deepwiki
 - **金融分析** - finance-analysis
 - **营销** - marketing-skills
 
 ### 按来源分类
 
-- **本地插件** (10) - devflow, superpowers-plus, finance-analysis, frontend-web, frontend-react, frontend-react-native, frontend-next, test-web, image, slide
+- **本地插件** (11) - devflow, superpowers-plus, finance-analysis, frontend-web, frontend-react, frontend-react-native, frontend-next, test-web, image, slide, deepwiki
 - **外部插件** (18) - agent-browser, chrome-devtools-mcp, playwright-cli, context7-plugin, document-skills, marketing-skills, obsidian, superpowers, compound-engineering, vue-volar, ui-ux-pro-max, impeccable, claude-hud, remotion, hyperframes, antd-skill, shadcn, slidev
 
 ## 许可证
