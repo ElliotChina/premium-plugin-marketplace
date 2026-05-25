@@ -106,10 +106,10 @@
       ]
     },
     {
-      "name": "test-frontend-web",
+      "name": "test-web",
       "description": "前端 Web 测试技能集，包含 Playwright 测试专家能力",
       "category": "development",
-      "source": "./plugins/test-frontend-web",
+      "source": "./plugins/test-web",
       "author": {
         "name": "elliot",
         "url": "https://github.com/ElliotChina"
