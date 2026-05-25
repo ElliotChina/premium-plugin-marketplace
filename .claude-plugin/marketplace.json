@@ -363,6 +363,23 @@
       "skills": ["./skills/ant-design", "./skills/antd"],
       "keywords": ["antd", "ant-design", "react", "ui", "components"],
       "homepage": "https://github.com/ant-design/antd-skill"
+    },
+    {
+      "name": "shadcn",
+      "description": "shadcn/ui 组件管理与开发技能，涵盖组件添加、搜索、调试、样式定制和组合，包含 CLI、MCP、规则和评估体系",
+      "category": "design",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/shadcn-ui/ui.git"
+      },
+      "author": {
+        "name": "shadcn",
+        "url": "https://ui.shadcn.com"
+      },
+      "strict": false,
+      "skills": ["./skills/shadcn"],
+      "keywords": ["shadcn", "ui", "components", "tailwind", "radix"],
+      "homepage": "https://ui.shadcn.com"
     }
   ]
 }
