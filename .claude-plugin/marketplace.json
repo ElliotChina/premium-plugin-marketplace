@@ -397,6 +397,20 @@
       "skills": ["./skills/playwright-cli"],
       "keywords": ["playwright", "browser", "automation", "e2e", "testing"],
       "homepage": "https://github.com/microsoft/playwright-cli"
+    },
+    {
+      "name": "slidev",
+      "description": "Claude Code skill for creating and presenting Slidev slidedecks",
+      "category": "development",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/slidevjs/slidev.git"
+      },
+      "author": {
+        "name": "Anthony Fu",
+        "url": "https://github.com/antfu"
+      },
+      "homepage": "https://github.com/slidevjs/slidev"
     }
   ]
 }
