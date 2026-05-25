@@ -106,6 +106,23 @@
       ]
     },
     {
+      "name": "frontend-react-native",
+      "description": "前端 React Native 开发技能集，包含动画、列表性能、UI 组件和状态管理等最佳实践",
+      "category": "development",
+      "source": "./plugins/frontend-react-native",
+      "author": {
+        "name": "elliot",
+        "url": "https://github.com/ElliotChina"
+      },
+      "keywords": [
+        "frontend",
+        "react-native",
+        "animation",
+        "performance",
+        "mobile"
+      ]
+    },
+    {
       "name": "frontend-react",
       "description": "前端 React 开发技能集，包含组合模式、最佳实践和视图转场等能力",
       "category": "development",
