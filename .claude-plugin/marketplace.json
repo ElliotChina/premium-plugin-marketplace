@@ -89,6 +89,23 @@
       ]
     },
     {
+      "name": "frontend-web",
+      "description": "前端 Web 开发技能集，包含 UI 设计审查、可访问性审计等能力",
+      "category": "design",
+      "source": "./plugins/frontend-web",
+      "author": {
+        "name": "elliot",
+        "url": "https://github.com/ElliotChina"
+      },
+      "keywords": [
+        "frontend",
+        "web",
+        "design",
+        "accessibility",
+        "ui"
+      ]
+    },
+    {
       "name": "agent-browser",
       "description": "Automates browser interactions for web testing, form filling, screenshots, and data extraction",
       "category": "development",
