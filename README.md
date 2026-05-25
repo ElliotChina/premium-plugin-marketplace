@@ -119,7 +119,7 @@ claude marketplace reload
 
 | 插件 | 技能 | 来源仓库 |
 |------|------|----------|
-| devflow | playwright-expert | [Jeffallan/claude-skills](https://github.com/Jeffallan/claude-skills/tree/main/skills/playwright-expert) |
+| test-frontend-web | playwright-expert | [Jeffallan/claude-skills](https://github.com/Jeffallan/claude-skills/tree/main/skills/playwright-expert) |
 | frontend-web | web-design-guidelines | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills/tree/main/skills/web-design-guidelines) |
 | frontend-react | composition-patterns | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills/tree/main/skills/composition-patterns) |
 | frontend-react | react-best-practices | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills/tree/main/skills/react-best-practices) |
