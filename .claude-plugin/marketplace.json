@@ -106,6 +106,23 @@
       ]
     },
     {
+      "name": "frontend-react",
+      "description": "前端 React 开发技能集，包含组合模式、最佳实践和视图转场等能力",
+      "category": "development",
+      "source": "./plugins/frontend-react",
+      "author": {
+        "name": "elliot",
+        "url": "https://github.com/ElliotChina"
+      },
+      "keywords": [
+        "frontend",
+        "react",
+        "composition",
+        "best-practices",
+        "view-transitions"
+      ]
+    },
+    {
       "name": "agent-browser",
       "description": "Automates browser interactions for web testing, form filling, screenshots, and data extraction",
       "category": "development",
