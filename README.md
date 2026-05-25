@@ -125,6 +125,7 @@ claude marketplace reload
 | frontend-react | react-best-practices | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills/tree/main/skills/react-best-practices) |
 | frontend-react | react-view-transitions | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills/tree/main/skills/react-view-transitions) |
 | frontend-react-native | react-native-skills | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills/tree/main/skills/react-native-skills) |
+| frontend-next | next-best-practices | [vercel-labs/next-skills](https://github.com/vercel-labs/next-skills/tree/main/skills/next-best-practices) |
 
 ### 同步方法
 
