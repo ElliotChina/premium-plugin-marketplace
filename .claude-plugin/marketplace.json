@@ -404,6 +404,18 @@
       "license": "Apache-2.0"
     },
     {
+      "name": "vue-skills",
+      "description": "A collection of skills for Vue.js development.",
+      "category": "development",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/vuejs-ai/skills.git"
+      },
+      "author": {
+        "name": "vuejs-ai"
+      }
+    },
+    {
       "name": "antd-skill",
       "description": "Ant Design 生态技能集，提供 antd v6 组件决策指南和 @ant-design/cli 离线 API 查询、迁移分析工作流",
       "category": "development",
