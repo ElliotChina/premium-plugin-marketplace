@@ -174,6 +174,21 @@
       ]
     },
     {
+      "name": "context7-plugin",
+      "description": "Up-to-date documentation lookup. Pull version-specific documentation and code examples directly from source repositories into your LLM context.",
+      "category": "development",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/upstash/context7.git",
+        "path": "plugins/claude/context7"
+      },
+      "author": {
+        "name": "Upstash"
+      },
+      "strict": false,
+      "homepage": "https://github.com/upstash/context7"
+    },
+    {
       "name": "deepwiki",
       "description": "DeepWiki MCP 插件，提供 AI 驱动的 GitHub 仓库文档查询，支持文档结构浏览、内容阅读和智能问答",
       "category": "development",
@@ -236,70 +251,6 @@
       "skills": ["./skills/playwright-cli"],
       "keywords": ["playwright", "browser", "automation", "e2e", "testing"],
       "homepage": "https://github.com/microsoft/playwright-cli"
-    },
-    {
-      "name": "context7-plugin",
-      "description": "Up-to-date documentation lookup. Pull version-specific documentation and code examples directly from source repositories into your LLM context.",
-      "category": "development",
-      "source": {
-        "source": "git-subdir",
-        "url": "https://github.com/upstash/context7.git",
-        "path": "plugins/claude/context7"
-      },
-      "author": {
-        "name": "Upstash"
-      },
-      "strict": false,
-      "homepage": "https://github.com/upstash/context7"
-    },
-    {
-      "name": "document-skills",
-      "description": "Collection of document processing suite including Excel, Word, PowerPoint, and PDF capabilities",
-      "category": "productivity",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/anthropics/skills.git"
-      },
-      "author": {
-        "name": "Keith Lazuka",
-        "email": "klazuka@anthropic.com"
-      },
-      "strict": false,
-      "skills": [
-        "./skills/xlsx",
-        "./skills/docx",
-        "./skills/pptx",
-        "./skills/pdf"
-      ],
-      "homepage": "https://github.com/anthropics/skills"
-    },
-    {
-      "name": "marketing-skills",
-      "description": "41 marketing skills for technical marketers and founders: CRO, copywriting, cold email, SEO, AI SEO, paid ads, SMS, ad creative, video production, image generation, co-marketing, churn prevention, pricing, referrals, revenue operations, sales enablement, customer research, site architecture, and more",
-      "category": "productivity",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/coreyhaines31/marketingskills.git"
-      },
-      "author": {
-        "name": "Corey Haines",
-        "url": "https://corey.co"
-      },
-      "homepage": "https://github.com/coreyhaines31/marketingskills"
-    },
-    {
-      "name": "obsidian",
-      "description": "Claude Skills for Obsidian",
-      "category": "productivity",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/kepano/obsidian-skills.git"
-      },
-      "author": {
-        "name": "Steph Ango",
-        "url": "https://stephango.com/"
-      },
-      "homepage": "https://github.com/kepano/obsidian-skills"
     },
     {
       "name": "superpowers",
@@ -410,20 +361,6 @@
       "homepage": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill"
     },
     {
-      "name": "claude-hud",
-      "description": "Real-time statusline showing context usage, active tools, running agents, and todo progress. Always visible below your input, zero config required.",
-      "category": "monitoring",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/jarrodwatts/claude-hud.git"
-      },
-      "author": {
-        "name": "Jarrod Watts",
-        "email": "jarrodwattsyt@gmail.com"
-      },
-      "homepage": "https://github.com/jarrodwatts/claude-hud"
-    },
-    {
       "name": "impeccable",
       "description": "Design fluency for frontend development. 1 skill with 23 commands (/impeccable polish, /impeccable audit, /impeccable critique, etc.) and curated anti-pattern detection.",
       "source": {
@@ -513,6 +450,69 @@
         "url": "https://github.com/antfu"
       },
       "homepage": "https://github.com/slidevjs/slidev"
+    },
+    {
+      "name": "document-skills",
+      "description": "Collection of document processing suite including Excel, Word, PowerPoint, and PDF capabilities",
+      "category": "productivity",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/anthropics/skills.git"
+      },
+      "author": {
+        "name": "Keith Lazuka",
+        "email": "klazuka@anthropic.com"
+      },
+      "strict": false,
+      "skills": [
+        "./skills/xlsx",
+        "./skills/docx",
+        "./skills/pptx",
+        "./skills/pdf"
+      ],
+      "homepage": "https://github.com/anthropics/skills"
+    },
+    {
+      "name": "obsidian",
+      "description": "Claude Skills for Obsidian",
+      "category": "productivity",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/kepano/obsidian-skills.git"
+      },
+      "author": {
+        "name": "Steph Ango",
+        "url": "https://stephango.com/"
+      },
+      "homepage": "https://github.com/kepano/obsidian-skills"
+    },
+    {
+      "name": "marketing-skills",
+      "description": "41 marketing skills for technical marketers and founders: CRO, copywriting, cold email, SEO, AI SEO, paid ads, SMS, ad creative, video production, image generation, co-marketing, churn prevention, pricing, referrals, revenue operations, sales enablement, customer research, site architecture, and more",
+      "category": "productivity",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/coreyhaines31/marketingskills.git"
+      },
+      "author": {
+        "name": "Corey Haines",
+        "url": "https://corey.co"
+      },
+      "homepage": "https://github.com/coreyhaines31/marketingskills"
+    },
+    {
+      "name": "claude-hud",
+      "description": "Real-time statusline showing context usage, active tools, running agents, and todo progress. Always visible below your input, zero config required.",
+      "category": "monitoring",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/jarrodwatts/claude-hud.git"
+      },
+      "author": {
+        "name": "Jarrod Watts",
+        "email": "jarrodwattsyt@gmail.com"
+      },
+      "homepage": "https://github.com/jarrodwatts/claude-hud"
     }
   ]
 }
