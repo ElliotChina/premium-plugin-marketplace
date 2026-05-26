@@ -1,0 +1,17 @@
+{
+  "name": "frontend-react-native",
+  "version": "0.1.0",
+  "description": "React Native 和 Expo 最佳实践技能插件，覆盖移动端性能优化、动画、UI 模式和平台特定优化",
+  "author": {
+    "name": "elliot",
+    "url": "https://github.com/ElliotChina"
+  },
+  "license": "MIT",
+  "keywords": [
+    "react-native",
+    "expo",
+    "mobile",
+    "frontend",
+    "performance"
+  ]
+}

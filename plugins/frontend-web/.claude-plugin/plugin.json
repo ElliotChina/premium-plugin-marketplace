@@ -1,0 +1,17 @@
+{
+  "name": "frontend-web",
+  "version": "0.1.0",
+  "description": "Web 界面设计规范技能插件，基于 Web Interface Guidelines 进行 UI 代码审查，检查可访问性、设计和用户体验最佳实践",
+  "author": {
+    "name": "elliot",
+    "url": "https://github.com/ElliotChina"
+  },
+  "license": "MIT",
+  "keywords": [
+    "web",
+    "ui",
+    "accessibility",
+    "design",
+    "guidelines"
+  ]
+}

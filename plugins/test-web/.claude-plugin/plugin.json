@@ -1,0 +1,17 @@
+{
+  "name": "test-web",
+  "version": "0.1.0",
+  "description": "Playwright E2E 测试专家技能插件，覆盖测试脚本编写、Page Object Model、CI 集成、API Mock 和视觉回归测试",
+  "author": {
+    "name": "elliot",
+    "url": "https://github.com/ElliotChina"
+  },
+  "license": "MIT",
+  "keywords": [
+    "playwright",
+    "e2e",
+    "testing",
+    "browser",
+    "automation"
+  ]
+}

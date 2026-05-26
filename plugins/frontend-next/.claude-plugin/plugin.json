@@ -1,0 +1,17 @@
+{
+  "name": "frontend-next",
+  "version": "0.1.0",
+  "description": "Next.js 最佳实践技能插件，涵盖文件约定、RSC 边界、数据模式、异步 API、元数据、错误处理、路由处理、图片/字体优化和打包优化",
+  "author": {
+    "name": "elliot",
+    "url": "https://github.com/ElliotChina"
+  },
+  "license": "MIT",
+  "keywords": [
+    "nextjs",
+    "react",
+    "frontend",
+    "best-practices",
+    "performance"
+  ]
+}

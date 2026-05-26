@@ -1,0 +1,16 @@
+{
+  "name": "deepwiki",
+  "version": "0.1.0",
+  "description": "DeepWiki MCP 集成插件，通过 MCP 服务连接 deepwiki.com 获取开源项目文档和代码解析",
+  "author": {
+    "name": "elliot",
+    "url": "https://github.com/ElliotChina"
+  },
+  "license": "MIT",
+  "keywords": [
+    "deepwiki",
+    "documentation",
+    "mcp",
+    "open-source"
+  ]
+}
