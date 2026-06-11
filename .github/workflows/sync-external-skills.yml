@@ -78,6 +78,30 @@ jobs:
             exit 0
           fi
 
+          # 递增受影响插件的 patch 版本
+          bumped_plugins=""
+          for i in $(seq 0 $((total - 1))); do
+            local_path=$(jq -r ".[$i].local" "$MAPPING_FILE")
+            # 从 plugins/{plugin-name}/skills/... 提取插件名
+            plugin_name=$(echo "$local_path" | cut -d'/' -f2)
+            plugin_json="plugins/$plugin_name/.claude-plugin/plugin.json"
+
+            # 跳过未安装 plugin.json 或该技能无变更的插件
+            [ ! -f "$plugin_json" ] && continue
+            git diff --cached --quiet "$local_path" 2>/dev/null && continue
+
+            # 检查是否已递增过（同一插件可能有多个技能）
+            echo "$bumped_plugins" | grep -q "$plugin_name" && continue
+
+            # 递增 patch 版本
+            old_ver=$(jq -r '.version' "$plugin_json")
+            new_ver=$(echo "$old_ver" | awk -F. -v OFS=. '{$NF++; print}')
+            jq --arg v "$new_ver" '.version = $v' "$plugin_json" > "$plugin_json.tmp" && mv "$plugin_json.tmp" "$plugin_json"
+            git add "$plugin_json"
+            bumped_plugins="$bumped_plugins $plugin_name"
+            echo "Bumped $plugin_name: $old_ver → $new_ver"
+          done
+
           # 清理已合并/已关闭的旧分支
           git push origin --delete "$BRANCH" 2>/dev/null || true
 
