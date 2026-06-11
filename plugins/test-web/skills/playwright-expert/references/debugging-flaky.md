@@ -105,6 +105,7 @@ await page.waitForTimeout(3000); // ❌ BAD
 // playwright.config.ts
 export default defineConfig({
   retries: process.env.CI ? 2 : 0,
+
   // Retry only specific tests
   expect: {
     timeout: 10000, // Increase assertion timeout

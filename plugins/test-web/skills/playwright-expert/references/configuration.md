@@ -17,6 +17,7 @@ export default defineConfig({
     ['json', { outputFile: 'results.json' }],
     ['junit', { outputFile: 'results.xml' }],
   ],
+
   use: {
     baseURL: 'http://localhost:3000',
     trace: 'retain-on-failure',
@@ -24,6 +25,7 @@ export default defineConfig({
     video: 'retain-on-failure',
     testIdAttribute: 'data-testid',
   },
+
   projects: [
     {
       name: 'chromium',
@@ -46,6 +48,7 @@ export default defineConfig({
       use: { ...devices['iPhone 13'] },
     },
   ],
+
   webServer: {
     command: 'npm run dev',
     url: 'http://localhost:3000',

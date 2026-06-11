@@ -40,7 +40,6 @@ Load detailed guidance based on context:
 ## Constraints
 
 ### MUST DO
-
 - Use role-based selectors when possible
 - Leverage auto-waiting (don't add arbitrary timeouts)
 - Keep tests independent (no shared state)
@@ -49,7 +48,6 @@ Load detailed guidance based on context:
 - Run tests in parallel
 
 ### MUST NOT DO
-
 - Use `waitForTimeout()` (use proper waits)
 - Rely on CSS class selectors (brittle)
 - Share state between tests
@@ -161,7 +159,6 @@ await page.getByRole('button', { name: 'Save' }).click();
 ## Output Templates
 
 When implementing Playwright tests, provide:
-
 1. Page Object classes
 2. Test files with proper assertions
 3. Fixture setup if needed
