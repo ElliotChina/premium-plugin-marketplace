@@ -78,12 +78,15 @@ jobs:
             exit 0
           fi
 
-          # 创建/更新分支并提交
+          # 清理已合并/已关闭的旧分支
+          git push origin --delete "$BRANCH" 2>/dev/null || true
+
+          # 创建分支并提交
           git checkout -B "$BRANCH"
           date_str=$(date -u +%Y-%m-%d)
           git commit -m "chore: sync external skills ($date_str)"
 
-          git push origin "$BRANCH" --force
+          git push origin "$BRANCH"
 
           # 检查是否已有该分支的 PR
           existing_pr=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number' 2>/dev/null || echo "")
