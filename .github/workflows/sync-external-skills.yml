@@ -1,0 +1,112 @@
+name: Sync External Skills
+
+on:
+  schedule:
+    # 每周一 03:00 UTC（北京时间周一 11:00）
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sync skills from upstream
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="sync/external-skills"
+          MAPPING_FILE=".github/sync-skills-mapping.json"
+
+          changed_files=""
+
+          # 读取映射，逐个技能同步
+          total=$(jq 'length' "$MAPPING_FILE")
+          for i in $(seq 0 $((total - 1))); do
+            local_path=$(jq -r ".[$i].local" "$MAPPING_FILE")
+            repo=$(jq -r ".[$i].repo" "$MAPPING_FILE")
+            remote_path=$(jq -r ".[$i].path" "$MAPPING_FILE")
+
+            echo "::group::Syncing $local_path from $repo/$remote_path"
+
+            # 获取上游文件树（递归）
+            tree=$(gh api "repos/$repo/git/trees/HEAD?recursive=1" \
+              --jq ".tree[] | select(.path | startswith(\"$remote_path/\")) | .path")
+
+            if [ -z "$tree" ]; then
+              # 可能是扁平目录，尝试获取单个文件
+              tree=$(gh api "repos/$repo/contents/$remote_path" \
+                --jq '.[] | .path // empty' 2>/dev/null || true)
+            fi
+
+            # 逐文件下载
+            for file_path in $tree; do
+              # 只处理文件，跳过目录
+              file_type=$(gh api "repos/$repo/contents/$file_path" \
+                --jq '.type' 2>/dev/null || echo "dir")
+              [ "$file_type" = "dir" ] && continue
+
+              file_name=$(basename "$file_path")
+              relative="${file_path#$remote_path/}"
+              dest="$local_path/$relative"
+
+              mkdir -p "$(dirname "$dest")"
+              gh api "repos/$repo/contents/$file_path" --jq '.content' | base64 -d > "$dest"
+            done
+
+            # 检查该技能目录是否有变更
+            if git diff --quiet "$local_path"; then
+              echo "No changes in $local_path"
+            else
+              echo "Changes detected in $local_path"
+              git add "$local_path"
+              changed_files="$changed_files
+  - $local_path ($repo)"
+            fi
+
+            echo "::endgroup::"
+          done
+
+          # 无变更则退出
+          if [ -z "$changed_files" ]; then
+            echo "All skills are up to date. No PR needed."
+            exit 0
+          fi
+
+          # 创建/更新分支并提交
+          git checkout -B "$BRANCH"
+          date_str=$(date -u +%Y-%m-%d)
+          git commit -m "chore: sync external skills ($date_str)"
+
+          git push origin "$BRANCH" --force
+
+          # 检查是否已有该分支的 PR
+          existing_pr=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number' 2>/dev/null || echo "")
+
+          pr_body="## 外部技能同步报告
+
+          同步日期：$date_str
+
+          ### 变更的技能
+
+          $changed_files
+
+          ---
+          *此 PR 由 GitHub Actions 自动生成。每周一自动检查上游变化并更新此 PR。*"
+
+          if [ -n "$existing_pr" ]; then
+            echo "Updating existing PR #$existing_pr"
+            gh pr edit "$existing_pr" --body "$pr_body"
+          else
+            echo "Creating new PR"
+            gh pr create \
+              --base main \
+              --head "$BRANCH" \
+              --title "chore: sync external skills ($date_str)" \
+              --body "$pr_body"
+          fi
