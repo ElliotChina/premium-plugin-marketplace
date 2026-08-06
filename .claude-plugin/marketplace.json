@@ -250,6 +250,27 @@
       "homepage": "https://github.com/microsoft/playwright-cli"
     },
     {
+      "name": "mattpocock-skills",
+      "description": "Matt Pocock's agent skills for real engineering — grilling, spec/ticket flows, TDD, code review, domain modelling and more.",
+      "category": "engineering",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/mattpocock/skills.git"
+      },
+      "author": {
+        "name": "Matt Pocock",
+        "url": "https://www.aihero.dev"
+      },
+      "keywords": [
+        "engineering",
+        "skills",
+        "tdd",
+        "code-review",
+        "grilling"
+      ],
+      "homepage": "https://github.com/mattpocock/skills"
+    },
+    {
       "name": "superpowers",
       "description": "Core skills library for Claude Code: TDD, debugging, collaboration patterns, and proven techniques",
       "category": "development",
