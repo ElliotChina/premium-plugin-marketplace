@@ -1,0 +1,12 @@
+{
+  "vue": {
+    "command": "node",
+    "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/launch.js"],
+    "transport": "stdio",
+    "extensionToLanguage": {
+      ".vue": "vue"
+    },
+    "settings": {},
+    "maxRestarts": 3
+  }
+}

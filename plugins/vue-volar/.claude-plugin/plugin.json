@@ -1,0 +1,19 @@
+{
+  "name": "vue-volar",
+  "version": "0.2.0",
+  "description": "Vue.js language server integration (Volar)，动态探测 TypeScript SDK 路径，支持 monorepo 嵌套项目",
+  "author": {
+    "name": "elliot",
+    "url": "https://github.com/ElliotChina"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/vuejs/language-tools",
+  "homepage": "https://github.com/Piebald-AI/claude-code-lsps",
+  "keywords": [
+    "vue",
+    "volar",
+    "lsp",
+    "language-server",
+    "vue3"
+  ]
+}
