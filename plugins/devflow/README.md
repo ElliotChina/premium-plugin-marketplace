@@ -11,7 +11,6 @@ Elliot 的个人工具箱插件，包含日常开发中常用的命令。
 
 | 命令 | 用途 |
 |------|------|
-| `/devflow:project-config` | 项目配置 |
 | `/devflow:pencil-design` | Pencil UI 设计 |
 
 ## 安装
@@ -26,7 +25,6 @@ claude plugin add /path/to/devflow
 
 ```
 /devflow:pencil-design 后台管理仪表板
-/devflow:project-config 电商后台系统
 ```
 
 ## 许可证

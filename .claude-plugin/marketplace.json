@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "devflow",
-      "description": "Elliot 的个人工具箱插件，包含 3 个常用开发命令：项目配置、Pencil UI 设计、CE 自动化流水线",
+      "description": "Elliot 的个人工具箱插件，包含 2 个常用开发命令：Pencil UI 设计、CE 自动化流水线",
       "category": "development",
       "source": "./plugins/devflow",
       "author": {
