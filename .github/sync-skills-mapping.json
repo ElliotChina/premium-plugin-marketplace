@@ -30,11 +30,6 @@
     "path": "skills/react-native-skills"
   },
   {
-    "local": "plugins/frontend-next/skills/next-best-practices",
-    "repo": "vercel-labs/next-skills",
-    "path": "skills/next-best-practices"
-  },
-  {
     "local": "plugins/excalidraw/skills/excalidraw-diagram-generator",
     "repo": "github/awesome-copilot",
     "path": "skills/excalidraw-diagram-generator"
