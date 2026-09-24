@@ -66,7 +66,7 @@ jobs:
               echo "Changes detected in $local_path"
               git add "$local_path"
               changed_files="$changed_files
-  - $local_path ($repo)"
+            - $local_path ($repo)"
             fi
 
             echo "::endgroup::"
