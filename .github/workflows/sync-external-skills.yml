@@ -23,6 +23,9 @@ jobs:
           BRANCH="sync/external-skills"
           MAPPING_FILE=".github/sync-skills-mapping.json"
 
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
           changed_files=""
 
           # 读取映射，逐个技能同步
