@@ -140,3 +140,8 @@ jobs:
               --title "chore: sync external skills ($date_str)" \
               --body "$pr_body"
           fi
+
+          # 自动合并（squash）；有冲突等失败时留 PR 供人工处理
+          if ! gh pr merge "$BRANCH" --squash --delete-branch --fill; then
+            echo "::warning::自动合并失败（可能存在冲突），请手动处理 PR（分支 $BRANCH）"
+          fi
