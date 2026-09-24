@@ -1,0 +1,17 @@
+{
+  "name": "excalidraw",
+  "version": "0.1.0",
+  "description": "Excalidraw 图表生成插件，通过自然语言描述生成流程图、架构图、思维导图等 .excalidraw 文件",
+  "author": {
+    "name": "elliot",
+    "url": "https://github.com/ElliotChina"
+  },
+  "license": "MIT",
+  "keywords": [
+    "excalidraw",
+    "diagram",
+    "flowchart",
+    "architecture",
+    "mindmap"
+  ]
+}

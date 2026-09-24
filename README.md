@@ -26,6 +26,7 @@
 | **image** | Unsplash 图片搜索下载 | 设计 |
 | **slide** | Reveal.js 幻灯片制作 | 生产力 |
 | **deepwiki** | AI 驱动的 GitHub 仓库文档查询 | 开发 |
+| **excalidraw** | 自然语言生成 Excalidraw 图表：流程图、架构图、思维导图等（来自 [awesome-copilot](https://github.com/github/awesome-copilot)） | 设计 |
 
 ### 外部插件
 

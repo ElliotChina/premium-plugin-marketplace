@@ -86,6 +86,23 @@
       ]
     },
     {
+      "name": "excalidraw",
+      "description": "Excalidraw 图表生成插件，通过自然语言描述生成流程图、关系图、思维导图、系统架构图等 .excalidraw 文件，可直接在 Excalidraw 中打开",
+      "category": "design",
+      "source": "./plugins/excalidraw",
+      "author": {
+        "name": "elliot",
+        "url": "https://github.com/ElliotChina"
+      },
+      "keywords": [
+        "excalidraw",
+        "diagram",
+        "flowchart",
+        "architecture",
+        "mindmap"
+      ]
+    },
+    {
       "name": "frontend-web",
       "description": "前端 Web 开发技能集，包含 UI 设计审查、可访问性审计等能力",
       "category": "design",
