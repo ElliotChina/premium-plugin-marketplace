@@ -142,6 +142,8 @@ jobs:
           fi
 
           # 自动合并（squash）；有冲突等失败时留 PR 供人工处理
-          if ! gh pr merge "$BRANCH" --squash --delete-branch --fill; then
+          if ! gh pr merge "$BRANCH" --squash --delete-branch \
+            --subject "chore: sync external skills ($date_str)" \
+            --body "自动同步外部技能上游更新，详见 PR 描述"; then
             echo "::warning::自动合并失败（可能存在冲突），请手动处理 PR（分支 $BRANCH）"
           fi
