@@ -1,6 +1,6 @@
 {
   "name": "frontend-react",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "React 性能优化技能插件（Vercel Engineering 出品），包含组合模式、最佳实践和视图过渡三大技能，涵盖 70 条规则和 8 个优化类别",
   "author": {
     "name": "elliot",
