@@ -188,21 +188,6 @@
       ]
     },
     {
-      "name": "context7-plugin",
-      "description": "Up-to-date documentation lookup. Pull version-specific documentation and code examples directly from source repositories into your LLM context.",
-      "category": "development",
-      "source": {
-        "source": "git-subdir",
-        "url": "https://github.com/upstash/context7.git",
-        "path": "plugins/claude/context7"
-      },
-      "author": {
-        "name": "Upstash"
-      },
-      "strict": false,
-      "homepage": "https://github.com/upstash/context7"
-    },
-    {
       "name": "deepwiki",
       "description": "DeepWiki MCP 插件，提供 AI 驱动的 GitHub 仓库文档查询，支持文档结构浏览、内容阅读和智能问答",
       "category": "development",
@@ -220,36 +205,6 @@
       ]
     },
     {
-      "name": "agent-browser",
-      "description": "Automates browser interactions for web testing, form filling, screenshots, and data extraction",
-      "category": "development",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/vercel-labs/agent-browser.git"
-      },
-      "author": {
-        "name": "Vercel",
-        "email": "support@vercel.com"
-      },
-      "strict": false,
-      "skills": ["./skills/agent-browser"],
-      "homepage": "https://github.com/vercel-labs/agent-browser"
-    },
-    {
-      "name": "chrome-devtools-mcp",
-      "description": "Reliable automation, in-depth debugging, and performance analysis in Chrome using Chrome DevTools and Puppeteer",
-      "category": "development",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/ChromeDevTools/chrome-devtools-mcp.git"
-      },
-      "author": {
-        "name": "Chrome DevTools Team",
-        "email": "devtools-dev@chromium.org"
-      },
-      "homepage": "https://github.com/ChromeDevTools/chrome-devtools-mcp"
-    },
-    {
       "name": "playwright-cli",
       "description": "Microsoft Playwright CLI 技能，提供基于 CLI 的高效浏览器自动化能力，适合编码 agent 的 token 节省型工作流",
       "category": "development",
@@ -262,65 +217,17 @@
         "url": "https://github.com/microsoft"
       },
       "strict": false,
-      "skills": ["./skills/playwright-cli"],
-      "keywords": ["playwright", "browser", "automation", "e2e", "testing"],
-      "homepage": "https://github.com/microsoft/playwright-cli"
-    },
-    {
-      "name": "mattpocock-skills",
-      "description": "Matt Pocock's agent skills for real engineering — grilling, spec/ticket flows, TDD, code review, domain modelling and more.",
-      "category": "engineering",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/mattpocock/skills.git"
-      },
-      "author": {
-        "name": "Matt Pocock",
-        "url": "https://www.aihero.dev"
-      },
-      "keywords": [
-        "engineering",
-        "skills",
-        "tdd",
-        "code-review",
-        "grilling"
+      "skills": [
+        "./skills/playwright-cli"
       ],
-      "homepage": "https://github.com/mattpocock/skills"
-    },
-    {
-      "name": "superpowers",
-      "description": "Core skills library for Claude Code: TDD, debugging, collaboration patterns, and proven techniques",
-      "category": "development",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/obra/superpowers.git"
-      },
-      "author": {
-        "name": "Jesse Vincent",
-        "email": "jesse@fsck.com"
-      },
-      "homepage": "https://github.com/obra/superpowers"
-    },
-    {
-      "name": "compound-engineering",
-      "description": "Brainstorm, plan, debug, review, and compound learnings with AI agents",
-      "category": "development",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/EveryInc/compound-engineering-plugin.git"
-      },
-      "author": {
-        "name": "Kieran Klaassen and Trevin Chow"
-      },
-      "homepage": "https://github.com/EveryInc/compound-engineering-plugin",
-      "tags": [
-        "ai-powered",
-        "compound-engineering",
-        "workflow-automation",
-        "code-review",
-        "quality",
-        "knowledge-management"
-      ]
+      "keywords": [
+        "playwright",
+        "browser",
+        "automation",
+        "e2e",
+        "testing"
+      ],
+      "homepage": "https://github.com/microsoft/playwright-cli"
     },
     {
       "name": "vue-volar",
@@ -341,46 +248,6 @@
       "homepage": "https://github.com/Piebald-AI/claude-code-lsps"
     },
     {
-      "name": "ui-ux-pro-max",
-      "description": "Professional UI/UX design intelligence for AI coding assistants. Includes searchable databases of styles, colors, typography, charts, and UX guidelines for React, Next.js, Astro, Vue, Nuxt.js, Nuxt UI, Svelte, SwiftUI, React Native, Flutter, Tailwind, shadcn/ui, and Jetpack Compose.",
-      "category": "design",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git"
-      },
-      "author": {
-        "name": "nextlevelbuilder"
-      },
-      "keywords": [
-        "ui",
-        "ux",
-        "design",
-        "styles",
-        "typography",
-        "color-palette",
-        "accessibility",
-        "charts",
-        "components"
-      ],
-      "homepage": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill"
-    },
-    {
-      "name": "impeccable",
-      "description": "Design fluency for frontend development. 1 skill with 23 commands (/impeccable polish, /impeccable audit, /impeccable critique, etc.) and curated anti-pattern detection.",
-      "source": {
-        "source": "git-subdir",
-        "url": "https://github.com/pbakaus/impeccable.git",
-        "path": "plugin"
-      },
-      "author": {
-        "name": "Paul Bakaus",
-        "email": "paul@paulbakaus.com"
-      },
-      "category": "design",
-      "homepage": "https://impeccable.style",
-      "tags": ["design", "frontend", "ui", "ux", "skills", "commands"]
-    },
-    {
       "name": "remotion",
       "description": "Remotion 视频制作最佳实践，涵盖 React 视频创建、动画、音频、字幕、3D 等领域知识",
       "category": "development",
@@ -393,31 +260,17 @@
         "url": "https://remotion.dev"
       },
       "strict": false,
-      "skills": ["./skills/remotion"],
-      "keywords": ["remotion", "video", "react", "animation", "composition"],
+      "skills": [
+        "./skills/remotion"
+      ],
+      "keywords": [
+        "remotion",
+        "video",
+        "react",
+        "animation",
+        "composition"
+      ],
       "homepage": "https://github.com/remotion-dev/skills"
-    },
-    {
-      "name": "hyperframes",
-      "description": "HyperFrames by HeyGen. Write HTML, render video. Compositions, GSAP and runtime adapter animations, captions, voiceovers, audio-reactive visuals, and website-to-video capture for HyperFrames.",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/heygen-com/hyperframes.git"
-      },
-      "homepage": "https://hyperframes.heygen.com",
-      "license": "Apache-2.0"
-    },
-    {
-      "name": "vue-skills",
-      "description": "A collection of skills for Vue.js development.",
-      "category": "development",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/vuejs-ai/skills.git"
-      },
-      "author": {
-        "name": "vuejs-ai"
-      }
     },
     {
       "name": "antd-skill",
@@ -432,8 +285,17 @@
         "url": "https://ant.design"
       },
       "strict": false,
-      "skills": ["./skills/ant-design", "./skills/antd"],
-      "keywords": ["antd", "ant-design", "react", "ui", "components"],
+      "skills": [
+        "./skills/ant-design",
+        "./skills/antd"
+      ],
+      "keywords": [
+        "antd",
+        "ant-design",
+        "react",
+        "ui",
+        "components"
+      ],
       "homepage": "https://github.com/ant-design/antd-skill"
     },
     {
@@ -449,86 +311,17 @@
         "url": "https://ui.shadcn.com"
       },
       "strict": false,
-      "skills": ["./skills/shadcn"],
-      "keywords": ["shadcn", "ui", "components", "tailwind", "radix"],
-      "homepage": "https://ui.shadcn.com"
-    },
-    {
-      "name": "slidev",
-      "description": "Claude Code skill for creating and presenting Slidev slidedecks",
-      "category": "productivity",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/slidevjs/slidev.git"
-      },
-      "author": {
-        "name": "Anthony Fu",
-        "url": "https://github.com/antfu"
-      },
-      "homepage": "https://github.com/slidevjs/slidev"
-    },
-    {
-      "name": "document-skills",
-      "description": "Collection of document processing suite including Excel, Word, PowerPoint, and PDF capabilities",
-      "category": "productivity",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/anthropics/skills.git"
-      },
-      "author": {
-        "name": "Keith Lazuka",
-        "email": "klazuka@anthropic.com"
-      },
-      "strict": false,
       "skills": [
-        "./skills/xlsx",
-        "./skills/docx",
-        "./skills/pptx",
-        "./skills/pdf"
+        "./skills/shadcn"
       ],
-      "homepage": "https://github.com/anthropics/skills"
-    },
-    {
-      "name": "obsidian",
-      "description": "Claude Skills for Obsidian",
-      "category": "productivity",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/kepano/obsidian-skills.git"
-      },
-      "author": {
-        "name": "Steph Ango",
-        "url": "https://stephango.com/"
-      },
-      "homepage": "https://github.com/kepano/obsidian-skills"
-    },
-    {
-      "name": "marketing-skills",
-      "description": "41 marketing skills for technical marketers and founders: CRO, copywriting, cold email, SEO, AI SEO, paid ads, SMS, ad creative, video production, image generation, co-marketing, churn prevention, pricing, referrals, revenue operations, sales enablement, customer research, site architecture, and more",
-      "category": "productivity",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/coreyhaines31/marketingskills.git"
-      },
-      "author": {
-        "name": "Corey Haines",
-        "url": "https://corey.co"
-      },
-      "homepage": "https://github.com/coreyhaines31/marketingskills"
-    },
-    {
-      "name": "claude-hud",
-      "description": "Real-time statusline showing context usage, active tools, running agents, and todo progress. Always visible below your input, zero config required.",
-      "category": "monitoring",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/jarrodwatts/claude-hud.git"
-      },
-      "author": {
-        "name": "Jarrod Watts",
-        "email": "jarrodwattsyt@gmail.com"
-      },
-      "homepage": "https://github.com/jarrodwatts/claude-hud"
+      "keywords": [
+        "shadcn",
+        "ui",
+        "components",
+        "tailwind",
+        "radix"
+      ],
+      "homepage": "https://ui.shadcn.com"
     }
   ]
 }
