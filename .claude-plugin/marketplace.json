@@ -7,38 +7,6 @@
   },
   "plugins": [
     {
-      "name": "devflow",
-      "description": "Elliot 的个人工具箱插件，包含 2 个常用开发命令：Pencil UI 设计、CE 自动化流水线",
-      "category": "development",
-      "source": "./plugins/devflow",
-      "author": {
-        "name": "elliot",
-        "url": "https://github.com/ElliotChina"
-      },
-      "keywords": [
-        "toolkit",
-        "workflow",
-        "design"
-      ]
-    },
-    {
-      "name": "superpowers-plus",
-      "description": "superpowers 插件扩展，提供代码、Spec 和 Plan 的并发多 agent 审查能力：派遣审查 agent、合并去重反馈、修复问题",
-      "category": "development",
-      "source": "./plugins/superpowers-plus",
-      "author": {
-        "name": "elliot",
-        "url": "https://github.com/ElliotChina"
-      },
-      "keywords": [
-        "review",
-        "code-review",
-        "spec-review",
-        "plan-review",
-        "multi-agent"
-      ]
-    },
-    {
       "name": "finance-analysis",
       "description": "股票与金融分析插件，提供 A股/港股/美股行情数据获取（akshare）和全面的股票估值分析能力",
       "category": "finance",
@@ -137,23 +105,6 @@
       ]
     },
     {
-      "name": "frontend-react-native",
-      "description": "前端 React Native 开发技能集，包含动画、列表性能、UI 组件和状态管理等最佳实践",
-      "category": "development",
-      "source": "./plugins/frontend-react-native",
-      "author": {
-        "name": "elliot",
-        "url": "https://github.com/ElliotChina"
-      },
-      "keywords": [
-        "frontend",
-        "react-native",
-        "animation",
-        "performance",
-        "mobile"
-      ]
-    },
-    {
       "name": "frontend-next",
       "description": "前端 Next.js 开发技能集，包含 RSC、异步模式、数据获取、路由等最佳实践",
       "category": "development",
@@ -168,23 +119,6 @@
         "rsc",
         "app-router",
         "ssr"
-      ]
-    },
-    {
-      "name": "test-web",
-      "description": "前端 Web 测试技能集，包含 Playwright 测试专家能力",
-      "category": "development",
-      "source": "./plugins/test-web",
-      "author": {
-        "name": "elliot",
-        "url": "https://github.com/ElliotChina"
-      },
-      "keywords": [
-        "testing",
-        "playwright",
-        "e2e",
-        "frontend",
-        "web"
       ]
     },
     {

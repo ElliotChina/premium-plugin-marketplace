@@ -1,10 +1,5 @@
 [
   {
-    "local": "plugins/test-web/skills/playwright-expert",
-    "repo": "Jeffallan/claude-skills",
-    "path": "skills/playwright-expert"
-  },
-  {
     "local": "plugins/frontend-web/skills/web-design-guidelines",
     "repo": "vercel-labs/agent-skills",
     "path": "skills/web-design-guidelines"
@@ -23,11 +18,6 @@
     "local": "plugins/frontend-react/skills/react-view-transitions",
     "repo": "vercel-labs/agent-skills",
     "path": "skills/react-view-transitions"
-  },
-  {
-    "local": "plugins/frontend-react-native/skills/react-native-skills",
-    "repo": "vercel-labs/agent-skills",
-    "path": "skills/react-native-skills"
   },
   {
     "local": "plugins/excalidraw/skills/excalidraw-diagram-generator",
