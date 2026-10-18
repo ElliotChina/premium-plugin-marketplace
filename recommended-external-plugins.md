@@ -2,7 +2,7 @@
 
 市场中通过远程仓库引用的插件(`source` 为 `git-subdir` 或 `url`)分为两组:**外部插件市场推荐**已从 `.claude-plugin/marketplace.json` 移除,仅作推荐记录,可按需从上游仓库直接安装;**外部插件引用**仍由市场配置引用。
 
-## 外部插件市场推荐(15 个,已从市场移除)
+## 外部插件市场推荐(17 个,已从市场移除)
 
 | 插件 | 分类 | 说明 | 上游仓库 |
 |------|------|------|----------|
@@ -21,6 +21,8 @@
 | claude-hud | 监控 | 实时状态栏:上下文用量、活跃工具、Agent 进度 | [jarrodwatts/claude-hud](https://github.com/jarrodwatts/claude-hud) |
 | agent-browser | 开发 | 浏览器交互自动化:测试、表单、截图、数据提取 | [vercel-labs/agent-browser](https://github.com/vercel-labs/agent-browser) |
 | slidev | 生产力 | Slidev 幻灯片创建与演示 | [slidevjs/slidev](https://github.com/slidevjs/slidev) |
+| taste-skill | 设计 | 网页设计品味技能集:艺术方向、真实图库参考、浏览器三宽度自查 | [leonxlnx/taste-skill](https://github.com/leonxlnx/taste-skill) |
+| ponytail | 工程 | "懒惰资深开发者"提示词:最小改动、复用优先,附审查/审计命令 | [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) |
 
 ## 外部插件引用(4 个,仍在市场中)
 
