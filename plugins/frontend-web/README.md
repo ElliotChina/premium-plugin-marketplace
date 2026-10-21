@@ -6,7 +6,7 @@ Web 前端界面技能插件。
 
 ### web-design-guidelines
 
-Web 界面设计审查技能（源自 [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills)，Apache-2.0）：按 Web Interface Guidelines 审查 UI 代码，覆盖可访问性、设计与用户体验最佳实践。
+Web 界面设计审查技能（源自 [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills)）：按 Web Interface Guidelines 审查 UI 代码，覆盖可访问性、设计与用户体验最佳实践。
 
 ```bash
 /web-design-guidelines   # 审查当前改动的 UI 代码
