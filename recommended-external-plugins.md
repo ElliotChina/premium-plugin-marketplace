@@ -1,8 +1,8 @@
 # 外部来源插件清单
 
-市场中通过远程仓库引用的插件(`source` 为 `git-subdir` 或 `url`)分为两组:**外部插件市场推荐**已从 `.claude-plugin/marketplace.json` 移除,仅作推荐记录,可按需从上游仓库直接安装;**外部插件引用**仍由市场配置引用。
+市场中通过远程仓库引用的插件(`source` 为 `git-subdir` 或 `url`)分为两组:**外部插件市场推荐**已从 `.claude-plugin/marketplace.json` 移除,仅作推荐记录,可按需从上游仓库直接安装;**外部插件引用**仍由市场配置引用。文末另附**外部 Skill 推荐**,为不含插件壳的单体 Skill,可手动复制到 `~/.claude/skills/` 使用。
 
-## 外部插件市场推荐(17 个,已从市场移除)
+## 外部插件市场推荐(18 个,已从市场移除)
 
 | 插件 | 分类 | 说明 | 上游仓库 |
 |------|------|------|----------|
@@ -23,6 +23,7 @@
 | slidev | 生产力 | Slidev 幻灯片创建与演示 | [slidevjs/slidev](https://github.com/slidevjs/slidev) |
 | taste-skill | 设计 | 网页设计品味技能集:艺术方向、真实图库参考、浏览器三宽度自查 | [leonxlnx/taste-skill](https://github.com/leonxlnx/taste-skill) |
 | ponytail | 工程 | "懒惰资深开发者"提示词:最小改动、复用优先,附审查/审计命令 | [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) |
+| sepia | 写作 | 去 AI 味写作技能:write/review/refactor/recreate/hemingway 五种操作,叙事架构层修复,含中文校准 | [Nanako0129/sepia](https://github.com/Nanako0129/sepia) |
 
 ## 外部插件引用(4 个,仍在市场中)
 
@@ -32,3 +33,11 @@
 | remotion | 开发 | React 视频制作:动画、音频、字幕、3D | [remotion-dev/skills](https://github.com/remotion-dev/skills) |
 | antd-skill | 开发 | Ant Design v6 组件决策指南与离线 API 查询 | [ant-design/antd-skill](https://github.com/ant-design/antd-skill) |
 | shadcn | 设计 | shadcn/ui 组件管理与开发技能 | [shadcn-ui/ui](https://github.com/shadcn-ui/ui) |
+
+## 外部 Skill 推荐(3 个)
+
+| Skill | 分类 | 说明 | 上游仓库 |
+|-------|------|------|----------|
+| human-writing | 写作 | 活人感中文写作与改稿:材料前置检查、按文体加载规则、禁翻案腔/破折号/黑话,覆盖知乎、公众号、小说等文体 | [KKKKhazix/human-writing](https://github.com/KKKKhazix/human-writing) |
+| humanizer-zh | 写作 | blader/humanizer 中文版:31 个检查点消除空话、重复与模板化表达,只润色不改事实与语气 | [op7418/humanizer-zh](https://github.com/op7418/humanizer-zh) |
+| excalidraw-diagram-generator | 设计 | 自然语言生成 .excalidraw 图表:流程图、架构图、时序图、ER 图等 9 类,支持云架构图标库 | [github/awesome-copilot](https://github.com/github/awesome-copilot) |
