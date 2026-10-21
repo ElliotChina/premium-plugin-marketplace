@@ -57,6 +57,21 @@
 /grill-with-docs       # 拷问方案并顺手写文档（GLOSSARY + ADR）
 ```
 
+### improve-codebase-architecture（源自 mattpocock/skills，MIT）
+
+架构深化技能：扫描代码库找出「深模块化」重构机会（把浅模块变深模块），生成自包含的 HTML 视觉报告（前后对比图 + 推荐强度徽章），用户选定候选后进入 grilling 拷问循环，过程中用 domain-modeling 同步维护 GLOSSARY 与 ADR。
+
+```bash
+/improve-codebase-architecture              # 全库扫描热区
+/improve-codebase-architecture <模块/路径>   # 只扫指定方向
+```
+
+工作方式：先从 git 历史找热点定范围（YAGNI 优先），子代理有机探索摩擦点（浅模块、无局部性、接缝泄漏、难测试），对候选应用删除测试，然后写 HTML 报告到系统临时目录（不进仓库）并打开。用 codebase-design 的深模块词汇表述每个建议。
+
+### codebase-design（源自 mattpocock/skills，MIT）
+
+深模块设计共享词汇：**module、interface、depth、seam、adapter、leverage、locality** 七个术语及其原则（删除测试、"接口即测试面"、"一个 adapter 是假想接缝，两个才是真接缝"）。设计或重构代码时使用，也是 improve-codebase-architecture 的词汇基础。附 DEEPENING.md（深化手法）与 DESIGN-IT-TWICE.md（双方案并行设计模式）。
+
 ## 安装
 
 ```bash

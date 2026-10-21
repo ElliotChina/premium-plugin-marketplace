@@ -54,5 +54,15 @@
     "local": "plugins/dev-tools/skills/domain-modeling",
     "repo": "mattpocock/skills",
     "path": "skills/engineering/domain-modeling"
+  },
+  {
+    "local": "plugins/dev-tools/skills/improve-codebase-architecture",
+    "repo": "mattpocock/skills",
+    "path": "skills/engineering/improve-codebase-architecture"
+  },
+  {
+    "local": "plugins/dev-tools/skills/codebase-design",
+    "repo": "mattpocock/skills",
+    "path": "skills/engineering/codebase-design"
   }
 ]
