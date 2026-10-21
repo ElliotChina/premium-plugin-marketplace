@@ -85,6 +85,20 @@ spec / ticket 驱动实现技能：按规格或工单实现工作，在预先约
 
 测试驱动开发参考：红 → 绿循环中产出值得保留的测试。好测试的标准（验证公共接口行为而非实现细节）、接缝（seam）先行（测试只写在和用户预先约定的接缝上）、反模式清单（实现耦合、同义反复、水平切片）、循环纪律（红先于绿、一次一片、重构不在循环内）。附 tests.md（示例）与 mocking.md（mock 准则）。
 
+### research（源自 mattpocock/skills，MIT）
+
+后台研究技能：拉起后台 agent 对照一手信源（官方文档、源码、规范）调查问题，结论写成单个 Markdown 文件并逐条标注出处，不阻塞当前工作。
+
+### diagnosing-bugs（源自 mattpocock/skills，MIT）
+
+系统化诊断循环：针对难复现的 bug 与性能回退，按假设驱动的流程定位根因。
+
+> 迁移说明：上游附带的 `scripts/hitl-loop.template.sh`（人机协作复现模板，复制后由 agent 按场景改写执行）未迁入——避免同步可执行第三方代码；模板仅含 step/capture 两个交互辅助函数，需要时 agent 可现场生成等价脚本。
+
+### prototype（源自 mattpocock/skills，MIT）
+
+一次性原型技能：为回答设计问题构建即抛原型，验证状态模型或逻辑是否成立、探索 UI 形态。附 LOGIC.md（逻辑原型方法）与 UI.md（UI 原型方法）。
+
 ### interview-me（源自 [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills)，MIT）
 
 意图访谈技能：在计划、规格、代码存在之前，一次一个问题（附自己的猜测）逐层澄清用户"真正想要什么"，直到能预测用户对接下来三个问题的反应（约 95% 置信度）。适用于需求欠规格的请求（"给我做个 X"却说不清给谁用、为什么现在做）；确认后产出结构化意图声明（Outcome / User / Why now / Success / Constraint / Out of scope），可保存到 `docs/intent/` 或交给下游规格流程。与 grill 系列互补：interview-me 在动手前澄清意图，grilling 在方案成型后拷问设计。

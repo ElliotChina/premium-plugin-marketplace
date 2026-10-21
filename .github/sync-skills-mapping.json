@@ -77,6 +77,35 @@
     ]
   },
   {
+    "local": "plugins/dev-tools/skills/research",
+    "repo": "mattpocock/skills",
+    "path": "skills/engineering/research",
+    "include": [
+      "SKILL.md",
+      "agents/openai.yaml"
+    ]
+  },
+  {
+    "local": "plugins/dev-tools/skills/diagnosing-bugs",
+    "repo": "mattpocock/skills",
+    "path": "skills/engineering/diagnosing-bugs",
+    "include": [
+      "SKILL.md",
+      "agents/openai.yaml"
+    ]
+  },
+  {
+    "local": "plugins/dev-tools/skills/prototype",
+    "repo": "mattpocock/skills",
+    "path": "skills/engineering/prototype",
+    "include": [
+      "SKILL.md",
+      "LOGIC.md",
+      "UI.md",
+      "agents/openai.yaml"
+    ]
+  },
+  {
     "local": "plugins/dev-tools/skills/improve-codebase-architecture",
     "repo": "mattpocock/skills",
     "path": "skills/engineering/improve-codebase-architecture",
