@@ -46,24 +46,26 @@ jobs:
                 --jq ".tree[] | select(.path | startswith(\"$remote_path/\")) | .path")
             fi
 
-            # 可选 include 过滤（精确路径或路径前缀）
+            if [ -z "$tree" ]; then
+              # 可能是扁平目录，尝试获取单个文件
+              tree=$(gh api "repos/$repo/contents/$remote_path" \
+                --jq '.[] | .path // empty' 2>/dev/null || true)
+            fi
+
+            # 可选 include 过滤：剥离上游技能目录前缀后按相对路径精确/前缀匹配。
+            # 统一在 fallback 之后执行，保证 trees 与 contents 两条来源路径都被过滤
             includes=$(jq -r ".[$i].include // [] | join(\"\n\")" "$MAPPING_FILE")
             if [ -n "$includes" ]; then
               filtered=""
               while IFS= read -r f; do
                 [ -z "$f" ] && continue
+                rel="${f#$remote_path/}"
                 while IFS= read -r inc; do
                   [ -z "$inc" ] && continue
-                  case "$f" in "$inc"|"$inc"/*) filtered="$filtered$f"$'\n'; break;; esac
+                  case "$rel" in "$inc"|"$inc"/*) filtered="$filtered$f"$'\n'; break;; esac
                 done <<< "$includes"
               done <<< "$tree"
               tree="$filtered"
-            fi
-
-            if [ -z "$tree" ]; then
-              # 可能是扁平目录，尝试获取单个文件
-              tree=$(gh api "repos/$repo/contents/$remote_path" \
-                --jq '.[] | .path // empty' 2>/dev/null || true)
             fi
 
             # 逐文件下载
