@@ -41,6 +41,22 @@
 
 工作方式：收集 diff 后，先由子任务结合仓库既有安全模式识别漏洞（输入验证 / 认证授权 / 加密与密钥 / 注入与代码执行 / 数据暴露五类），再对每个漏洞并行启动误报过滤子任务（17 项硬排除 + 12 项先例），置信度低于 8 的丢弃。输出 markdown 报告（severity、category、exploit scenario、fix recommendation）。
 
+### grill 系列（源自 [mattpocock/skills](https://github.com/mattpocock/skills)，MIT）
+
+方案拷问与领域建模技能组，均只响应用户手动调用，模型不会自动触发：
+
+| 技能 | 作用 |
+|------|------|
+| `grill-me` | 对你的方案 / 决策发起不留情面的多轮追问，直到达成共识 |
+| `grill-with-docs` | 同上，追问过程中同步沉淀 GLOSSARY 术语表与 ADR 决策记录 |
+| `grilling` | 拷问核心逻辑：把决策映射成设计树，每轮一次性问完当前可问的全部问题 |
+| `domain-modeling` | 领域建模：挑战模糊术语、用具体场景压测概念边界、内联更新 GLOSSARY.md、按三条标准克制地提议 ADR |
+
+```bash
+/grill-me              # 拷问我目前的方案
+/grill-with-docs       # 拷问方案并顺手写文档（GLOSSARY + ADR）
+```
+
 ## 安装
 
 ```bash

@@ -34,5 +34,25 @@
     "local": "plugins/writing/skills/human-writing",
     "repo": "KKKKhazix/human-writing",
     "path": "human-writing"
+  },
+  {
+    "local": "plugins/dev-tools/skills/grill-me",
+    "repo": "mattpocock/skills",
+    "path": "skills/productivity/grill-me"
+  },
+  {
+    "local": "plugins/dev-tools/skills/grill-with-docs",
+    "repo": "mattpocock/skills",
+    "path": "skills/engineering/grill-with-docs"
+  },
+  {
+    "local": "plugins/dev-tools/skills/grilling",
+    "repo": "mattpocock/skills",
+    "path": "skills/productivity/grilling"
+  },
+  {
+    "local": "plugins/dev-tools/skills/domain-modeling",
+    "repo": "mattpocock/skills",
+    "path": "skills/engineering/domain-modeling"
   }
 ]

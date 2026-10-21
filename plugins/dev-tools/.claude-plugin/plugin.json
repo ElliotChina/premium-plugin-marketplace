@@ -1,7 +1,7 @@
 {
   "name": "dev-tools",
-  "version": "0.1.0",
-  "description": "开发工具集：多档位代码审查、质量清理与安全审查技能，按 effort 级别并行 finder 角度与 verify 流程查找正确性 bug、清理代码质量并审查安全漏洞",
+  "version": "0.2.0",
+  "description": "开发工具集：多档位代码审查、质量清理与安全审查技能，按 effort 级别并行 finder 角度与 verify 流程查找正确性 bug、清理代码质量并审查安全漏洞；另含 grill 方案拷问与领域建模技能，通过多轮追问打磨设计并沉淀 GLOSSARY 与 ADR 文档",
   "author": {
     "name": "elliot",
     "url": "https://github.com/ElliotChina"
@@ -13,6 +13,10 @@
     "simplify",
     "security",
     "quality",
+    "grill",
+    "domain-modeling",
+    "adr",
+    "glossary",
     "dev-tools"
   ]
 }
