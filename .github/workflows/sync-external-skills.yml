@@ -37,9 +37,28 @@ jobs:
 
             echo "::group::Syncing $local_path from $repo/$remote_path"
 
-            # 获取上游文件树（递归）
-            tree=$(gh api "repos/$repo/git/trees/HEAD?recursive=1" \
-              --jq ".tree[] | select(.path | startswith(\"$remote_path/\")) | .path")
+            # 获取上游文件树（递归）；path 为空表示技能位于仓库根目录
+            if [ -z "$remote_path" ]; then
+              tree=$(gh api "repos/$repo/git/trees/HEAD?recursive=1" \
+                --jq '.tree[] | select(.type == "blob") | .path')
+            else
+              tree=$(gh api "repos/$repo/git/trees/HEAD?recursive=1" \
+                --jq ".tree[] | select(.path | startswith(\"$remote_path/\")) | .path")
+            fi
+
+            # 可选 include 过滤（精确路径或路径前缀）
+            includes=$(jq -r ".[$i].include // [] | join(\"\n\")" "$MAPPING_FILE")
+            if [ -n "$includes" ]; then
+              filtered=""
+              while IFS= read -r f; do
+                [ -z "$f" ] && continue
+                while IFS= read -r inc; do
+                  [ -z "$inc" ] && continue
+                  case "$f" in "$inc"|"$inc"/*) filtered="$filtered$f"$'\n'; break;; esac
+                done <<< "$includes"
+              done <<< "$tree"
+              tree="$filtered"
+            fi
 
             if [ -z "$tree" ]; then
               # 可能是扁平目录，尝试获取单个文件

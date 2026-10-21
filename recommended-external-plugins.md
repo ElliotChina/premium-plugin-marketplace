@@ -1,6 +1,6 @@
 # 外部来源插件清单
 
-市场中通过远程仓库引用的插件(`source` 为 `git-subdir` 或 `url`)分为两组:**外部插件市场推荐**已从 `.claude-plugin/marketplace.json` 移除,仅作推荐记录,可按需从上游仓库直接安装;**外部插件引用**仍由市场配置引用。文末另附**外部 Skill 推荐**,为不含插件壳的单体 Skill,可手动复制到 `~/.claude/skills/` 使用。
+本清单记录市场中来自外部仓库的内容,共三节:**外部插件市场推荐**(18 个)曾收录后从市场移除,仅作推荐记录,可从上游仓库直接安装;**外部插件引用**(4 个)仍由市场配置以远程仓库方式引用;**外部技能引用**(7 个)为内嵌到本地插件的第三方 Skill 副本,由 `.github/workflows/sync-external-skills.yml` 按映射表定时同步。
 
 ## 外部插件市场推荐(18 个,已从市场移除)
 
@@ -34,10 +34,16 @@
 | antd-skill | 开发 | Ant Design v6 组件决策指南与离线 API 查询 | [ant-design/antd-skill](https://github.com/ant-design/antd-skill) |
 | shadcn | 设计 | shadcn/ui 组件管理与开发技能 | [shadcn-ui/ui](https://github.com/shadcn-ui/ui) |
 
-## 外部 Skill 推荐(3 个)
+## 外部技能引用(7 个,GitHub Actions 定时同步)
 
-| Skill | 分类 | 说明 | 上游仓库 |
-|-------|------|------|----------|
-| human-writing | 写作 | 活人感中文写作与改稿:材料前置检查、按文体加载规则、禁翻案腔/破折号/黑话,覆盖知乎、公众号、小说等文体 | [KKKKhazix/human-writing](https://github.com/KKKKhazix/human-writing) |
-| humanizer-zh | 写作 | blader/humanizer 中文版:31 个检查点消除空话、重复与模板化表达,只润色不改事实与语气 | [op7418/humanizer-zh](https://github.com/op7418/humanizer-zh) |
-| excalidraw-diagram-generator | 设计 | 自然语言生成 .excalidraw 图表:流程图、架构图、时序图、ER 图等 9 类,支持云架构图标库 | [github/awesome-copilot](https://github.com/github/awesome-copilot) |
+以下 Skill 为上游仓库的副本,内嵌在本地插件中,由 `.github/workflows/sync-external-skills.yml` 每周一检查 `.github/sync-skills-mapping.json` 中登记的上游仓库,有变更时自动开 PR 并合并。
+
+| 技能 | 所属插件 | 说明 | 上游仓库 |
+|------|----------|------|----------|
+| web-design-guidelines | frontend-web | Web 界面设计审查与可访问性审计 | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) |
+| composition-patterns | frontend-react | React 组件组合模式最佳实践 | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) |
+| react-best-practices | frontend-react | React 性能与正确性最佳实践 | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) |
+| react-view-transitions | frontend-react | View Transitions 用法、实现与排错 | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) |
+| excalidraw-diagram-generator | excalidraw | 自然语言生成 .excalidraw 图表:流程图、架构图、思维导图等 | [github/awesome-copilot](https://github.com/github/awesome-copilot) |
+| humanizer-zh | writing | 中文去 AI 味润色:消除空话、重复与模板化表达 | [op7418/humanizer-zh](https://github.com/op7418/humanizer-zh) |
+| human-writing | writing | 活人感中文创作与改稿,覆盖知乎、公众号、小说等文体 | [KKKKhazix/human-writing](https://github.com/KKKKhazix/human-writing) |

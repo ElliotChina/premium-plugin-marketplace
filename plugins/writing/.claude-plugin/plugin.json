@@ -1,0 +1,16 @@
+{
+  "name": "writing",
+  "version": "0.1.0",
+  "description": "中文写作技能集：humanizer-zh 去 AI 味润色与 human-writing 活人感写作，支持从上游仓库一键更新",
+  "author": {
+    "name": "elliot",
+    "url": "https://github.com/ElliotChina"
+  },
+  "license": "MIT",
+  "keywords": [
+    "writing",
+    "humanizer",
+    "chinese",
+    "deai"
+  ]
+}

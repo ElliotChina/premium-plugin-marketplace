@@ -23,5 +23,16 @@
     "local": "plugins/excalidraw/skills/excalidraw-diagram-generator",
     "repo": "github/awesome-copilot",
     "path": "skills/excalidraw-diagram-generator"
+  },
+  {
+    "local": "plugins/writing/skills/humanizer-zh",
+    "repo": "op7418/humanizer-zh",
+    "path": "",
+    "include": ["SKILL.md", "LICENSE"]
+  },
+  {
+    "local": "plugins/writing/skills/human-writing",
+    "repo": "KKKKhazix/human-writing",
+    "path": "human-writing"
   }
 ]

@@ -274,6 +274,22 @@
         "radix"
       ],
       "homepage": "https://ui.shadcn.com"
+    },
+    {
+      "name": "writing",
+      "description": "中文写作技能集：humanizer-zh 去 AI 味润色与 human-writing 活人感写作，支持从上游仓库一键更新",
+      "category": "productivity",
+      "source": "./plugins/writing",
+      "author": {
+        "name": "elliot",
+        "url": "https://github.com/ElliotChina"
+      },
+      "keywords": [
+        "writing",
+        "humanizer",
+        "chinese",
+        "deai"
+      ]
     }
   ]
 }
