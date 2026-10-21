@@ -85,6 +85,10 @@ spec / ticket 驱动实现技能：按规格或工单实现工作，在预先约
 
 测试驱动开发参考：红 → 绿循环中产出值得保留的测试。好测试的标准（验证公共接口行为而非实现细节）、接缝（seam）先行（测试只写在和用户预先约定的接缝上）、反模式清单（实现耦合、同义反复、水平切片）、循环纪律（红先于绿、一次一片、重构不在循环内）。附 tests.md（示例）与 mocking.md（mock 准则）。
 
+### interview-me（源自 [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills)，MIT）
+
+意图访谈技能：在计划、规格、代码存在之前，一次一个问题（附自己的猜测）逐层澄清用户"真正想要什么"，直到能预测用户对接下来三个问题的反应（约 95% 置信度）。适用于需求欠规格的请求（"给我做个 X"却说不清给谁用、为什么现在做）；确认后产出结构化意图声明（Outcome / User / Why now / Success / Constraint / Out of scope），可保存到 `docs/intent/` 或交给下游规格流程。与 grill 系列互补：interview-me 在动手前澄清意图，grilling 在方案成型后拷问设计。
+
 ## 安装
 
 ```bash

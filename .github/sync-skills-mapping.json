@@ -116,5 +116,13 @@
       "tests.md",
       "agents/openai.yaml"
     ]
+  },
+  {
+    "local": "plugins/dev-tools/skills/interview-me",
+    "repo": "addyosmani/agent-skills",
+    "path": "skills/interview-me",
+    "include": [
+      "SKILL.md"
+    ]
   }
 ]
