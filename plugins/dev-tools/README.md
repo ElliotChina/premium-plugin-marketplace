@@ -95,6 +95,10 @@ spec / ticket 驱动实现技能：按规格或工单实现工作，在预先约
 
 > 迁移说明：上游附带的 `scripts/idea-refine.sh`（仅 `mkdir -p docs/ideas`）未迁入——避免同步可执行第三方代码，目录初始化由 agent 直接完成，行为等价。
 
+### ci-cd-and-automation（源自 addyosmani/agent-skills，MIT）
+
+CI/CD 流水线自动化技能：搭建或修改构建部署流水线时使用。覆盖质量门禁管线（lint → typecheck → test → build）、GitHub Actions 配置模板（含数据库集成测试与 E2E）、CI 失败回喂 agent 的模式、部署策略（预览部署、特性开关、分阶段发布、回滚预案）、环境管理、Dependabot/Renovate 自动化、build cop 角色与 CI 优化。
+
 ## 安装
 
 ```bash

@@ -137,6 +137,14 @@
     ]
   },
   {
+    "local": "plugins/dev-tools/skills/ci-cd-and-automation",
+    "repo": "addyosmani/agent-skills",
+    "path": "skills/ci-cd-and-automation",
+    "include": [
+      "SKILL.md"
+    ]
+  },
+  {
     "local": "plugins/frontend-web/skills/frontend-ui-engineering",
     "repo": "addyosmani/agent-skills",
     "path": "skills/frontend-ui-engineering",

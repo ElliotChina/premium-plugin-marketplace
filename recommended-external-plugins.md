@@ -1,6 +1,6 @@
 # 外部来源插件清单
 
-本清单记录市场中来自外部仓库的内容,共三节:**外部插件市场推荐**(18 个)曾收录后从市场移除,仅作推荐记录,可从上游仓库直接安装;**外部插件引用**(4 个)仍由市场配置以远程仓库方式引用;**外部技能引用**(18 个)为内嵌到本地插件的第三方 Skill 副本,由 `.github/workflows/sync-external-skills.yml` 按映射表定时同步。
+本清单记录市场中来自外部仓库的内容,共三节:**外部插件市场推荐**(18 个)曾收录后从市场移除,仅作推荐记录,可从上游仓库直接安装;**外部插件引用**(4 个)仍由市场配置以远程仓库方式引用;**外部技能引用**(19 个)为内嵌到本地插件的第三方 Skill 副本,由 `.github/workflows/sync-external-skills.yml` 按映射表定时同步。
 
 ## 外部插件市场推荐(18 个,已从市场移除)
 
@@ -34,7 +34,7 @@
 | antd-skill | 开发 | Ant Design v6 组件决策指南与离线 API 查询 | [ant-design/antd-skill](https://github.com/ant-design/antd-skill) |
 | shadcn | 设计 | shadcn/ui 组件管理与开发技能 | [shadcn-ui/ui](https://github.com/shadcn-ui/ui) |
 
-## 外部技能引用(18 个,GitHub Actions 定时同步)
+## 外部技能引用(19 个,GitHub Actions 定时同步)
 
 以下 Skill 为上游仓库的副本,内嵌在本地插件中,由 `.github/workflows/sync-external-skills.yml` 每周一检查 `.github/sync-skills-mapping.json` 中登记的上游仓库,有变更时自动开 PR 并合并。
 
@@ -58,3 +58,4 @@
 | interview-me | dev-tools | 意图访谈:一次一问附猜测,澄清欠规格需求直至 95% 置信 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
 | idea-refine | dev-tools | 创意打磨:多视角框架生成变体并按标准筛选推敲 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
 | frontend-ui-engineering | frontend-web | 生产级可访问响应式 UI 工程技能,配套 references/ 下 WCAG 检查清单 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
+| ci-cd-and-automation | dev-tools | CI/CD 流水线自动化:质量门禁、Actions 模板、部署策略与回滚 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
