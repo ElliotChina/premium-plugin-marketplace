@@ -118,14 +118,6 @@
     ]
   },
   {
-    "local": "plugins/dev-tools/skills/debugging-and-error-recovery",
-    "repo": "addyosmani/agent-skills",
-    "path": "skills/debugging-and-error-recovery",
-    "include": [
-      "SKILL.md"
-    ]
-  },
-  {
     "local": "plugins/dev-tools/skills/performance-optimization",
     "repo": "addyosmani/agent-skills",
     "path": "skills/performance-optimization",

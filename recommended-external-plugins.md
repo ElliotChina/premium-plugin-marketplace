@@ -1,6 +1,6 @@
 # 外部来源插件清单
 
-本清单记录市场中来自外部仓库的内容,共三节:**外部插件市场推荐**(18 个)曾收录后从市场移除,仅作推荐记录,可从上游仓库直接安装;**外部插件引用**(4 个)仍由市场配置以远程仓库方式引用;**外部技能引用**(23 个)为内嵌到本地插件的第三方 Skill 副本,由 `.github/workflows/sync-external-skills.yml` 按映射表定时同步。
+本清单记录市场中来自外部仓库的内容,共三节:**外部插件市场推荐**(18 个)曾收录后从市场移除,仅作推荐记录,可从上游仓库直接安装;**外部插件引用**(4 个)仍由市场配置以远程仓库方式引用;**外部技能引用**(22 个)为内嵌到本地插件的第三方 Skill 副本,由 `.github/workflows/sync-external-skills.yml` 按映射表定时同步。
 
 ## 外部插件市场推荐(18 个,已从市场移除)
 
@@ -34,7 +34,7 @@
 | antd-skill | 开发 | Ant Design v6 组件决策指南与离线 API 查询 | [ant-design/antd-skill](https://github.com/ant-design/antd-skill) |
 | shadcn | 设计 | shadcn/ui 组件管理与开发技能 | [shadcn-ui/ui](https://github.com/shadcn-ui/ui) |
 
-## 外部技能引用(23 个,GitHub Actions 定时同步)
+## 外部技能引用(22 个,GitHub Actions 定时同步)
 
 以下 Skill 为上游仓库的副本,内嵌在本地插件中,由 `.github/workflows/sync-external-skills.yml` 每周一检查 `.github/sync-skills-mapping.json` 中登记的上游仓库,有变更时自动开 PR 并合并。
 
@@ -61,5 +61,4 @@
 | ci-cd-and-automation | devops | CI/CD 流水线自动化:质量门禁、Actions 模板、部署策略与回滚 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
 | shipping-and-launch | devops | 生产发布与上线:发布前清单、监控搭设、分阶段发布与回滚 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
 | observability-and-instrumentation | devops | 可观测性与插桩:日志、指标、追踪、告警,让生产行为可诊断 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
-| debugging-and-error-recovery | dev-tools | 系统化根因调试:测试失败、构建报错、行为异常时定位并修复根因 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
 | performance-optimization | dev-tools | 性能优化:测量定位修复复测,附反模式修复与检查清单 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |

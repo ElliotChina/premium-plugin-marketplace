@@ -1,6 +1,6 @@
 {
   "name": "dev-tools",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "开发工具集：多档位代码审查、质量清理与安全审查技能，按 effort 级别并行 finder 角度与 verify 流程查找正确性 bug、清理代码质量并审查安全漏洞；另含 grill 方案拷问、interview-me 意图访谈、idea-refine 创意打磨、领域建模、架构深化技能，以及 spec/ticket 驱动的 TDD 实现流程",
   "author": {
     "name": "elliot",

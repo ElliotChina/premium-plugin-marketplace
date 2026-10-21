@@ -95,10 +95,6 @@ spec / ticket 驱动实现技能：按规格或工单实现工作，在预先约
 
 > 迁移说明：上游附带的 `scripts/idea-refine.sh`（仅 `mkdir -p docs/ideas`）未迁入——避免同步可执行第三方代码，目录初始化由 agent 直接完成，行为等价。
 
-### debugging-and-error-recovery（源自 addyosmani/agent-skills，MIT）
-
-系统化根因调试技能：测试失败、构建报错、昨天还能跑今天坏了、行为与预期不符时使用。以系统化方法找到并修复根因，而非猜测式试错。
-
 ### performance-optimization（源自 addyosmani/agent-skills，MIT）
 
 性能优化技能：覆盖前端、后端、查询与数据库的性能问题。流程为测量 → 定位单一瓶颈 → 修复 → 复测；反模式清单（N+1 查询、无界取数、索引失效、连接池耗尽、缓存缺失、图片优化、重渲染、包体积）各附 worked fix，详见技能内 `references/optimization-patterns.md` 与插件 `references/performance-checklist.md`。
