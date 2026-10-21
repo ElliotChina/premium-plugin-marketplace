@@ -28,7 +28,10 @@
     "local": "plugins/writing/skills/humanizer-zh",
     "repo": "op7418/humanizer-zh",
     "path": "",
-    "include": ["SKILL.md", "LICENSE"]
+    "include": [
+      "SKILL.md",
+      "LICENSE"
+    ]
   },
   {
     "local": "plugins/writing/skills/human-writing",
@@ -38,31 +41,80 @@
   {
     "local": "plugins/dev-tools/skills/grill-me",
     "repo": "mattpocock/skills",
-    "path": "skills/productivity/grill-me"
+    "path": "skills/productivity/grill-me",
+    "include": [
+      "SKILL.md",
+      "agents/openai.yaml"
+    ]
   },
   {
     "local": "plugins/dev-tools/skills/grill-with-docs",
     "repo": "mattpocock/skills",
-    "path": "skills/engineering/grill-with-docs"
+    "path": "skills/engineering/grill-with-docs",
+    "include": [
+      "SKILL.md",
+      "agents/openai.yaml"
+    ]
   },
   {
     "local": "plugins/dev-tools/skills/grilling",
     "repo": "mattpocock/skills",
-    "path": "skills/productivity/grilling"
+    "path": "skills/productivity/grilling",
+    "include": [
+      "SKILL.md",
+      "agents/openai.yaml"
+    ]
   },
   {
     "local": "plugins/dev-tools/skills/domain-modeling",
     "repo": "mattpocock/skills",
-    "path": "skills/engineering/domain-modeling"
+    "path": "skills/engineering/domain-modeling",
+    "include": [
+      "SKILL.md",
+      "ADR-FORMAT.md",
+      "GLOSSARY-FORMAT.md",
+      "agents/openai.yaml"
+    ]
   },
   {
     "local": "plugins/dev-tools/skills/improve-codebase-architecture",
     "repo": "mattpocock/skills",
-    "path": "skills/engineering/improve-codebase-architecture"
+    "path": "skills/engineering/improve-codebase-architecture",
+    "include": [
+      "SKILL.md",
+      "HTML-REPORT.md",
+      "agents/openai.yaml"
+    ]
   },
   {
     "local": "plugins/dev-tools/skills/codebase-design",
     "repo": "mattpocock/skills",
-    "path": "skills/engineering/codebase-design"
+    "path": "skills/engineering/codebase-design",
+    "include": [
+      "SKILL.md",
+      "DEEPENING.md",
+      "DESIGN-IT-TWICE.md",
+      "agents/openai.yaml"
+    ]
+  },
+  {
+    "local": "plugins/dev-tools/skills/implement",
+    "repo": "mattpocock/skills",
+    "path": "skills/engineering/implement",
+    "include": [
+      "SKILL.md",
+      "agents/openai.yaml"
+    ]
+  },
+  {
+    "local": "plugins/dev-tools/skills/tdd",
+    "repo": "mattpocock/skills",
+    "path": "skills/engineering/tdd",
+    "include": [
+      "SKILL.md",
+      "mocking.md",
+      "tests.md",
+      "agents/openai.yaml"
+    ]
   }
 ]

@@ -43,7 +43,7 @@
 
 ### grill 系列（源自 [mattpocock/skills](https://github.com/mattpocock/skills)，MIT）
 
-方案拷问与领域建模技能组，均只响应用户手动调用，模型不会自动触发：
+方案拷问与领域建模技能组。`grill-me` 与 `grill-with-docs` 为手动入口（模型不会自动触发）；`grilling` 与 `domain-modeling` 是可被模型自动调用的参考技能，也供其他技能内部调用：
 
 | 技能 | 作用 |
 |------|------|
@@ -71,6 +71,19 @@
 ### codebase-design（源自 mattpocock/skills，MIT）
 
 深模块设计共享词汇：**module、interface、depth、seam、adapter、leverage、locality** 七个术语及其原则（删除测试、"接口即测试面"、"一个 adapter 是假想接缝，两个才是真接缝"）。设计或重构代码时使用，也是 improve-codebase-architecture 的词汇基础。附 DEEPENING.md（深化手法）与 DESIGN-IT-TWICE.md（双方案并行设计模式）。
+
+### implement（源自 mattpocock/skills，MIT）
+
+spec / ticket 驱动实现技能：按规格或工单实现工作，在预先约定的接缝处用 tdd 红绿循环推进，定期跑类型检查与单测，收尾跑全量测试，完成后用 code-review 审查并提交到当前分支。
+
+```bash
+/implement                  # 按用户给出的 spec 实现
+/implement PROJ-123         # 拉取工单并实现
+```
+
+### tdd（源自 mattpocock/skills，MIT）
+
+测试驱动开发参考：红 → 绿循环中产出值得保留的测试。好测试的标准（验证公共接口行为而非实现细节）、接缝（seam）先行（测试只写在和用户预先约定的接缝上）、反模式清单（实现耦合、同义反复、水平切片）、循环纪律（红先于绿、一次一片、重构不在循环内）。附 tests.md（示例）与 mocking.md（mock 准则）。
 
 ## 安装
 

@@ -1,6 +1,6 @@
 # 外部来源插件清单
 
-本清单记录市场中来自外部仓库的内容,共三节:**外部插件市场推荐**(18 个)曾收录后从市场移除,仅作推荐记录,可从上游仓库直接安装;**外部插件引用**(4 个)仍由市场配置以远程仓库方式引用;**外部技能引用**(13 个)为内嵌到本地插件的第三方 Skill 副本,由 `.github/workflows/sync-external-skills.yml` 按映射表定时同步。
+本清单记录市场中来自外部仓库的内容,共三节:**外部插件市场推荐**(18 个)曾收录后从市场移除,仅作推荐记录,可从上游仓库直接安装;**外部插件引用**(4 个)仍由市场配置以远程仓库方式引用;**外部技能引用**(15 个)为内嵌到本地插件的第三方 Skill 副本,由 `.github/workflows/sync-external-skills.yml` 按映射表定时同步。
 
 ## 外部插件市场推荐(18 个,已从市场移除)
 
@@ -34,7 +34,7 @@
 | antd-skill | 开发 | Ant Design v6 组件决策指南与离线 API 查询 | [ant-design/antd-skill](https://github.com/ant-design/antd-skill) |
 | shadcn | 设计 | shadcn/ui 组件管理与开发技能 | [shadcn-ui/ui](https://github.com/shadcn-ui/ui) |
 
-## 外部技能引用(13 个,GitHub Actions 定时同步)
+## 外部技能引用(15 个,GitHub Actions 定时同步)
 
 以下 Skill 为上游仓库的副本,内嵌在本地插件中,由 `.github/workflows/sync-external-skills.yml` 每周一检查 `.github/sync-skills-mapping.json` 中登记的上游仓库,有变更时自动开 PR 并合并。
 
@@ -53,3 +53,5 @@
 | domain-modeling | dev-tools | 领域建模:打磨术语、压测概念边界、维护 GLOSSARY 与 ADR | [mattpocock/skills](https://github.com/mattpocock/skills) |
 | improve-codebase-architecture | dev-tools | 扫描代码库找深模块化重构机会,生成 HTML 报告后进入拷问循环 | [mattpocock/skills](https://github.com/mattpocock/skills) |
 | codebase-design | dev-tools | 深模块设计共享词汇:module、interface、depth、seam 等七术语与原则 | [mattpocock/skills](https://github.com/mattpocock/skills) |
+| implement | dev-tools | spec/ticket 驱动实现:TDD 推进、定期检查、收尾审查并提交 | [mattpocock/skills](https://github.com/mattpocock/skills) |
+| tdd | dev-tools | 测试驱动开发参考:好测试标准、接缝先行、反模式与红绿循环纪律 | [mattpocock/skills](https://github.com/mattpocock/skills) |
