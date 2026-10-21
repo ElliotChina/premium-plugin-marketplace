@@ -89,6 +89,10 @@ spec / ticket 驱动实现技能：按规格或工单实现工作，在预先约
 
 意图访谈技能：在计划、规格、代码存在之前，一次一个问题（附自己的猜测）逐层澄清用户"真正想要什么"，直到能预测用户对接下来三个问题的反应（约 95% 置信度）。适用于需求欠规格的请求（"给我做个 X"却说不清给谁用、为什么现在做）；确认后产出结构化意图声明（Outcome / User / Why now / Success / Constraint / Out of scope），可保存到 `docs/intent/` 或交给下游规格流程。与 grill 系列互补：interview-me 在动手前澄清意图，grilling 在方案成型后拷问设计。
 
+### idea-refine（源自 addyosmani/agent-skills，MIT）
+
+创意打磨技能：把模糊想法变成经过推敲的方案。通过多视角框架（第一性原理、反脆弱、10/10/10 等）生成变体，用评估标准筛选，支持交互式问答或 `scripts/idea-refine.sh` 初始化 ideas 目录后多轮迭代。附 examples.md（优秀构思示例）、frameworks.md（框架清单）、refinement-criteria.md（评估标准）。与 interview-me 互补：interview-me 澄清"要什么"，idea-refine 展开"可能是什么"。
+
 ## 安装
 
 ```bash

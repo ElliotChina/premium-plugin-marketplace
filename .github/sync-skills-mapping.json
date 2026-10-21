@@ -124,5 +124,17 @@
     "include": [
       "SKILL.md"
     ]
+  },
+  {
+    "local": "plugins/dev-tools/skills/idea-refine",
+    "repo": "addyosmani/agent-skills",
+    "path": "skills/idea-refine",
+    "include": [
+      "SKILL.md",
+      "examples.md",
+      "frameworks.md",
+      "refinement-criteria.md",
+      "scripts/idea-refine.sh"
+    ]
   }
 ]
