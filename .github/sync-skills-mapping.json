@@ -137,11 +137,39 @@
     ]
   },
   {
-    "local": "plugins/dev-tools/skills/ci-cd-and-automation",
+    "local": "plugins/devops/skills/ci-cd-and-automation",
     "repo": "addyosmani/agent-skills",
     "path": "skills/ci-cd-and-automation",
     "include": [
       "SKILL.md"
+    ]
+  },
+  {
+    "local": "plugins/devops/skills/shipping-and-launch",
+    "repo": "addyosmani/agent-skills",
+    "path": "skills/shipping-and-launch",
+    "include": [
+      "SKILL.md"
+    ]
+  },
+  {
+    "local": "plugins/devops/skills/observability-and-instrumentation",
+    "repo": "addyosmani/agent-skills",
+    "path": "skills/observability-and-instrumentation",
+    "include": [
+      "SKILL.md"
+    ]
+  },
+  {
+    "local": "plugins/devops/references",
+    "repo": "addyosmani/agent-skills",
+    "path": "references",
+    "include": [
+      "definition-of-done.md",
+      "security-checklist.md",
+      "performance-checklist.md",
+      "accessibility-checklist.md",
+      "observability-checklist.md"
     ]
   },
   {

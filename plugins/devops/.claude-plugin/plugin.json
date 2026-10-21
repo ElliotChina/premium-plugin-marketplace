@@ -1,0 +1,18 @@
+{
+  "name": "devops",
+  "version": "0.1.0",
+  "description": "DevOps 技能集：CI/CD 流水线自动化、生产发布与上线检查、可观测性与插桩，覆盖质量门禁、部署策略、回滚预案与监控告警，配套发布前检查清单",
+  "author": {
+    "name": "elliot",
+    "url": "https://github.com/ElliotChina"
+  },
+  "license": "MIT",
+  "keywords": [
+    "ci-cd",
+    "devops",
+    "deploy",
+    "observability",
+    "shipping",
+    "launch"
+  ]
+}

@@ -276,6 +276,24 @@
       "homepage": "https://ui.shadcn.com"
     },
     {
+      "name": "devops",
+      "description": "DevOps 技能集：CI/CD 流水线自动化、生产发布与上线检查、可观测性与插桩，配套发布前检查清单",
+      "category": "development",
+      "source": "./plugins/devops",
+      "author": {
+        "name": "elliot",
+        "url": "https://github.com/ElliotChina"
+      },
+      "keywords": [
+        "ci-cd",
+        "devops",
+        "deploy",
+        "observability",
+        "shipping",
+        "launch"
+      ]
+    },
+    {
       "name": "writing",
       "description": "中文写作技能集：humanizer-zh 去 AI 味润色与 human-writing 活人感写作，支持从上游仓库一键更新",
       "category": "productivity",
