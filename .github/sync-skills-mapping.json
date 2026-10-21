@@ -136,5 +136,21 @@
       "refinement-criteria.md",
       "scripts/idea-refine.sh"
     ]
+  },
+  {
+    "local": "plugins/frontend-web/skills/frontend-ui-engineering",
+    "repo": "addyosmani/agent-skills",
+    "path": "skills/frontend-ui-engineering",
+    "include": [
+      "SKILL.md"
+    ]
+  },
+  {
+    "local": "plugins/frontend-web/references",
+    "repo": "addyosmani/agent-skills",
+    "path": "references",
+    "include": [
+      "accessibility-checklist.md"
+    ]
   }
 ]
