@@ -54,7 +54,7 @@ git diff HEAD                  # 未提交的工作区改动（评审常发生�
 
 ## 输出契约
 
-**优先使用 `ReportFindings` 工具**（宿主 UI 可渲染结构化结果时）：调用一次，`level` 传当前档位，`findings` 按 severity 从高到低排列。每条 finding 包含：
+**优先使用 `ReportFindings` 工具**（宿主 UI 可渲染结构化结果时）：调用一次，`level` 传当前档位，`findings` 按 severity 从高到低排列——正确性 bug（correctness 及扩展角度）在前，清理点（reuse / simplification / efficiency / altitude / conventions）沉底，同类内按严重程度。category 属于清理点的 finding，`summary` 以 `Nit:` 开头。每条 finding 包含：
 
 - `file` / `line`：文件路径与起始行号（1-based）
 - `summary`：一句话陈述缺陷
@@ -65,11 +65,14 @@ git diff HEAD                  # 未提交的工作区改动（评审常发生�
 
 **`ReportFindings` 不可用时**，输出 JSON 数组（每条含 `file`、`line`、`summary`、`failure_scenario`），按 severity 排序；low 档位可用一行式列表 `path/to/file.ext:123 — 哪里错了 + 具体失败方式`，无发现时输出 `(none)`。
 
-使用 `ReportFindings` 报告时不要再把 findings 重复打印为正文文本，也不要为评审结果创建 artifact——工具调用本身就是报告。报告第一行用一句话说明所用档位与 findings 上限（若有截断）。
+使用 `ReportFindings` 报告时不要再把 findings 重复打印为正文文本，也不要为评审结果创建 artifact——工具调用本身就是报告。报告第一行用一句话说明所用档位、必改与 Nit 各多少条、findings 上限（若有截断）。
+
+diff 超过 1000 行时，在报告末尾追加一条建议——本次 diff 过大，建议按独立改动拆分后分别评审；该建议不占 findings 名额。
 
 ## 硬性规则
 
 - 不运行构建、类型检查或测试——这些由 CI 负责；linter/typechecker 能抓到的问题（缺 import、类型错误、格式）一律不报。
+- 本技能不覆盖安全与性能审查：安全用 /security-review；一般性安全/性能建议不在 findings 范围内。
 - 每条 finding 必须有具体的失败场景，能说清"什么输入下代码会错"。
 - 误报排除清单（pre-existing 问题、风格问题、缺测试覆盖等）见 `references/finder-angles.md`，finder 与 verify 阶段都遵守。
 - 只评审 diff 涉及的代码；用户未修改的行上的问题不报。

@@ -21,7 +21,7 @@
 ### 输出
 
 - 有 `ReportFindings`：一次调用传 `{level, findings}`，每条含 `file`、`line`、`summary`、`short_summary`（≤60 字符）、`failure_scenario`，按 severity 排序。无合格发现时空数组。
-- 无工具：每条一行 `path/to/file.ext:123 — 哪里错了 + 具体失败`，无发现时输出 `(none)`。
+- 无工具：每条一行 `path/to/file.ext:123 — 哪里错了 + 具体失败`，cleanup 类发现以 `Nit:` 开头，无发现时输出 `(none)`。
 
 ---
 
@@ -110,7 +110,7 @@ Dedup 同前。每条候选一个 verifier，**recall 偏置**：单个 non-REFU
 
 ### --fix
 
-报告 findings 后，逐条直接修复到工作区——正确性 bug 与 reuse/simplification/efficiency 清理点同等对待。修复会改变代码既有预期行为（intended behavior）的，跳过并说明原因。修复完成后运行项目的检查命令（若有）确认未破坏现有测试。
+报告 findings 后，逐条直接修复到工作区——正确性 bug 与 reuse/simplification/efficiency 清理点同等对待。修复会改变代码既有预期行为（intended behavior）的，跳过并说明原因。修复完成后运行项目的检查命令（若有）确认未破坏现有测试。测试全绿不代表修复被覆盖——逐条确认有测试真正走到被改的代码（找到对应断言），找不到的在该条修复结果中注明"无测试覆盖"。
 
 ### --comment
 
