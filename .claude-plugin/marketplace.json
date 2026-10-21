@@ -139,6 +139,24 @@
       ]
     },
     {
+      "name": "dev-tools",
+      "description": "开发工具集插件，提供多档位代码审查、代码质量清理与安全审查技能，并行 finder 角度与 verify 流程查找正确性 bug、清理代码质量并审查安全漏洞",
+      "category": "development",
+      "source": "./plugins/dev-tools",
+      "author": {
+        "name": "elliot",
+        "url": "https://github.com/ElliotChina"
+      },
+      "keywords": [
+        "code-review",
+        "review",
+        "simplify",
+        "security",
+        "quality",
+        "dev-tools"
+      ]
+    },
+    {
       "name": "playwright-cli",
       "description": "Microsoft Playwright CLI 技能，提供基于 CLI 的高效浏览器自动化能力，适合编码 agent 的 token 节省型工作流",
       "category": "development",
