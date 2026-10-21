@@ -276,6 +276,24 @@
       "homepage": "https://ui.shadcn.com"
     },
     {
+      "name": "product-design",
+      "description": "产品与设计技能集：意图访谈、创意打磨、方案拷问、领域建模与原型验证，覆盖澄清意图到沉淀决策的完整产品链条",
+      "category": "productivity",
+      "source": "./plugins/product-design",
+      "author": {
+        "name": "elliot",
+        "url": "https://github.com/ElliotChina"
+      },
+      "keywords": [
+        "product",
+        "design",
+        "interview",
+        "grill",
+        "prototype",
+        "domain-modeling"
+      ]
+    },
+    {
       "name": "devops",
       "description": "DevOps 技能集：CI/CD 流水线自动化、生产发布与上线检查、可观测性与插桩，配套发布前检查清单",
       "category": "development",

@@ -53,7 +53,7 @@ jobs:
                 --jq '.[] | .path // empty' 2>/dev/null || true)
             fi
 
-            # 可选 include 过滤：剥离上游技能目录前缀后按相对路径精确/前缀匹配。
+            # 可选 include 过滤：剥离上游技能目录前缀后按相对路径精确匹配。
             # 统一在 fallback 之后执行，保证 trees 与 contents 两条来源路径都被过滤
             includes=$(jq -r ".[$i].include // [] | join(\"\n\")" "$MAPPING_FILE")
             if [ -n "$includes" ]; then
@@ -63,7 +63,7 @@ jobs:
                 rel="${f#$remote_path/}"
                 while IFS= read -r inc; do
                   [ -z "$inc" ] && continue
-                  case "$rel" in "$inc"|"$inc"/*) filtered="$filtered$f"$'\n'; break;; esac
+                  [ "$rel" = "$inc" ] && filtered="$filtered$f"$'\n' && break
                 done <<< "$includes"
               done <<< "$tree"
               tree="$filtered"

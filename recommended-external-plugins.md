@@ -47,19 +47,19 @@
 | excalidraw-diagram-generator | excalidraw | 自然语言生成 .excalidraw 图表:流程图、架构图、思维导图等 | [github/awesome-copilot](https://github.com/github/awesome-copilot) |
 | humanizer-zh | writing | 中文去 AI 味润色:消除空话、重复与模板化表达 | [op7418/humanizer-zh](https://github.com/op7418/humanizer-zh) |
 | human-writing | writing | 活人感中文创作与改稿,覆盖知乎、公众号、小说等文体 | [KKKKhazix/human-writing](https://github.com/KKKKhazix/human-writing) |
-| grill-me | dev-tools | 方案拷问入口:调用 grilling 对方案发起多轮追问 | [mattpocock/skills](https://github.com/mattpocock/skills) |
-| grill-with-docs | dev-tools | 拷问方案并同步沉淀 GLOSSARY 术语表与 ADR 决策记录 | [mattpocock/skills](https://github.com/mattpocock/skills) |
-| grilling | dev-tools | 拷问核心逻辑:设计树逐轮追问,直到没有隐含假设 | [mattpocock/skills](https://github.com/mattpocock/skills) |
-| domain-modeling | dev-tools | 领域建模:打磨术语、压测概念边界、维护 GLOSSARY 与 ADR | [mattpocock/skills](https://github.com/mattpocock/skills) |
+| grill-me | product-design | 方案拷问入口:调用 grilling 对方案发起多轮追问 | [mattpocock/skills](https://github.com/mattpocock/skills) |
+| grill-with-docs | product-design | 拷问方案并同步沉淀 GLOSSARY 术语表与 ADR 决策记录 | [mattpocock/skills](https://github.com/mattpocock/skills) |
+| grilling | product-design | 拷问核心逻辑:设计树逐轮追问,直到没有隐含假设 | [mattpocock/skills](https://github.com/mattpocock/skills) |
+| domain-modeling | product-design | 领域建模:打磨术语、压测概念边界、维护 GLOSSARY 与 ADR | [mattpocock/skills](https://github.com/mattpocock/skills) |
 | improve-codebase-architecture | dev-tools | 扫描代码库找深模块化重构机会,生成 HTML 报告后进入拷问循环 | [mattpocock/skills](https://github.com/mattpocock/skills) |
 | codebase-design | dev-tools | 深模块设计共享词汇:module、interface、depth、seam 等七术语与原则 | [mattpocock/skills](https://github.com/mattpocock/skills) |
 | implement | dev-tools | spec/ticket 驱动实现:TDD 推进、定期检查、收尾审查并提交 | [mattpocock/skills](https://github.com/mattpocock/skills) |
 | tdd | dev-tools | 测试驱动开发参考:好测试标准、接缝先行、反模式与红绿循环纪律 | [mattpocock/skills](https://github.com/mattpocock/skills) |
 | research | dev-tools | 后台研究:对照一手信源调查并沉淀带出处的 Markdown 结论 | [mattpocock/skills](https://github.com/mattpocock/skills) |
 | diagnosing-bugs | dev-tools | 系统化诊断循环:假设驱动定位难复现 bug 与性能回退的根因 | [mattpocock/skills](https://github.com/mattpocock/skills) |
-| prototype | dev-tools | 一次性原型:即抛原型验证设计问题,附逻辑与 UI 两套方法 | [mattpocock/skills](https://github.com/mattpocock/skills) |
-| interview-me | dev-tools | 意图访谈:一次一问附猜测,澄清欠规格需求直至 95% 置信 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
-| idea-refine | dev-tools | 创意打磨:多视角框架生成变体并按标准筛选推敲 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
+| prototype | product-design | 一次性原型:即抛原型验证设计问题,附逻辑与 UI 两套方法 | [mattpocock/skills](https://github.com/mattpocock/skills) |
+| interview-me | product-design | 意图访谈:一次一问附猜测,澄清欠规格需求直至 95% 置信 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
+| idea-refine | product-design | 创意打磨:多视角框架生成变体并按标准筛选推敲 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
 | frontend-ui-engineering | frontend-web | 生产级可访问响应式 UI 工程技能,配套 references/ 下 WCAG 检查清单 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
 | ci-cd-and-automation | devops | CI/CD 流水线自动化:质量门禁、Actions 模板、部署策略与回滚 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
 | shipping-and-launch | devops | 生产发布与上线:发布前清单、监控搭设、分阶段发布与回滚 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
