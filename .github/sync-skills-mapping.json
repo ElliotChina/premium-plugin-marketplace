@@ -91,7 +91,8 @@
     "path": "skills/engineering/diagnosing-bugs",
     "include": [
       "SKILL.md",
-      "agents/openai.yaml"
+      "agents/openai.yaml",
+      "scripts/hitl-loop.template.sh"
     ]
   },
   {
@@ -179,7 +180,8 @@
       "SKILL.md",
       "examples.md",
       "frameworks.md",
-      "refinement-criteria.md"
+      "refinement-criteria.md",
+      "scripts/idea-refine.sh"
     ]
   },
   {

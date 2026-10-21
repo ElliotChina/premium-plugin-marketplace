@@ -91,9 +91,7 @@ spec / ticket 驱动实现技能：按规格或工单实现工作，在预先约
 
 ### diagnosing-bugs（源自 mattpocock/skills，MIT）
 
-系统化诊断循环：针对难复现的 bug 与性能回退，按假设驱动的流程定位根因。
-
-> 迁移说明：上游附带的 `scripts/hitl-loop.template.sh`（人机协作复现模板，复制后由 agent 按场景改写执行）未迁入——避免同步可执行第三方代码；模板仅含 step/capture 两个交互辅助函数，需要时 agent 可现场生成等价脚本。
+系统化诊断循环：针对难复现的 bug 与性能回退，按假设驱动的流程定位根因。含人机协作复现模板 `scripts/hitl-loop.template.sh`（复制后按场景改写步骤，agent 执行、用户在终端按提示操作，输出回喂 agent）。
 
 ### prototype（源自 mattpocock/skills，MIT）
 
@@ -105,9 +103,7 @@ spec / ticket 驱动实现技能：按规格或工单实现工作，在预先约
 
 ### idea-refine（源自 addyosmani/agent-skills，MIT）
 
-创意打磨技能：把模糊想法变成经过推敲的方案。通过多视角框架（第一性原理、反脆弱、10/10/10 等）生成变体，用评估标准筛选，交互式问答多轮迭代，ideas 目录（`docs/ideas`）按需创建。附 examples.md（优秀构思示例）、frameworks.md（框架清单）、refinement-criteria.md（评估标准）。与 interview-me 互补：interview-me 澄清"要什么"，idea-refine 展开"可能是什么"。
-
-> 迁移说明：上游附带的 `scripts/idea-refine.sh`（仅 `mkdir -p docs/ideas`）未迁入——避免同步可执行第三方代码，目录初始化由 agent 直接完成，行为等价。
+创意打磨技能：把模糊想法变成经过推敲的方案。通过多视角框架（第一性原理、反脆弱、10/10/10 等）生成变体，用评估标准筛选，支持交互式问答或 `scripts/idea-refine.sh` 初始化 ideas 目录后多轮迭代。附 examples.md（优秀构思示例）、frameworks.md（框架清单）、refinement-criteria.md（评估标准）。与 interview-me 互补：interview-me 澄清"要什么"，idea-refine 展开"可能是什么"。
 
 ### performance-optimization（源自 addyosmani/agent-skills，MIT）
 

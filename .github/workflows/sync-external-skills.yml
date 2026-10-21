@@ -27,6 +27,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           changed_files=""
+          has_exec_changes=false
 
           # 读取映射，逐个技能同步
           total=$(jq 'length' "$MAPPING_FILE")
@@ -91,6 +92,12 @@ jobs:
               git add "$local_path"
               changed_files="$changed_files
             - $local_path ($repo)"
+              # 条目 include 含可执行文件类型时，本次同步跳过自动合并，留 PR 人工审查
+              while IFS= read -r inc; do
+                case "$inc" in
+                  *.sh|*.py|*.js|*.ts|*.mjs|*.cjs|*.rb|*.pl|*.exe) has_exec_changes=true; break ;;
+                esac
+              done <<< "$(jq -r ".[$i].include // [] | join(\"\n\")" "$MAPPING_FILE")"
             fi
 
             echo "::endgroup::"
@@ -162,8 +169,11 @@ jobs:
               --body "$pr_body"
           fi
 
-          # 自动合并（squash）；有冲突等失败时留 PR 供人工处理
-          if ! gh pr merge "$BRANCH" --squash --delete-branch \
+          # 自动合并（squash）；有冲突等失败时留 PR 供人工处理。
+          # 本次变更含可执行文件的技能时跳过自动合并，留 PR 人工审查（供应链防护）
+          if [ "$has_exec_changes" = "true" ]; then
+            echo "::warning::本次同步含可执行文件的技能有变更，已跳过自动合并，请人工审查 PR（分支 $BRANCH）后再合并"
+          elif ! gh pr merge "$BRANCH" --squash --delete-branch \
             --subject "chore: sync external skills ($date_str)" \
             --body "自动同步外部技能上游更新，详见 PR 描述"; then
             echo "::warning::自动合并失败（可能存在冲突），请手动处理 PR（分支 $BRANCH）"
