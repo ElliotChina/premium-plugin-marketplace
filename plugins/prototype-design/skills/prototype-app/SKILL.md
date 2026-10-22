@@ -36,5 +36,5 @@ Restate the brief in one sentence before building — what the prototype answers
 
 1. Scope: one question per run. If the ask spans several pages ("the dashboard"), pick the highest-leverage route set, say which and why, and offer the rest as follow-ups.
 2. Recon: framework and routing convention, styling system and tokens, where the pages render and beside what. Every prototype page should look like it could ship in this product tomorrow.
-3. Build per the branch file, verify it runs and every interaction responds, then hand off with the URL (and, for variants, the picker keys).
+3. Build per the branch file, verify it runs and every interaction responds, then run `scripts/mirror-check.sh` and fix every finding — **no prototype is handed off with a failing or never-run check**; re-run it after the last file change of every round. Hand off with the URL (and, for variants, the picker keys).
 4. On selection: promote per [UI.md](UI.md) or [LOGIC.md](LOGIC.md). The prototype stays — that's the archive.
