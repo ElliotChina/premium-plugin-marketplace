@@ -277,7 +277,7 @@
     },
     {
       "name": "product-design",
-      "description": "产品与设计技能集：意图访谈、创意打磨、方案拷问、领域建模与原型验证，覆盖澄清意图到沉淀决策的完整产品链条",
+      "description": "产品与设计技能集：意图访谈、创意打磨、方案拷问与领域建模，覆盖澄清意图到沉淀决策的完整产品链条",
       "category": "productivity",
       "source": "./plugins/product-design",
       "author": {
@@ -289,8 +289,26 @@
         "design",
         "interview",
         "grill",
-        "prototype",
         "domain-modeling"
+      ]
+    },
+    {
+      "name": "prototype-design",
+      "description": "原型设计插件：prototype-app 在真实前端项目中构建可执行、可点击、页面互通的镜像原型（生产零耦合、晋升后随代码库永久归档）；prototype 提供即抛式单件 UI 发散对比",
+      "category": "design",
+      "source": "./plugins/prototype-design",
+      "author": {
+        "name": "elliot",
+        "url": "https://github.com/ElliotChina"
+      },
+      "keywords": [
+        "prototype",
+        "design",
+        "ui",
+        "frontend",
+        "clickable-prototype",
+        "archive",
+        "variants"
       ]
     },
     {

@@ -1,6 +1,6 @@
 # product-design
 
-产品与设计技能插件：覆盖产品工作的完整链条——**澄清意图 → 发散方案 → 拷问打磨 → 原型验证 → 沉淀术语决策**。
+产品与设计技能插件：覆盖产品工作的完整链条——**澄清意图 → 发散方案 → 拷问打磨 → 沉淀术语决策**。
 
 ## 技能
 
@@ -28,13 +28,11 @@
 /grill-with-docs       # 拷问方案并顺手写文档（GLOSSARY + ADR）
 ```
 
-### prototype（源自 mattpocock/skills，MIT）
-
-一次性原型技能：为回答设计问题构建即抛原型，验证状态模型或逻辑是否成立、探索 UI 形态。附 LOGIC.md（逻辑原型方法）与 UI.md（UI 原型方法）。
-
 ## 关联插件
 
 dev-tools 插件的 `improve-codebase-architecture` 技能会调用本插件的 `grilling` 与 `domain-modeling`：两插件同装时其拷问与文档环节完整可用，单装本插件不受影响。
+
+原型相关技能已拆分至 `prototype-design` 插件（`prototype-app` 可执行镜像原型 / `prototype` 即抛式发散对比）。
 
 ## 安装
 

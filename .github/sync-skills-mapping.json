@@ -96,14 +96,12 @@
     ]
   },
   {
-    "local": "plugins/product-design/skills/prototype",
-    "repo": "mattpocock/skills",
-    "path": "skills/engineering/prototype",
+    "local": "plugins/prototype-design/skills/prototype",
+    "repo": "emilkowalski/skills",
+    "path": "skills/prototype",
     "include": [
       "SKILL.md",
-      "LOGIC.md",
-      "UI.md",
-      "agents/openai.yaml"
+      "PICKER.md"
     ]
   },
   {

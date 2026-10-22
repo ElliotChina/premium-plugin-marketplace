@@ -1,0 +1,19 @@
+{
+  "name": "prototype-design",
+  "version": "0.1.0",
+  "description": "原型设计插件：prototype-app 在真实前端项目中构建可执行、可点击、页面互通的镜像原型（生产零耦合、晋升后随代码库永久归档）；prototype 提供即抛式单件 UI 发散对比",
+  "author": {
+    "name": "elliot",
+    "url": "https://github.com/ElliotChina"
+  },
+  "license": "MIT",
+  "keywords": [
+    "prototype",
+    "design",
+    "ui",
+    "frontend",
+    "clickable-prototype",
+    "archive",
+    "variants"
+  ]
+}
