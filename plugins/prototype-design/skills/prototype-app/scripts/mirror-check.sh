@@ -5,13 +5,13 @@
 # 镜像检查（fail）:
 #   「镜像生产 <路径>」: 生产对应物必须存在，一个生产文件只被映射一次，导出风格一致（default 形态一致、原型导出 ⊆ 生产导出）
 #   「镜像生产 <路径>」+「待建」: 0→1 页面专用——对应物尚未存在，豁免存在性与导出检查，每次运行提示待建清单
-#   「原型私有」:       挂具/私有实现，必须位于白名单位置（shared/、logic/、*.variant-*）
-#   变体文件（*.variant-*.tsx?）: 首部必须声明「基准」文件与发散轴
+#   「原型私有」:       挂具/私有实现，必须位于白名单位置（proto-harness/、proto-logic/、*.variant-*）
+#   变体文件（*.variant-*.tsx?）: 首部必须声明「基准 <同目录同名镜像文件路径>」与「轴」；基准须存在、为已登记镜像文件，其生产映射计入一对多查重
 #   PrototypeRoot.* 为挂具入口，自动豁免
 # 状态纪律（fail）:
-#   持久化 API 禁入（localStorage/sessionStorage/indexedDB/document.cookie）
+#   持久化 API 禁入（localStorage/sessionStorage/indexedDB/document.cookie；覆盖 ts/tsx/js/jsx/mjs/html，词法匹配——字符串拼接绕过不检测）
 #   测试文件禁入（*.test.*、*.spec.*、__tests__/）
-#   HTML 仅允许 prototypes/logic/ 下（LOGIC 分支产物）
+#   HTML 仅允许顶层 prototypes/proto-logic/ 下（LOGIC 分支产物；嵌套 proto-logic/ 目录不在豁免内）
 #   prototypes/README.md 必须存在，且 pages/ 下每个页面在映射表中登记
 # 独立性检查（fail）:
 #   原型 → 生产: 原型文件不得 import 生产源码（相对路径越出 prototypes/、'src/'、'@/'、'~/' 均违规）
@@ -35,21 +35,55 @@ while IFS= read -r f; do
   rel="${f#"$proto"/}"
   head_txt=$(head -n 6 "$f")
 
-  # 变体文件: 必须声明基准文件与轴
+  # 变体文件: 验证式豁免——基准须存在、同目录同名前缀、为已登记镜像文件,且声明发散轴
   case "$rel" in
     *.variant-*.ts|*.variant-*.tsx|*.variant-*.css)
-      if printf '%s' "$head_txt" | grep -q '基准'; then continue; fi
-      echo "变体文件缺基准声明: $rel"
-      fail=1
+      vstem="${rel%%.variant-*}"
+      base=$(printf '%s' "$head_txt" | grep -oE '基准[ ：]*[A-Za-z0-9_./-]+' | head -1 | awk '{print $NF}')
+      if ! printf '%s' "$head_txt" | grep -q '轴'; then
+        echo "变体文件缺发散轴声明: $rel"
+        fail=1
+      fi
+      case "$base" in
+        "$vstem".ts|"$vstem".tsx) ;;
+        *)
+          echo "变体基准须为同目录同名镜像文件: $rel -> ${base:-未声明}"
+          fail=1
+          continue
+          ;;
+      esac
+      base_file="$proto/$base"
+      if [ ! -f "$base_file" ]; then
+        echo "变体基准不存在: $rel -> $base"
+        fail=1
+        continue
+      fi
+      base_head=$(head -n 6 "$base_file")
+      if printf '%s' "$base_head" | grep -q '原型私有'; then
+        echo "变体基准必须是镜像文件而非原型私有: $rel -> $base"
+        fail=1
+        continue
+      fi
+      b_target=$(printf '%s' "$base_head" | grep -oE '镜像生产[（(待建)）： ]*[A-Za-z0-9_./-]+' | head -1 | awk '{print $NF}')
+      if [ -z "$b_target" ]; then
+        echo "变体基准文件缺镜像声明: $rel -> $base"
+        fail=1
+        continue
+      fi
+      case "$b_target" in
+        "$src"/*|/*) ;;
+        *) b_target="$src/$b_target" ;;
+      esac
+      # 变体与基准页同源,不重复计入一对多查重
       continue
       ;;
   esac
 
   if printf '%s' "$head_txt" | grep -q '原型私有'; then
     case "$rel" in
-      shared/*|logic/*) ;;
+      proto-harness/*|proto-logic/*) ;;
       *)
-        echo "原型私有文件不在白名单位置(shared/|logic/): $rel"
+        echo "原型私有文件不在白名单位置(proto-harness/|proto-logic/): $rel"
         fail=1
         ;;
     esac
@@ -113,8 +147,8 @@ fi
 rm -f "$tmp"
 
 # ---- 状态纪律 ----
-persist=$(grep -rnE 'localStorage|sessionStorage|indexedDB|document\.cookie' "$proto" \
-  --include='*.ts' --include='*.tsx' 2>/dev/null || true)
+persist=$(grep -rinE 'localStorage|sessionStorage|indexedDB|document\.cookie' "$proto" \
+  --include='*.ts' --include='*.tsx' --include='*.js' --include='*.jsx' --include='*.mjs' --include='*.html' 2>/dev/null || true)
 if [ -n "$persist" ]; then
   echo "持久化 API 禁入:"
   echo "$persist"
@@ -128,9 +162,9 @@ if [ -n "$tests" ]; then
   fail=1
 fi
 
-stray_html=$(find "$proto" -name '*.html' ! -path '*/logic/*' 2>/dev/null || true)
+stray_html=$(find "$proto" -name '*.html' ! -path "$proto/proto-logic/*" 2>/dev/null || true)
 if [ -n "$stray_html" ]; then
-  echo "HTML 仅允许出现在 prototypes/logic/ 下:"
+  echo "HTML 仅允许出现在 prototypes/proto-logic/ 下:"
   echo "$stray_html"
   fail=1
 fi
@@ -174,7 +208,7 @@ while IFS= read -r f; do
   done <<EOF_IMP
 $imports
 EOF_IMP
-done < <(find "$proto" -type f \( -name '*.ts' -o -name '*.tsx' \) | sort)
+done < <(find "$proto" -type f \( -name '*.ts' -o -name '*.tsx' -o -name '*.js' -o -name '*.jsx' -o -name '*.mjs' \) | sort)
 
 # ---- 独立性检查: 生产 → 原型 ----
 offenders=$(grep -rlE "(from|import)[^\"']*['\"][^\"']*prototypes/" "$root/$src" \
