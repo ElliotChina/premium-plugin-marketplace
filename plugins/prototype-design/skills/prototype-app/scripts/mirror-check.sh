@@ -4,6 +4,7 @@
 #
 # 镜像检查（fail）:
 #   「镜像生产 <路径>」: 生产对应物必须存在，一个生产文件只被映射一次，导出风格一致（default 形态一致、原型导出 ⊆ 生产导出）
+#   「镜像生产 <路径>」+「待建」: 0→1 页面专用——对应物尚未存在，豁免存在性与导出检查，每次运行提示待建清单
 #   「原型私有」:       挂具/私有实现，必须位于白名单位置（shared/、logic/、*.variant-*）
 #   变体文件（*.variant-*.tsx?）: 首部必须声明「基准」文件与发散轴
 #   PrototypeRoot.* 为挂具入口，自动豁免
@@ -55,7 +56,7 @@ while IFS= read -r f; do
     continue
   fi
 
-  target=$(printf '%s' "$head_txt" | grep -oE '镜像生产[ ：]*[A-Za-z0-9_./-]+' | head -1 | awk '{print $NF}')
+  target=$(printf '%s' "$head_txt" | grep -oE '镜像生产[（(待建)）： ]*[A-Za-z0-9_./-]+' | head -1 | awk '{print $NF}')
   if [ -z "$target" ]; then
     echo "缺失声明: $rel"
     fail=1
@@ -65,6 +66,11 @@ while IFS= read -r f; do
     "$src"/*|/*) ;;
     *) target="$src/$target" ;;
   esac
+  if printf '%s' "$head_txt" | grep -q '待建'; then
+    echo "待建对应物(生产就位前豁免,就位后请移除待建标记): $rel -> $target"
+    printf '%s\n' "$target" >> "$tmp"
+    continue
+  fi
   if [ ! -f "$root/$target" ]; then
     echo "对应物不存在: $rel -> $target"
     fail=1
