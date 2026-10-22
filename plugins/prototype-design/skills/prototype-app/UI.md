@@ -32,7 +32,7 @@ One sentence: what the prototype answers, which routes it covers. Then a route l
 ### 2. Build the mirror pages
 
 - **Path convention**: `/prototype/` + the real page's path, using whatever routing conventions the project already uses. Don't invent a new top-level structure.
-- **Structure mirrors the production page**: the prototype page directory mirrors its production counterpart's internal organization — colocate components and styles the way the production page does, named after what they mirror (`Header`, `StatCard`). Prototype-only files (mock data, the variant harness) live in the page directory they serve.
+- **Structure mirrors production file-for-file**: the mirror path is a source-root prefix swap — `src/pages/HistoryQuery.tsx` → `prototypes/pages/HistoryQuery.tsx`, `src/components/common/QueryPriceTag.tsx` → `prototypes/components/common/QueryPriceTag.tsx`. Same name, same relative location, same export style. One prototype file per production file — never merge components into an invented convenience file, never coin a name production doesn't use. Each mirrored file opens with a one-line header comment naming its production counterpart. Prototype-only files (mock data, variant harness) keep clearly prototype-only names (`mock-data.ts`, `proto-store.ts`) and live apart from mirrored files.
 - **Real context, not a vacuum**: prototype pages render with realistic siblings — a header/footer layout rebuilt in the prototype surface to mimic the real one, plausible data, product-shaped copy, believable names and numbers. No lorem ipsum, no dead buttons, no "imagine this part".
 - **Craft bar**: every page individually meets it — `ease-out` on entrances (never `ease-in`), UI motion under 300ms, `transform`/`opacity` only, correct `transform-origin`, `prefers-reduced-motion` handled. A sloppy page doesn't widen the exploration; it loses on execution and teaches nothing about its direction.
 - **Native to the product, self-contained**: copy the project's token values, fonts, and spacing as reference, and rebuild the components you need inside `prototypes/` — never import production components (hard rule 3). A prototype page should look like it could ship tomorrow, and keep looking that way no matter how the real code is refactored.
@@ -54,6 +54,8 @@ When a single page needs competing options, give it variants — and only that p
 - Shared components between variants of one page: a shared prototype-local `<Header>` is fine; a shared `<Layout>` defeats the point. Each variant is free to throw out the layout.
 
 ### 5. Present and hand off
+
+Before handing off, run the **mirror check**: grep the header comments across `prototypes/` and match them against both trees — every prototype file must map to exactly one production file, and every production file the prototype needs must appear exactly once. Gaps, merges, and invented names surface mechanically.
 
 Surface the route list (start URL plus the pages it covers), or for variants the picker URL and keys. When presenting variants, give the honest table and stop — the choice belongs to the user:
 
@@ -81,3 +83,4 @@ Then archive: the prototype page **stays** in `prototypes/`, committed with the 
 - **Judging a page in a vacuum.** An empty route hides the design problems its populated neighbors would expose. Render realistic context.
 - **Inventing a new top-level prototype structure.** Follow the project's routing conventions.
 - **Marking mirrored files with a `Proto` prefix, or boxing flat pages into directories.** The mirror path is the marker — name files exactly as their production counterparts (`Login.tsx`, not `ProtoLogin.tsx`; `Login.css`, not `login.css`; hooks keep production casing). A production flat page stays a flat file; only production directories become prototype directories. Identical basenames in the two trees are fine: imports are explicit paths, nothing collides at runtime.
+- **Inventing convenience files.** Merging two production components into one handy `SearchControls.tsx` breaks the file-for-file index — split them back to their mirror paths, one file per production counterpart.
