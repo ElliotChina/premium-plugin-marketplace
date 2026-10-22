@@ -9,7 +9,7 @@
 | context7-plugin | 开发 | 实时拉取特定版本的库文档和代码示例 | [upstash/context7](https://github.com/upstash/context7) |
 | impeccable | 设计 | 前端设计流畅性:23 个命令 + 反模式检测 | [pbakaus/impeccable](https://github.com/pbakaus/impeccable) |
 | chrome-devtools-mcp | 开发 | Chrome DevTools 自动化、调试与性能分析 | [ChromeDevTools/chrome-devtools-mcp](https://github.com/ChromeDevTools/chrome-devtools-mcp) |
-| mattpocock-skills | 工程 | grilling、TDD、code review、domain modelling 等工程技能(grill 系列与 domain-modeling 已内置至 dev-tools) | [mattpocock/skills](https://github.com/mattpocock/skills) |
+| mattpocock-skills | 工程 | grilling、TDD、code review、domain modelling 等工程技能(grill 系列与 domain-modeling 已内置至 product-design) | [mattpocock/skills](https://github.com/mattpocock/skills) |
 | superpowers | 开发 | TDD、调试、协作模式核心技能库 | [obra/superpowers](https://github.com/obra/superpowers) |
 | compound-engineering | 开发 | 头脑风暴、计划、调试、审查的复合工程工作流 | [EveryInc/compound-engineering-plugin](https://github.com/EveryInc/compound-engineering-plugin) |
 | ui-ux-pro-max | 设计 | UI/UX 设计智能:样式、色彩、排版、图表数据库 | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) |
@@ -57,7 +57,7 @@
 | tdd | dev-tools | 测试驱动开发参考:好测试标准、接缝先行、反模式与红绿循环纪律 | [mattpocock/skills](https://github.com/mattpocock/skills) |
 | research | dev-tools | 后台研究:对照一手信源调查并沉淀带出处的 Markdown 结论 | [mattpocock/skills](https://github.com/mattpocock/skills) |
 | diagnosing-bugs | dev-tools | 系统化诊断循环:假设驱动定位难复现 bug 与性能回退的根因 | [mattpocock/skills](https://github.com/mattpocock/skills) |
-| prototype | product-design | 一次性原型:即抛原型验证设计问题,附逻辑与 UI 两套方法 | [mattpocock/skills](https://github.com/mattpocock/skills) |
+| prototype | prototype-design | 即抛式 UI 发散对比:3–5 个命名轴变体 + 暗色翻选器,用完即扔 | [emilkowalski/skills](https://github.com/emilkowalski/skills) |
 | interview-me | product-design | 意图访谈:一次一问附猜测,澄清欠规格需求直至 95% 置信 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
 | idea-refine | product-design | 创意打磨:多视角框架生成变体并按标准筛选推敲 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
 | frontend-ui-engineering | frontend-web | 生产级可访问响应式 UI 工程技能,配套 references/ 下 WCAG 检查清单 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |

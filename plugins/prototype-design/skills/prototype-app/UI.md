@@ -27,7 +27,7 @@ Both start points converge on the same build process below.
 
 ### 1. State the question and list the routes
 
-One sentence: what the prototype answers, which routes it covers. Then a route list mapping real path → prototype path. The directory grows page-by-page as questions arise; each page still answers one question — the clickable whole is what makes it worth more than isolated mockups.
+One sentence: what the prototype answers, which routes it covers. Then a route list mapping real path → prototype path. Keep that list in `prototypes/README.md` together with run instructions — the mapping table is the archive's human-readable index, updated whenever pages are added. The directory grows page-by-page as questions arise; each page still answers one question — the clickable whole is what makes it worth more than isolated mockups.
 
 ### 2. Build the mirror pages
 
@@ -52,10 +52,11 @@ When a single page needs competing options, give it variants — and only that p
 - **Completion criterion**: every variant has a name and an axis, and no two variants share an axis position.
 - **The picker is [PICKER.md](PICKER.md), verbatim.** Number keys `1–N`, `←`/`→`, `R` to replay; selection persists via `?v=N`; the variant swap is instant (no transition) while only the picker's highlight slides. In a framework, keep the same behavior contract and express it idiomatically (state instead of `innerHTML`, a keyed re-mount so entrance animations re-run).
 - Shared components between variants of one page: a shared prototype-local `<Header>` is fine; a shared `<Layout>` defeats the point. Each variant is free to throw out the layout.
+- **Variant files**: the mirrored page file hosts the default variant and the picker; a variant that needs its own file is a sibling with a suffixed name (`Login.variant-b.tsx`) — a prototype-only artifact, header-commented with its base file and its axis.
 
 ### 5. Present and hand off
 
-Before handing off, run the **mirror check**: grep the header comments across `prototypes/` and match them against both trees — every prototype file must map to exactly one production file, and every production file the prototype needs must appear exactly once. Gaps, merges, and invented names surface mechanically.
+Before handing off, run the **mirror check** — the skill's bundled `scripts/mirror-check.sh <项目根> [源码根]` (or the grep by hand): every prototype file must map to exactly one production file, and every production file the prototype needs must appear exactly once. Gaps, merges, and invented names surface mechanically.
 
 Surface the route list (start URL plus the pages it covers), or for variants the picker URL and keys. When presenting variants, give the honest table and stop — the choice belongs to the user:
 
