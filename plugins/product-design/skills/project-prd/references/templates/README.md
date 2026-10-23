@@ -10,7 +10,7 @@
 
 | 严格程度 | 文档 | 第一目标 |
 |---|---|---|
-| 轻量化 | 产品总览（00-overview）、模块 README | 准确、清晰、容易导航 |
+| 轻量化 | 产品总览（00-overview）、模块 overview | 准确、清晰、容易导航 |
 | 规则化 | 全局规范（01-foundation）、跨模块流程（03-workflows） | 统一定义、清晰引用、业务逻辑一致 |
 | 精细化 | 功能级 PRD | 明确字段、状态、操作、约束、异常与预期业务结果 |
 
@@ -20,7 +20,7 @@
 
 | 模板文件 | 目标位置 | 用途 | 详细程度 |
 |---|---|---|---|
-| [01-index.md](01-index.md) | `prd/README.md` | 知识库统一入口，只负责导航与使用约定 | 极简 |
+| [01-index.md](01-index.md) | `prd/index.md` | 知识库统一入口，只负责导航与使用约定 | 极简 |
 | [02-product.md](02-product.md) | `00-overview/product.md` | 产品是什么、面向谁、解决什么问题 | 简要 |
 | [03-module-map.md](03-module-map.md) | `00-overview/modules.md` | 业务能力地图与模块职责边界 | 简要 |
 | [04-roles.md](04-roles.md) | `00-overview/roles.md` | 业务主体与用户角色定义 | 中等 |
@@ -29,7 +29,7 @@
 | [07-business-rules.md](07-business-rules.md) | `01-foundation/business-rules.md` | 跨模块全局业务规则 | 规则型 |
 | [08-data-dictionary.md](08-data-dictionary.md) | `01-foundation/data-dictionary.md` | 核心业务对象、字段与枚举 | 字典型 |
 | [09-common-features.md](09-common-features.md) | `01-foundation/common-features.md` | 系统级通用交互与业务行为 | 规则型 |
-| [10-module-overview.md](10-module-overview.md) | `02-modules/<模块>/README.md` | 模块总览与功能索引 | 简要 |
+| [10-module-overview.md](10-module-overview.md) | `02-modules/<模块>/overview.md` | 模块总览与功能索引 | 简要 |
 | [11-feature-prd.md](11-feature-prd.md) | `02-modules/<模块>/<功能>.md` | 功能级 PRD（最核心的模板） | 最详细 |
 | [12-workflow.md](12-workflow.md) | `03-workflows/<流程>.md` | 跨模块端到端业务流程 | 详细 |
 

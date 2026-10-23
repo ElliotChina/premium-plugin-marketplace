@@ -15,11 +15,11 @@ import re
 import sys
 
 # 阈值常量（按项目体量可调）
-MODULE_README_MAX_LINES = 200   # 模块 README 超过 → 功能混入嫌疑
-MODULE_README_MAX_SECTIONS = 8  # 模块 README ## 章节数超过 → 功能混入嫌疑
+MODULE_OVERVIEW_MAX_LINES = 200   # 模块 overview 超过 → 功能混入嫌疑
+MODULE_OVERVIEW_MAX_SECTIONS = 8  # 模块 overview ## 章节数超过 → 功能混入嫌疑
 FEATURE_PRD_MIN_LINES = 30      # 功能 PRD 低于 → 结构未补全嫌疑
 
-KNOWN_TOP = {"README.md", "00-overview", "01-foundation", "02-modules", "03-workflows"}
+KNOWN_TOP = {"index.md", "00-overview", "01-foundation", "02-modules", "03-workflows"}
 FORBIDDEN_TOP = {"changes", "releases", "decisions"}  # 规范明令禁止的目录
 
 LINK_RE = re.compile(r"\]\(([^)\s]+)\)")
@@ -83,7 +83,7 @@ def main():
         if name.lower() in FORBIDDEN_TOP:
             err(root, f"禁止的顶层目录 {name}/（规范 3.1：不设 changes/releases/decisions）")
         else:
-            warn(root, f"未识别的顶层条目 {name}（标准结构仅四层目录 + README.md）")
+            warn(root, f"未识别的顶层条目 {name}（标准结构仅四层目录 + index.md）")
 
     # 遍历文件：链接、占位符、指引残留、待确认标记
     referenced = set()  # 被 .md 链接引用的文件（绝对规范路径）
@@ -117,41 +117,39 @@ def main():
 
     # 模块层检查
     modules_dir = os.path.join(root, "02-modules")
-    module_readmes = []
     if os.path.isdir(modules_dir):
         for entry in sorted(os.listdir(modules_dir)):
             mdir = os.path.join(modules_dir, entry)
             if not os.path.isdir(mdir):
                 continue
             mrel = f"02-modules/{entry}"
-            readme = os.path.join(mdir, "README.md")
-            if not os.path.isfile(readme):
-                err(mrel, "缺少模块 README（模块索引与路由入口）")
+            overview = os.path.join(mdir, "overview.md")
+            if not os.path.isfile(overview):
+                err(mrel, "缺少模块 overview.md（模块索引与路由入口）")
                 continue
-            module_readmes.append(readme)
-            rtext = contents.get(readme, "")
+            rtext = contents.get(overview, "")
             lines = rtext.count("\n") + 1
-            if lines > MODULE_README_MAX_LINES:
-                warn(f"{mrel}/README.md", f"{lines} 行，超过 {MODULE_README_MAX_LINES}（功能混入嫌疑，应拆为独立功能 PRD）")
-            if len(H2_RE.findall(rtext)) > MODULE_README_MAX_SECTIONS:
-                warn(f"{mrel}/README.md", f"## 章节数超过 {MODULE_README_MAX_SECTIONS}（功能章节混入嫌疑）")
+            if lines > MODULE_OVERVIEW_MAX_LINES:
+                warn(f"{mrel}/overview.md", f"{lines} 行，超过 {MODULE_OVERVIEW_MAX_LINES}（功能混入嫌疑，应拆为独立功能 PRD）")
+            if len(H2_RE.findall(rtext)) > MODULE_OVERVIEW_MAX_SECTIONS:
+                warn(f"{mrel}/overview.md", f"## 章节数超过 {MODULE_OVERVIEW_MAX_SECTIONS}（功能章节混入嫌疑）")
 
-            # 功能文件必须登记在模块 README 功能清单
-            readme_refs = set()
+            # 功能文件必须登记在模块 overview 功能清单
+            overview_refs = set()
             for m in LINK_RE.finditer(rtext):
                 t = strip_anchor(m.group(1))
                 if t.endswith(".md"):
-                    readme_refs.add(resolve(mdir, t))
+                    overview_refs.add(resolve(mdir, t))
             for name in sorted(os.listdir(mdir)):
-                if name == "README.md" or not name.endswith(".md"):
+                if name == "overview.md" or not name.endswith(".md"):
                     continue
                 fpath = os.path.join(mdir, name)
-                if fpath not in readme_refs:
-                    err(f"{mrel}/{name}", "未登记在模块 README 功能清单表（路由断链）")
+                if fpath not in overview_refs:
+                    err(f"{mrel}/{name}", "未登记在模块 overview 功能清单表（路由断链）")
 
             # 功能 PRD 结构与体量
             for name in sorted(os.listdir(mdir)):
-                if name == "README.md" or not name.endswith(".md"):
+                if name == "overview.md" or not name.endswith(".md"):
                     continue
                 fpath = os.path.join(mdir, name)
                 ftext = contents.get(fpath, "")
@@ -170,7 +168,7 @@ def main():
                 continue
             fpath = os.path.join(wf_dir, name)
             if fpath not in referenced:
-                warn(f"03-workflows/{name}", "未被任何文档引用（应在相关模块 README 的关联跨模块流程登记）")
+                warn(f"03-workflows/{name}", "未被任何文档引用（应在相关模块 overview 的关联跨模块流程登记）")
 
     # 输出
     for line in errors:
