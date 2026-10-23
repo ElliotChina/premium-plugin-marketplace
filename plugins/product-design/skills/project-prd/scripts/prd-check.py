@@ -61,6 +61,34 @@ def resolve(from_dir, target):
     return os.path.normpath(os.path.join(from_dir, target))
 
 
+def actual_path(path):
+    """逐段解析为文件系统实际大小写路径；某段仅大小写不敏感匹配时返回 (实际路径, True)。
+
+    macOS 大小写不敏感卷上 realpath 保留调用者的大小写，不可靠；listdir 返回磁盘实际名。
+    入参须为绝对路径（root 已 abspath，resolved 均绝对）。
+    """
+    cur = []
+    mismatch = False
+    for part in path.split(os.sep):
+        if part in ("", ".", ".."):
+            cur.append(part)
+            continue
+        try:
+            # 绝对路径首段 join 后为空串，回退到根目录
+            names = os.listdir(os.sep.join(cur) or os.sep)
+        except OSError:
+            return path, False
+        if part in names:
+            cur.append(part)
+            continue
+        hit = next((n for n in names if n.lower() == part.lower()), None)
+        if hit is None:
+            return path, False
+        cur.append(hit)
+        mismatch = True
+    return os.sep.join(cur), mismatch
+
+
 def main():
     root = find_prd_root(sys.argv[1] if len(sys.argv) > 1 else None)
     if not root:
@@ -104,6 +132,10 @@ def main():
                     err(rel, f"悬空链接 → {target}")
             else:
                 referenced.add(resolved)
+                # 大小写偏差：macOS 大小写不敏感文件系统上 exists 通过，但推到 Linux CI 会断
+                real, mismatch = actual_path(resolved)
+                if mismatch:
+                    warn(rel, f"链接大小写与实际文件不符（跨平台 CI 会断链）: {target} → {os.path.relpath(real, root)}")
 
         ph = PLACEHOLDER_RE.search(text)
         if ph:
