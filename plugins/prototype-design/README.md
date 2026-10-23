@@ -12,7 +12,7 @@
 
 - **物理隔离 + 零代码耦合**：全部原型代码集中在顶层 `prototypes/` 目录，不 import 生产代码、生产不 import 原型代码；token 值仅作参考复制
 - **dev-only 挂载**：生产构建零泄漏（Next.js 路由组 + 404 守卫 / React Router `import.meta.env.DEV` 注册）
-- **镜像约定（文件级一一对应）**：`/prototype/dashboard` ↔ `app/dashboard`；路径 = 生产源码根前缀换算（`src/X` → `prototypes/X`），同名、同导出风格，一个原型文件对一个生产文件，禁止 `Proto` 前缀与发明名；每个镜像文件头注释声明对应物，`scripts/mirror-check.sh` 机械校验
+- **镜像约定（文件级一一对应）**：`/prototype/dashboard` ↔ `app/dashboard`；路径 = 生产源码根前缀换算（`src/X` → `prototypes/X`），同名、同导出风格，一个原型文件对一个生产文件，禁止 `Proto` 前缀与发明名；每个镜像文件头注释声明对应物，`scripts/mirror-check.py` 机械校验
 - **变体命名**：单页多方案默认活在镜像页文件内；需独立文件时用后缀命名（`Login.variant-b.tsx`），头注释注明基准文件与发散轴
 - **档案生命周期**：晋升真实代码后原型保留归档，随功能分支提交，无独立原型分支；删除需明确要求
 - **两种起点**：从现有生产页面生成（直接镜像其目录组织），或 0→1 新建（路径指向未来路由、结构套用最相近生产页模板、晋升时定锚）

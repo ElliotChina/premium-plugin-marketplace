@@ -15,7 +15,7 @@ If the question is about logic/state rather than what something looks like, this
 
 **From existing code** (redesign or extension): read the production page first — its route path, directory organization, data shapes, and the token values it uses — then rebuild a faithful standalone copy under the mirror path. The prototype starts true to the current design and diverges only as the design questions demand. This is "generation from code": recon plus rebuild, no imports.
 
-**From zero** (new page or flow): there is no production page to mirror yet, so the mirror path names the route it *will* live at — `/prototype/new-feature` ↔ the future `app/new-feature`. Decide the path up front and keep it stable; the convention is the archive's index, including for pages that don't exist yet. Mark the header `镜像生产(待建) src/...` so `mirror-check.sh` exempts the missing counterpart until production lands — remove the marker once it does.
+**From zero** (new page or flow): there is no production page to mirror yet, so the mirror path names the route it *will* live at — `/prototype/new-feature` ↔ the future `app/new-feature`. Decide the path up front and keep it stable; the convention is the archive's index, including for pages that don't exist yet. Mark the header `镜像生产(待建) src/...` so `mirror-check.py` exempts the missing counterpart until production lands — remove the marker once it does.
 
 Structure still needs a template. Pick the **closest production page** — most recent, most similar in shape — and mirror its organization pattern: entry-file naming, css naming, whether page parts live in a subdirectory, how components are colocated. Build the prototype at production granularity from the start, so promotion can adopt the structure as-is. With no in-repo reference (greenfield project), fall back to the framework's house conventions. Realistic context comes from the prototype surface's own rebuilt layout.
 
@@ -56,7 +56,7 @@ When a single page needs competing options, give it variants — and only that p
 
 ### 5. Present and hand off
 
-Before handing off, run the **mirror check** — the skill's bundled `scripts/mirror-check.sh <项目根> [源码根]` (or the grep by hand): every prototype file must map to exactly one production file, and every production file the prototype needs must appear exactly once. Gaps, merges, and invented names surface mechanically.
+Before handing off, run the **mirror check** — the skill's bundled `python3 scripts/mirror-check.py <项目根> [源码根]` (or the grep by hand): every prototype file must map to exactly one production file, and every production file the prototype needs must appear exactly once. Gaps, merges, and invented names surface mechanically.
 
 Surface the route list (start URL plus the pages it covers), or for variants the picker URL and keys. When presenting variants, give the honest table and stop — the choice belongs to the user:
 
