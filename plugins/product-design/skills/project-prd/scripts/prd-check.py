@@ -46,10 +46,10 @@ def warn(path, msg):
 
 def find_prd_root(arg):
     if arg:
-        return arg if os.path.isdir(arg) else None
+        return os.path.abspath(arg) if os.path.isdir(arg) else None
     for cand in ("docs/prd", "prd"):
         if os.path.isdir(cand):
-            return cand
+            return os.path.abspath(cand)
     return None
 
 
