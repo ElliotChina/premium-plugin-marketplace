@@ -277,7 +277,7 @@
     },
     {
       "name": "product-design",
-      "description": "产品与设计技能集：意图访谈、创意打磨、方案拷问与领域建模，覆盖澄清意图到沉淀决策的完整产品链条",
+      "description": "产品与设计技能集：意图访谈、创意打磨、方案拷问、领域建模与 PRD 体系管理，覆盖澄清意图到沉淀正式需求文档的完整产品链条",
       "category": "productivity",
       "source": "./plugins/product-design",
       "author": {
@@ -289,7 +289,8 @@
         "design",
         "interview",
         "grill",
-        "domain-modeling"
+        "domain-modeling",
+        "prd"
       ]
     },
     {
