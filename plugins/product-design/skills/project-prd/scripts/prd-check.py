@@ -179,7 +179,8 @@ def main():
     if errors:
         print("结果: FAIL — ERROR 必须清零或经用户明确确认豁免后方可交付")
         return 1
-    print("结果: PASS" + (f"（含 {len(warns)} 条 WARN 待人工确认）" if warns else ""))
+    print("结果: 机械检查通过" + (f"（含 {len(warns)} 条 WARN 待人工确认）" if warns else ""))
+    print("注意: 机械检查通过 ≠ 文档质量审查通过——语义一致性（业务对象横向核对、规则冲突、异常闭环）需按 SKILL.md 工作流 C 复核")
     return 0
 
 
