@@ -31,6 +31,25 @@ GUIDE_RE_LIST = [
 PENDING_RE = re.compile(r"<!--\s*待确认")
 RULE_SECTION_RE = re.compile(r"^#+\s*(\d+[.\s]*)?业务规则", re.M)
 H2_RE = re.compile(r"^## ", re.M)
+SEP_ROW_RE = re.compile(r"^\|[-\s|:]+\|$")
+
+# 表结构对齐规则：(表头识别关键词组, 必含列关键词, 缺失提示)——列集随模板演进同步更新
+TABLE_ALIGN_RULES = [
+    (("字段", "校验"), "默认值", "字段定义表缺『默认值 / 生成规则』列（模板 §3.3 六列结构）"),
+    (("状态", "业务含义"), "是否终态", "状态定义表缺『是否终态』列（模板 §5.1）"),
+    (("允许角色",), "无权限", "权限表缺『无权限表现』列（模板 §6）"),
+    (("触发行为",), "时机", "触发行为表缺『时机』列（模板 §8）"),
+]
+
+
+def table_headers(text):
+    """提取 markdown 表头单元格列表（表头行 + 下一行为分隔行）。"""
+    lines = text.splitlines()
+    out = []
+    for i, line in enumerate(lines):
+        if line.startswith("|") and i + 1 < len(lines) and SEP_ROW_RE.match(lines[i + 1]):
+            out.append([c.strip() for c in line.strip("|").split("|")])
+    return out
 
 errors = []
 warns = []
@@ -191,6 +210,12 @@ def main():
                     warn(frel, f"仅 {flines} 行，低于 {FEATURE_PRD_MIN_LINES}（结构未补全嫌疑：状态/异常/验收章节应按功能类型展开）")
                 if not RULE_SECTION_RE.search(ftext):
                     warn(frel, "缺少「业务规则」章节（功能 PRD 的最低结构要求）")
+                # 表结构对齐：表头与模板列集比对（内容保留、结构映射）
+                for header in table_headers(ftext):
+                    flat = "".join(header)
+                    for keys, must, msg in TABLE_ALIGN_RULES:
+                        if all(k in flat for k in keys) and must not in flat:
+                            warn(frel, msg)
 
     # 跨模块流程孤儿检测
     wf_dir = os.path.join(root, "03-workflows")
