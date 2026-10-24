@@ -15,7 +15,7 @@
 | 插件 | 说明 | 分类 |
 |------|------|------|
 | **dev-tools** | 开发工具集：多档位代码审查（effort 级别 × finder 角度 × verify，支持 `--fix`/`--comment`）、代码质量清理（simplify）、安全审查（security-review） | 开发 |
-| **issue-tracker** | 多平台工作项管理：向 GitHub / GitLab / 云效 Codeup / 本地 Markdown 提交、查看、检索需求 / 缺陷 / 任务，自动探测托管平台 | 开发 |
+| **issue-tracker** | 多平台工作项管理：向 GitHub / GitLab / 云效 Codeup / 本地 Markdown 提交、查看、检索需求 / 缺陷 / 任务，支持 PRD 拆解建票，自动探测托管平台 | 开发 |
 | **finance-analysis** | 股票与金融分析：集成 akshare、A股全栈数据、东方财富与同花顺 iFinD 多源行情/宏观/资讯数据，提供股票估值、多 agent 深度公司分析与可比公司分析 | 金融 |
 | **frontend-web** | UI 设计审查、可访问性审计等 Web 开发技能 | 设计 |
 | **frontend-react** | 组合模式、最佳实践和视图转场等 React 开发技能 | 开发 |
