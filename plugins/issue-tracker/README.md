@@ -23,7 +23,7 @@
 ## 技能
 
 - **issue-tracker**：工作项读写，13 个抽象操作（提交 / 查看 / 检索 / 评论 / 指派 / 关联 / 迭代 / 删除 / 附件等）× 4 个跟踪器适配
-- **to-tasks**：把 PRD、方案文档或对话中的计划拆成一组垂直切片工单，声明阻塞关系，确认后批量建到跟踪器并挂关联（发布阶段复用 issue-tracker，参考 mattpocock to-tickets 与 addyosmani planning-and-task-breakdown 提炼）
+- **to-issues**：把 PRD、方案文档或对话中的计划拆成一组垂直切片工单，声明阻塞关系，确认后批量建到跟踪器并挂关联（发布阶段复用 issue-tracker，参考 mattpocock to-tickets 与 addyosmani planning-and-task-breakdown 提炼）
 
 ## 支持的跟踪器
 
