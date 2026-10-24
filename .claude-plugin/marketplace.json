@@ -331,6 +331,27 @@
       ]
     },
     {
+      "name": "issue-tracker",
+      "description": "多平台工作项管理：向 GitHub Issues、GitLab Issues、阿里云云效（Codeup/Projex）或本地 Markdown 提交、查看、检索需求 / 缺陷 / 任务，支持指派、父子与阻塞关联、代码关联及迭代管理，自动探测代码托管平台并选择对应跟踪器",
+      "category": "development",
+      "source": "./plugins/issue-tracker",
+      "author": {
+        "name": "elliot",
+        "url": "https://github.com/ElliotChina"
+      },
+      "keywords": [
+        "issue-tracker",
+        "work-item",
+        "github",
+        "gitlab",
+        "codeup",
+        "yunxiao",
+        "requirement",
+        "bug",
+        "task"
+      ]
+    },
+    {
       "name": "writing",
       "description": "中文写作技能集：humanizer-zh 去 AI 味润色与 human-writing 活人感写作，支持从上游仓库一键更新",
       "category": "productivity",
