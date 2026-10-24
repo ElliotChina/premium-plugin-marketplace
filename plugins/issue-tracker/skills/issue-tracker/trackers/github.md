@@ -43,7 +43,7 @@ gh issue list --state open --limit 30 --json number,title,labels \
 - **delete**：GitHub 不支持删除 issue，降级为 `close` 并评论注明「误报关闭」。
 - **attach**：`gh` CLI 无附件上传，在正文或评论贴图片 URL（Markdown `![描述](URL)`）；本地截图提示用户在网页端编辑器拖拽上传。
 
-多行正文一律用 heredoc，不用转义换行。
+标题、评论、正文等自由文本参数一律用 heredoc 形式传递（`"$(cat <<'EOF' … EOF)"`），避免引号与命令替换被 shell 误解；不用裸双引号包自由文本。
 
 ## 代码关联
 

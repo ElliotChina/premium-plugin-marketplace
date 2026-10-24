@@ -35,7 +35,7 @@ EOF
 - **delete**：默认降级为 close 并评论注明「误报关闭」；用户明确要求真删时用 `glab api "projects/:id/issues/<编号>" -X DELETE`（需维护者权限）。
 - **attach**：`glab` CLI 无附件上传，在描述或评论贴图片 URL；本地截图提示用户在网页端编辑器拖拽上传。
 
-多行描述一律用 heredoc。
+标题、评论、描述等自由文本参数一律用 heredoc 形式传递（`"$(cat <<'EOF' … EOF)"`），避免引号与命令替换被 shell 误解；不用裸双引号包自由文本。
 
 ## 代码关联
 

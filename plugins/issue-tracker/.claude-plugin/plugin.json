@@ -1,6 +1,6 @@
 {
   "name": "issue-tracker",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "多平台工作项管理：向 GitHub Issues、GitLab Issues、阿里云云效（Codeup/Projex）或本地 Markdown 提交、查看、检索需求 / 缺陷 / 任务，支持指派、父子与阻塞关联、代码关联及迭代管理，自动探测代码托管平台并选择对应跟踪器",
   "author": {
     "name": "elliot",
