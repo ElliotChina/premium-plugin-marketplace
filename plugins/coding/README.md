@@ -1,4 +1,4 @@
-# dev-tools
+# coding
 
 开发工具集插件。
 
@@ -86,5 +86,5 @@ spec / ticket 驱动实现技能：按规格或工单实现工作，在预先约
 ## 安装
 
 ```bash
-claude plugin install dev-tools@premium-plugin-marketplace
+claude plugin install coding@premium-plugin-marketplace
 ```

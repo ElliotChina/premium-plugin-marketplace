@@ -51,12 +51,12 @@
 | grill-with-docs | product-design | 拷问方案并同步沉淀 GLOSSARY 术语表与 ADR 决策记录 | [mattpocock/skills](https://github.com/mattpocock/skills) |
 | grilling | product-design | 拷问核心逻辑:设计树逐轮追问,直到没有隐含假设 | [mattpocock/skills](https://github.com/mattpocock/skills) |
 | domain-modeling | product-design | 领域建模:打磨术语、压测概念边界、维护 GLOSSARY 与 ADR | [mattpocock/skills](https://github.com/mattpocock/skills) |
-| improve-codebase-architecture | dev-tools | 扫描代码库找深模块化重构机会,生成 HTML 报告后进入拷问循环 | [mattpocock/skills](https://github.com/mattpocock/skills) |
-| codebase-design | dev-tools | 深模块设计共享词汇:module、interface、depth、seam 等七术语与原则 | [mattpocock/skills](https://github.com/mattpocock/skills) |
-| implement | dev-tools | spec/ticket 驱动实现:TDD 推进、定期检查、收尾审查并提交 | [mattpocock/skills](https://github.com/mattpocock/skills) |
-| tdd | dev-tools | 测试驱动开发参考:好测试标准、接缝先行、反模式与红绿循环纪律 | [mattpocock/skills](https://github.com/mattpocock/skills) |
-| research | dev-tools | 后台研究:对照一手信源调查并沉淀带出处的 Markdown 结论 | [mattpocock/skills](https://github.com/mattpocock/skills) |
-| diagnosing-bugs | dev-tools | 系统化诊断循环:假设驱动定位难复现 bug 与性能回退的根因 | [mattpocock/skills](https://github.com/mattpocock/skills) |
+| improve-codebase-architecture | coding | 扫描代码库找深模块化重构机会,生成 HTML 报告后进入拷问循环 | [mattpocock/skills](https://github.com/mattpocock/skills) |
+| codebase-design | coding | 深模块设计共享词汇:module、interface、depth、seam 等七术语与原则 | [mattpocock/skills](https://github.com/mattpocock/skills) |
+| implement | coding | spec/ticket 驱动实现:TDD 推进、定期检查、收尾审查并提交 | [mattpocock/skills](https://github.com/mattpocock/skills) |
+| tdd | coding | 测试驱动开发参考:好测试标准、接缝先行、反模式与红绿循环纪律 | [mattpocock/skills](https://github.com/mattpocock/skills) |
+| research | coding | 后台研究:对照一手信源调查并沉淀带出处的 Markdown 结论 | [mattpocock/skills](https://github.com/mattpocock/skills) |
+| diagnosing-bugs | coding | 系统化诊断循环:假设驱动定位难复现 bug 与性能回退的根因 | [mattpocock/skills](https://github.com/mattpocock/skills) |
 | prototype | prototype-design | 即抛式 UI 发散对比:3–5 个命名轴变体 + 暗色翻选器,用完即扔 | [emilkowalski/skills](https://github.com/emilkowalski/skills) |
 | interview-me | product-design | 意图访谈:一次一问附猜测,澄清欠规格需求直至 95% 置信 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
 | idea-refine | product-design | 创意打磨:多视角框架生成变体并按标准筛选推敲 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
@@ -64,4 +64,4 @@
 | ci-cd-and-automation | devops | CI/CD 流水线自动化:质量门禁、Actions 模板、部署策略与回滚 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
 | shipping-and-launch | devops | 生产发布与上线:发布前清单、监控搭设、分阶段发布与回滚 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
 | observability-and-instrumentation | devops | 可观测性与插桩:日志、指标、追踪、告警,让生产行为可诊断 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
-| performance-optimization | dev-tools | 性能优化:测量定位修复复测,附反模式修复与检查清单 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
+| performance-optimization | coding | 性能优化:测量定位修复复测,附反模式修复与检查清单 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |

@@ -45,7 +45,7 @@ PRD 体系管理技能：在软件项目中建立并持续维护一套 Git 友�
 
 ## 关联插件
 
-dev-tools 插件的 `improve-codebase-architecture` 技能会调用本插件的 `grilling` 与 `domain-modeling`：两插件同装时其拷问与文档环节完整可用，单装本插件不受影响。
+coding 插件的 `improve-codebase-architecture` 技能会调用本插件的 `grilling` 与 `domain-modeling`：两插件同装时其拷问与文档环节完整可用，单装本插件不受影响。
 
 原型相关技能已拆分至 `prototype-design` 插件（`prototype-app` 可执行镜像原型 / `prototype` 即抛式发散对比）。
 

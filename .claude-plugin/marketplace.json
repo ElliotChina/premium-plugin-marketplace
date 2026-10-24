@@ -139,10 +139,10 @@
       ]
     },
     {
-      "name": "dev-tools",
+      "name": "coding",
       "description": "开发工具集插件，提供多档位代码审查、代码质量清理与安全审查技能，并行 finder 角度与 verify 流程查找正确性 bug、清理代码质量并审查安全漏洞",
       "category": "development",
-      "source": "./plugins/dev-tools",
+      "source": "./plugins/coding",
       "author": {
         "name": "elliot",
         "url": "https://github.com/ElliotChina"
@@ -153,7 +153,7 @@
         "simplify",
         "security",
         "quality",
-        "dev-tools"
+        "coding"
       ]
     },
     {
