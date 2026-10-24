@@ -20,7 +20,7 @@
 | **frontend-react** | 组合模式、最佳实践和视图转场等 React 开发技能 | 开发 |
 | **frontend-next** | RSC、异步模式、数据获取、路由等 Next.js 最佳实践 | 开发 |
 | **vue-volar** | Vue.js 语言服务（Volar），启动时动态探测 TypeScript SDK 路径，支持 monorepo 嵌套项目 | 开发 |
-| **product-design** | 产品与设计技能集：意图访谈、创意打磨、方案拷问、领域建模、PRD 体系管理 | 生产力 |
+| **product-design** | 产品与设计技能集：意图访谈、创意打磨、方案拷问、领域建模、PRD 体系管理、需求 PRD 撰写 | 生产力 |
 | **prototype-design** | 原型设计：prototype-app 可执行镜像原型（生产零耦合、随代码库归档）+ prototype 即抛式发散对比 | 设计 |
 | **devops** | DevOps 技能集：CI/CD 流水线、生产发布、可观测性与插桩 | 开发 |
 | **writing** | 中文写作：humanizer-zh 去 AI 味润色与 human-writing 活人感写作 | 生产力 |
