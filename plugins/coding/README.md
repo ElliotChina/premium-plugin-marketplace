@@ -1,6 +1,6 @@
 # coding
 
-开发过程工具集：多档位代码审查、质量清理、安全审查、TDD 与 spec/ticket 驱动实现、bug/性能诊断、深模块设计、后台调研。
+开发过程工具集：多档位代码审查（effort 级别 × finder 角度 × verify，支持 --fix/--comment）、代码质量清理（simplify）、安全审查（security-review）、测试驱动开发与 spec/ticket 驱动实现（tdd/implement）、bug 与性能诊断（diagnosing-bugs）、性能优化、深模块设计与架构深化（codebase-design/improve-codebase-architecture）、后台调研（research）。
 
 ## 技能
 

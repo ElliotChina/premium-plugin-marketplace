@@ -8,15 +8,17 @@
   },
   "license": "MIT",
   "keywords": [
+    "coding",
     "code-review",
     "review",
     "simplify",
     "security",
     "quality",
-    "grill",
-    "domain-modeling",
-    "adr",
-    "glossary",
-    "coding"
+    "tdd",
+    "implement",
+    "diagnosing-bugs",
+    "performance",
+    "codebase-design",
+    "research"
   ]
 }

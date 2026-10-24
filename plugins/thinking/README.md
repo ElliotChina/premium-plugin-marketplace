@@ -1,6 +1,6 @@
 # thinking
 
-思维工具插件：覆盖"想清楚"的完整链条——**澄清意图 → 发散方案 → 拷问打磨 → 沉淀术语与决策**。技能均不绑定产品领域，任何需要把模糊想法变成清晰方案的场景可用。
+思维工具集：意图访谈（interview-me）、创意发散收敛（idea-refine）、方案拷问（grilling/grill-me/grill-with-docs）与领域建模（domain-modeling），把模糊想法打磨成经得起压测的清晰方案。
 
 ## 技能
 
