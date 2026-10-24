@@ -52,7 +52,7 @@
 
 工作方式：先从 git 历史找热点定范围（YAGNI 优先），子代理有机探索摩擦点（浅模块、无局部性、接缝泄漏、难测试），对候选应用删除测试，然后写 HTML 报告到系统临时目录（不进仓库）并打开。用 codebase-design 的深模块词汇表述每个建议。
 
-> 依赖说明：grilling 与 domain-modeling 现位于 product-design 插件，同装两个插件时拷问与文档环节完整可用；单装本插件时技能主体（扫描 + HTML 报告）不受影响，拷问环节降级为普通追问。
+> 依赖说明：grilling 与 domain-modeling 现位于 thinking 插件，同装两个插件时拷问与文档环节完整可用；单装本插件时技能主体（扫描 + HTML 报告）不受影响，拷问环节降级为普通追问。
 
 ### codebase-design（源自 mattpocock/skills，MIT）
 

@@ -1,0 +1,19 @@
+{
+  "name": "thinking",
+  "version": "0.1.0",
+  "description": "思维工具集：意图访谈（interview-me）、创意发散收敛（idea-refine）、方案拷问（grilling/grill-me/grill-with-docs）与领域建模（domain-modeling），把模糊想法打磨成经得起压测的清晰方案",
+  "author": {
+    "name": "elliot",
+    "url": "https://github.com/ElliotChina"
+  },
+  "license": "MIT",
+  "keywords": [
+    "thinking",
+    "interview",
+    "idea-refine",
+    "grill",
+    "domain-modeling",
+    "adr",
+    "glossary"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "product-plan",
+  "version": "0.19.0",
+  "description": "产品规划技能集：Git 友好、AI 可检索的 PRD 体系管理（project-prd，四层 prd/ 目录与 12 类标准模板）与需求期 PRD 撰写（requirement-prd），覆盖从需求建档到上线合入的产品规划工作",
+  "author": {
+    "name": "elliot",
+    "url": "https://github.com/ElliotChina"
+  },
+  "license": "MIT",
+  "keywords": [
+    "product",
+    "planning",
+    "prd",
+    "requirement"
+  ]
+}

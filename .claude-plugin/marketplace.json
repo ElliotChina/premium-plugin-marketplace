@@ -276,21 +276,38 @@
       "homepage": "https://ui.shadcn.com"
     },
     {
-      "name": "product-design",
-      "description": "产品与设计技能集：意图访谈、创意打磨、方案拷问、领域建模与 PRD 体系管理，覆盖澄清意图到沉淀正式需求文档的完整产品链条",
+      "name": "thinking",
+      "description": "思维工具集：意图访谈（interview-me）、创意发散收敛（idea-refine）、方案拷问（grilling/grill-me/grill-with-docs）与领域建模（domain-modeling），把模糊想法打磨成经得起压测的清晰方案",
       "category": "productivity",
-      "source": "./plugins/product-design",
+      "source": "./plugins/thinking",
+      "author": {
+        "name": "elliot",
+        "url": "https://github.com/ElliotChina"
+      },
+      "keywords": [
+        "thinking",
+        "interview",
+        "idea-refine",
+        "grill",
+        "domain-modeling",
+        "adr",
+        "glossary"
+      ]
+    },
+    {
+      "name": "product-plan",
+      "description": "产品规划技能集：Git 友好、AI 可检索的 PRD 体系管理（project-prd，四层 prd/ 目录与 12 类标准模板）与需求期 PRD 撰写（requirement-prd），覆盖从需求建档到上线合入的产品规划工作",
+      "category": "productivity",
+      "source": "./plugins/product-plan",
       "author": {
         "name": "elliot",
         "url": "https://github.com/ElliotChina"
       },
       "keywords": [
         "product",
-        "design",
-        "interview",
-        "grill",
-        "domain-modeling",
-        "prd"
+        "planning",
+        "prd",
+        "requirement"
       ]
     },
     {

@@ -1,16 +1,16 @@
 # Premium Plugin Marketplace
 
-个人精选的 Claude Code 插件市场集合，包含 19 个高质量插件，涵盖前端开发、设计、测试、金融、视频等多个领域。
+个人精选的 Claude Code 插件市场集合，包含 20 个高质量插件，涵盖前端开发、设计、测试、金融、视频等多个领域。
 
 ## 特性
 
-- **19 个精选插件** - 15 个本地维护 + 4 个外部引用
+- **20 个精选插件** - 16 个本地维护 + 4 个外部引用
 - **持续更新** - 本地技能跟随上游仓库同步
 - **按需裁剪** - 已移除的外部插件见[外部插件推荐](recommended-external-plugins.md)，可随时从上游仓库自行安装
 
 ## 插件列表
 
-### 本地插件（15 个）
+### 本地插件（16 个）
 
 | 插件 | 说明 | 分类 |
 |------|------|------|
@@ -21,7 +21,8 @@
 | **frontend-react** | 组合模式、最佳实践和视图转场等 React 开发技能 | 开发 |
 | **frontend-next** | RSC、异步模式、数据获取、路由等 Next.js 最佳实践 | 开发 |
 | **vue-volar** | Vue.js 语言服务（Volar），启动时动态探测 TypeScript SDK 路径，支持 monorepo 嵌套项目 | 开发 |
-| **product-design** | 产品与设计技能集：意图访谈、创意打磨、方案拷问、领域建模、PRD 体系管理、需求 PRD 撰写 | 生产力 |
+| **thinking** | 思维工具：意图访谈、创意发散收敛、方案拷问、领域建模，把模糊想法打磨成清晰方案 | 生产力 |
+| **product-plan** | 产品规划：Git 友好的 PRD 体系管理与需求期 PRD 撰写，需求建档到上线合入 | 生产力 |
 | **prototype-design** | 原型设计：prototype-app 可执行镜像原型（生产零耦合、随代码库归档）+ prototype 即抛式发散对比 | 设计 |
 | **devops** | DevOps 技能集：CI/CD 流水线、生产发布、可观测性与插桩 | 开发 |
 | **writing** | 中文写作：humanizer-zh 去 AI 味润色与 human-writing 活人感写作 | 生产力 |
@@ -60,9 +61,10 @@ premium-plugin-marketplace/
 │   ├── frontend-web/
 │   ├── image/
 │   ├── issue-tracker/
-│   ├── product-design/
+│   ├── product-plan/
 │   ├── prototype-design/
 │   ├── slide/
+│   ├── thinking/
 │   ├── vue-volar/
 │   └── writing/
 ├── recommended-external-plugins.md
