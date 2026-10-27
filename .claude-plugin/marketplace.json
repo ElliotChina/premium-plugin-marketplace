@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "finance-analysis",
-      "description": "股票与金融分析插件，提供 A股/港股/美股行情数据获取（akshare、A股全栈数据）、东财数据库金融/宏观/资讯查询、同花顺 iFinD 数据查询与市场热点发现，以及全面的股票估值分析能力",
+      "description": "股票与金融分析插件，提供 A股/港股/美股行情数据获取（akshare、A股全栈数据）、东财数据库金融/宏观/资讯查询、同花顺 iFinD 数据查询与市场热点发现，以及全面的股票估值与可比公司分析能力",
       "category": "finance",
       "source": "./plugins/finance-analysis",
       "author": {

@@ -1,6 +1,6 @@
 # finance-analysis
 
-股票与金融分析插件，提供 A股/港股/美股行情数据获取（akshare、A股全栈数据）、东财数据库金融/宏观/资讯查询、同花顺 iFinD 数据查询与市场热点发现，以及全面的股票估值分析能力。
+股票与金融分析插件，提供 A股/港股/美股行情数据获取（akshare、A股全栈数据）、东财数据库金融/宏观/资讯查询、同花顺 iFinD 数据查询与市场热点发现，以及全面的股票估值与可比公司分析能力。
 
 ## 技能列表
 
@@ -8,6 +8,7 @@
 |------|------|------|
 | akshare | 基于 akshare 库的 A股/港股/美股行情数据获取，内置接口文档索引与离线文档下载脚本 | 自研 |
 | stock-valuation | 股票估值分析：混合模式数据采集（最新季报 TTM、业绩预告、快报），PE/PB/PEG 估值与投资分析报告 | 自研 |
+| comparable-company-analysis | 可比公司分析：选取同业可比公司，多维度估值对比与 Excel 报告输出 | [妙想技能库](https://ai.eastmoney.com/skills) |
 | a-stock-data | A股全栈数据工具包：15 层 87 端点、34 数据源，行情 K 线/逐笔/研报/资金面/财务/期货/可转债，自包含内嵌全部可运行代码 | [外部同步](https://github.com/simonlin1212/a-stock-data) |
 | mx-finance-data | 东财数据库自然语言查询金融数据：A港美股票、基金、债券的实时行情、公司信息、估值、财务报表 | [妙想技能库](https://ai.eastmoney.com/skills) |
 | mx-finance-search | 东财数据库按公司、板块、事件或政策检索最新公告、研报、财经新闻与交易所动态 | [妙想技能库](https://ai.eastmoney.com/skills) |
@@ -47,6 +48,7 @@
 | stock-valuation | `pip install pandas` |
 | a-stock-data | `pip install mootdx requests pandas stockstats numpy baostock xlrd openpyxl`（Python 3.9+） |
 | mx 系列 | `pip install httpx pandas`（部分技能目录内含 requirements.txt） |
+| comparable-company-analysis | `pip install openpyxl`（Excel 报告输出） |
 | ifind-finance-data | Node.js 零依赖，或 Python 3 + `pip install requests` |
 
 ## 版本
