@@ -10,7 +10,7 @@
          done → 落盘 key，exit 0；pending → 重打 authUrl，exit 10；invalid → 清理后走 3
     3) 无可复用 pending → 调 create，写 pending，打印 authUrl 与 apiKeyUrl，exit 10
 
-已集成进 get_data.py，此处仅作调试入口。
+已集成进各查询脚本，此处仅作调试入口。
 凭据：~/.mx-skills/em_api_key；pending：~/.mx-skills/pending_auth.json
 """
 
@@ -25,7 +25,7 @@ from typing import Any, Dict, Optional, Tuple
 import httpx
 
 AUTH_BASE = os.environ.get("EM_AUTH_BASE", "https://ai-saas.eastmoney.com").rstrip("/")
-CLIENT_ID = "mx-macro-data"
+CLIENT_ID = "mx-finance-search"
 # 兜底默认值：create 接口正常会返回 apiKeyUrl，此值仅在接口未返回时使用
 API_KEY_PAGE_URL = f"{AUTH_BASE}/mxClaw"
 # pending token 最长约 1 个月，以接口返回的 expiresIn 为准
