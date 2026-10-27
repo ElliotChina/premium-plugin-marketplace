@@ -21,7 +21,7 @@ argument-hint: "[low|medium|high|xhigh|max] [--fix] [--comment] [<pr#>|<branch>|
 
 ## 评审范围（Scope）
 
-运行以下命令确定评审范围，后续所有阶段以这个 diff 为准：
+scope 由评审 agent（见「执行流程」Phase 1）在评审开始时确定，后续所有阶段以这个 diff 为准：
 
 ```bash
 git diff @{upstream}...HEAD   # 已提交的改动；无 upstream 时用 git diff main...HEAD
@@ -29,7 +29,7 @@ git diff HEAD                  # 未提交的工作区改动（评审常发生�
 ```
 
 - 传入 PR 编号时用 `gh pr diff <n>` 获取 diff；传入分支时用 `git diff <branch>...HEAD`；传入路径时只评审该路径下的改动。
-- 若范围 diff 为空且工作区有改动，把工作区改动纳入范围；两者都为空时告知用户没有可评审的内容并停止。
+- 若范围 diff 为空且工作区有改动，把工作区改动纳入范围；两者都为空时返回空结果并注明无可评审内容，由主对话告知用户。
 - 统计 diff 行数与改动文件数（`--shortstat`），用于决定 finder 数量与 findings 下限。
 
 ## 档位选择
@@ -42,30 +42,36 @@ git diff HEAD                  # 未提交的工作区改动（评审常发生�
 | **xhigh** | recall：全量深挖 | 10 个角度（同上下文顺序执行，不 spawn）→ dedup → 补漏 sweep |
 | **max** | recall：最大规模 | 2–8 个 finder subagent（按 diff 规模伸缩）→ 1-vote verify → 补漏 sweep |
 
-各档位的详细阶段指令见 **`references/recipe-levels.md`**，finder 角度定义与误报排除清单见 **`references/finder-angles.md`**。执行前先读取这两个文件。
+各档位的详细阶段指令见 **`references/recipe-levels.md`**，finder 角度定义与误报排除清单见 **`references/finder-angles.md`**。各档位流程均在评审 agent（fork）内执行，表中的 spawn subagent 指 fork 内部的 finder/verifier。
 
 ## 执行流程
 
-1. **Phase 0 — 准备**：确定 scope（见上），读取两个 references 文件，选定档位并读取该档位的阶段指令。
-2. **Phase 1 — 找候选**：按档位运行 finder 角度。每个角度独立产出候选 findings（`file`、`line`、一行 `summary`、具体 `failure_scenario`）。凡能说出失败场景的候选都要传递下去——finder 自行丢弃半信半疑的候选会绕过 verify 阶段，是漏报的主因。
-3. **Phase 2 — 去重与验证**：合并候选，近似重复（同缺陷、同位置、同理由）只留一条；再按档位规则执行 verify 或跳过。
-4. **Phase 3 — 报告**：按输出契约报告（见下）。
-5. **后处理**：`--fix` 时逐条修复确认的 findings（正确性 bug 与清理点同等对待；会改变既有预期行为的修复跳过）。`--comment` 且目标是 GitHub PR 时，用 `gh` 把 findings 发为 inline 评论。
+1. **Phase 0 — 准备（主对话）**：解析参数（见上），选定档位并沿用/写入档位记忆。fork 可用时主对话不读 diff、不读 references——评审读取的全部内容都留在 fork 内（回退时例外，见 Phase 1）。
+2. **Phase 1 — spawn 评审执行者（主对话）**：Agent 工具可用且支持 fork 类型时，用 `subagent_type: "fork"` 启动一个评审 agent（fork 继承对话上下文），prompt 要点：
+   - 读取 `${CLAUDE_PLUGIN_ROOT}/skills/code-review/` 下的 `SKILL.md`、`references/recipe-levels.md`、`references/finder-angles.md`，按档位 <X> 的阶段指令执行完整评审；目标为 <PR 编号/分支/路径/当前分支 diff>；`--max-findings` 为 <n/all/未指定>。
+   - 评审范围按「评审范围」节在 fork 内确定；档位流程中需要 spawn finder/verifier 的照常执行，fork 内 Agent 工具不可用时改为同上下文顺序执行，不跳过任何角度。
+   - **不调用 `ReportFindings`**，按「fork 返回契约」最终以 JSON 数组返回。
+   - Agent 工具不可用或无 fork 类型时回退：主对话读取两个 references 文件，在本上下文按该档位阶段指令执行全部阶段。
+3. **Phase 2 — 渲染与后处理（主对话）**：把评审 agent 返回的 findings 按「输出契约」渲染；`--fix` 时逐条修复确认的 findings（正确性 bug 与清理点同等对待；会改变既有预期行为的修复跳过）。`--comment` 且目标是 GitHub PR 时，用 `gh` 把 findings 发为 inline 评论。
 
 ## 输出契约
 
-**优先使用 `ReportFindings` 工具**（宿主 UI 可渲染结构化结果时）：调用一次，`level` 传当前档位，`findings` 按 severity 从高到低排列——正确性 bug（correctness 及扩展角度）在前，清理点（reuse / simplification / efficiency / altitude / conventions）沉底，同类内按严重程度。category 属于清理点的 finding，`summary` 以 `Nit:` 开头。每条 finding 包含：
+契约分两层：**fork 返回契约**（评审 agent → 主对话）与**渲染契约**（主对话 → 宿主 UI）。
+
+**fork 返回契约**：评审 agent 不调用 `ReportFindings`，最终以一个 JSON 数组返回，按 severity 从高到低排列，每条 finding 包含：
 
 - `file` / `line`：文件路径与起始行号（1-based）
-- `summary`：一句话陈述缺陷
+- `summary`：一句话陈述缺陷；category 属于清理点时以 `Nit:` 开头
 - `short_summary`：压缩到 60 字符以内的标签，无理由或后果从句
 - `failure_scenario`：具体输入/状态 → 错误输出或崩溃
 - `category`：产生该 finding 的角度的 kebab-case 标签（`correctness`、`simplification`、`efficiency`、`reuse`、`altitude`、`conventions`，或更具体的如 `test-coverage`）
 - `verdict`：verify 阶段产出时附带（`CONFIRMED` / `PLAUSIBLE`）
 
-**`ReportFindings` 不可用时**，输出 JSON 数组（每条含 `file`、`line`、`summary`、`failure_scenario`），按 severity 排序；low 档位可用一行式列表 `path/to/file.ext:123 — 哪里错了 + 具体失败方式`，无发现时输出 `(none)`。
+数组外附报告首行摘要一句话（所用档位、必改与 Nit 各多少条、findings 上限）；无可评审内容或无发现时返回空数组加说明。回退为主对话自行执行时，跳过本层，直接按渲染契约输出。
 
-使用 `ReportFindings` 报告时不要再把 findings 重复打印为正文文本，也不要为评审结果创建 artifact——工具调用本身就是报告。报告第一行用一句话说明所用档位、必改与 Nit 各多少条、findings 上限（若有截断）。
+**渲染契约（主对话）**：优先使用 `ReportFindings` 工具（宿主 UI 可渲染结构化结果时）：调用一次，`level` 传当前档位，`findings` 用 fork 返回的 JSON 填入——正确性 bug 在前，清理点沉底；fork 返回的首行摘要在调用前作为一行正文输出。`ReportFindings` 不可用时，输出该 JSON 数组；low 档位可用一行式列表 `path/to/file.ext:123 — 哪里错了 + 具体失败方式`，无发现时输出 `(none)`。
+
+使用 `ReportFindings` 报告时不要再把 findings 重复打印为正文文本，也不要为评审结果创建 artifact——工具调用本身就是报告。
 
 diff 超过 1000 行时，在报告末尾追加一条建议——本次 diff 过大，建议按独立改动拆分后分别评审；该建议不占 findings 名额。
 

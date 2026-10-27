@@ -18,7 +18,7 @@
 /code-review --max-findings 5   # 最多报告 5 条
 ```
 
-工作方式：每个档位由一组独立 finder 角度并行找候选 findings（每个候选必须带具体失败场景），再去重、验证（1-vote verify 或 dedup + sweep），最后按严重程度报告。linter / 类型检查 / CI 能抓到的问题不在评审范围内。
+工作方式：整个评审在独立子代理（fork）中执行，评审读取的 diff 与代码不占用主对话上下文，主对话只收回 findings。每个档位由一组独立 finder 角度并行找候选 findings（每个候选必须带具体失败场景），再去重、验证（1-vote verify 或 dedup + sweep），最后按严重程度报告。linter / 类型检查 / CI 能抓到的问题不在评审范围内。
 
 ### simplify
 

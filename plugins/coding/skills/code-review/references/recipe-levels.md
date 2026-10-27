@@ -1,6 +1,6 @@
 # 档位详细流程（Recipe Levels）
 
-各 effort 档位的完整阶段指令。所有档位共享同一个评审范围（scope）：`git diff @{upstream}...HEAD` 加 `git diff HEAD`（未提交改动），或传入的 PR / 分支 / 路径目标。
+各 effort 档位的完整阶段指令。**以下流程均在评审 agent（fork，见 SKILL.md 执行流程 Phase 1）内执行**；spawn subagent 指 fork 内部操作，fork 内 Agent 工具不可用时改为同上下文顺序执行，不跳过任何角度。所有档位共享同一个评审范围（scope）：`git diff @{upstream}...HEAD` 加 `git diff HEAD`（未提交改动），或传入的 PR / 分支 / 路径目标。
 
 ---
 
@@ -20,8 +20,7 @@
 
 ### 输出
 
-- 有 `ReportFindings`：一次调用传 `{level, findings}`，每条含 `file`、`line`、`summary`、`short_summary`（≤60 字符）、`failure_scenario`，按 severity 排序。无合格发现时空数组。
-- 无工具：每条一行 `path/to/file.ext:123 — 哪里错了 + 具体失败`，cleanup 类发现以 `Nit:` 开头，无发现时输出 `(none)`。
+按 SKILL.md「fork 返回契约」最终以 JSON 数组返回（每条含 `file`、`line`、`summary`、`short_summary`、`failure_scenario`，按 severity 排序），数组外附首行摘要。不调用 `ReportFindings`——渲染由主对话负责。无合格发现时空数组。
 
 ---
 
@@ -39,9 +38,9 @@
 
 合并全部候选；近似重复（同缺陷、同位置、同理由）只留一条。然后对每条候选启动一个 verifier（Haiku 级 subagent 即可），让它独立复核该问题是否真实：读相关代码，确认失败场景成立，且不是误报清单里的类别。precision 偏置：只有确认真实且值得处理（`CONFIRMED`）的才保留；verify 结论记入 `verdict` 字段。
 
-### Phase 3 — 报告
+### Phase 3 — 产出结果
 
-按 SKILL.md 输出契约报告，most-severe first。
+按 SKILL.md「fork 返回契约」产出结构化结果，most-severe first，返回协调上下文（主对话）。
 
 ---
 
@@ -57,7 +56,7 @@
 
 Dedup 规则同 medium。verify 为 **recall 偏置**：verifier 无法明确证伪（non-REFUTED）的候选一律保留——宁报勿漏。
 
-### Phase 3 — 报告（同 medium）
+### Phase 3 — 产出结果（同 medium）
 
 ---
 
@@ -107,6 +106,8 @@ Dedup 同前。每条候选一个 verifier，**recall 偏置**：单个 non-REFU
 ---
 
 ## 后处理
+
+以下后处理均由主对话在评审 agent 返回 findings 之后执行（fork 只负责评审本身）。
 
 ### --fix
 
