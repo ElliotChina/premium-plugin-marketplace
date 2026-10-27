@@ -25,8 +25,6 @@ from typing import Any, Dict, Optional, Tuple
 import httpx
 
 AUTH_BASE = os.environ.get("EM_AUTH_BASE", "https://ai-saas.eastmoney.com").rstrip("/")
-EM_API_KEY_PLACEHOLDER = "{em" + "_api_key}"
-EM_API_KEY_DEFAULT = "em_api_key".strip()
 CLIENT_ID = "mx-macro-data"
 # 兜底默认值：create 接口正常会返回 apiKeyUrl，此值仅在接口未返回时使用
 API_KEY_PAGE_URL = f"{AUTH_BASE}/mxClaw"
@@ -58,9 +56,6 @@ def _pending_path() -> Path:
 def _has_valid_key() -> bool:
     env_value = (os.environ.get("EM_API_KEY") or "").strip()
     if env_value:
-        return True
-    if EM_API_KEY_DEFAULT and EM_API_KEY_DEFAULT != EM_API_KEY_PLACEHOLDER:
-        os.environ.setdefault("EM_API_KEY", EM_API_KEY_DEFAULT)
         return True
     p = _key_path()
     if p.exists() and p.read_text(encoding="utf-8").strip():

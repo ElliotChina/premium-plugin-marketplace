@@ -14,7 +14,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 import httpx
 import pandas as pd
 
-EM_API_KEY = os.environ.get("EM_API_KEY", "em_api_key")
+EM_API_KEY = os.environ.get("EM_API_KEY", "")
 DEFAULT_SEARCH_API_URL = (
     "https://ai-saas.eastmoney.com/proxy/b/mcp/tool/searchData"
 )

@@ -13,7 +13,7 @@ from typing import Any, Dict, List
 from urllib import error as urllib_error
 from urllib import request as urllib_request
 
-EM_API_KEY = os.environ.get("EM_API_KEY", "em_api_key").strip()
+EM_API_KEY = os.environ.get("EM_API_KEY", "").strip()
 COMPARE_API_URL = "https://ai-saas.eastmoney.com/proxy/app-robo-advisor-api/assistant/comparable-company-analysis"
 TIMEOUT_SECONDS = 60
 

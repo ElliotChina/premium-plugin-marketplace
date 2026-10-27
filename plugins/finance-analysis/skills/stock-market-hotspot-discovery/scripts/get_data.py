@@ -26,7 +26,7 @@ from auth import ensure_auth, AUTH_OK, AUTH_NEED_USER, AUTH_ERROR
 
 EM_BASE_URL = "https://ai-saas.eastmoney.com".rstrip("/")
 EM_API_KEY_PLACEHOLDER = "{em" + "_api_key}"
-EM_API_KEY = os.environ.get("EM_API_KEY", "em_api_key").strip()
+EM_API_KEY = os.environ.get("EM_API_KEY", "").strip()
 
 if EM_API_KEY and EM_API_KEY != EM_API_KEY_PLACEHOLDER:
     os.environ.setdefault("EM_API_KEY", EM_API_KEY)
