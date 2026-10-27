@@ -1,8 +1,8 @@
 # 外部来源插件清单
 
-本清单记录市场中来自外部仓库的内容,共三节:**外部插件市场推荐**(18 个)曾收录后从市场移除,仅作推荐记录,可从上游仓库直接安装;**外部插件引用**(4 个)仍由市场配置以远程仓库方式引用;**外部技能引用**(25 个)为内嵌到本地插件的第三方 Skill 副本,由 `.github/workflows/sync-external-skills.yml` 按映射表定时同步。
+本清单记录市场中来自外部仓库的内容,共三节:**外部插件市场推荐**(19 个)曾收录后从市场移除或来自直接推荐,可从上游仓库直接安装;**外部插件引用**(4 个)仍由市场配置以远程仓库方式引用;**外部技能引用**(25 个)为内嵌到本地插件的第三方 Skill 副本,由 `.github/workflows/sync-external-skills.yml` 按映射表定时同步。
 
-## 外部插件市场推荐(18 个,已从市场移除)
+## 外部插件市场推荐(19 个,已从市场移除或直接推荐)
 
 | 插件 | 分类 | 说明 | 上游仓库 |
 |------|------|------|----------|
@@ -24,6 +24,7 @@
 | taste-skill | 设计 | 网页设计品味技能集:艺术方向、真实图库参考、浏览器三宽度自查 | [leonxlnx/taste-skill](https://github.com/leonxlnx/taste-skill) |
 | ponytail | 工程 | "懒惰资深开发者"提示词:最小改动、复用优先,附审查/审计命令 | [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) |
 | sepia | 写作 | 去 AI 味写作技能:write/review/refactor/recreate/hemingway 五种操作,叙事架构层修复,含中文校准 | [Nanako0129/sepia](https://github.com/Nanako0129/sepia) |
+| security-audit-skill | 安全 | 全代码库安全审计 harness:六阶段猎捕 + 对抗式验证,覆盖云、供应链、LLM 等 15+ 攻击类别,适合重大发布前深度审计 | [cloudflare/security-audit-skill](https://github.com/cloudflare/security-audit-skill) |
 
 ## 外部插件引用(4 个,仍在市场中)
 

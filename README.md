@@ -42,7 +42,7 @@
 | **antd-skill** | Ant Design v6 组件决策指南和离线 API 查询 | Ant Design |
 | **shadcn** | shadcn/ui 组件管理与开发技能 | shadcn |
 
-其余曾收录的外部插件已移出市场，完整清单与上游仓库见[外部插件推荐](recommended-external-plugins.md)。
+其余曾收录的外部插件已移出市场，另有精选外部仓库推荐（如 Cloudflare 全库安全审计），完整清单与上游仓库见[外部插件推荐](recommended-external-plugins.md)。
 
 ## 目录结构
 
