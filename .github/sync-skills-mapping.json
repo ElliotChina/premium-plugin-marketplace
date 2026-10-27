@@ -233,5 +233,14 @@
     "include": [
       "accessibility-checklist.md"
     ]
+  },
+  {
+    "local": "plugins/finance-analysis/skills/a-stock-data",
+    "repo": "simonlin1212/a-stock-data",
+    "path": "",
+    "include": [
+      "SKILL.md",
+      "LICENSE"
+    ]
   }
 ]

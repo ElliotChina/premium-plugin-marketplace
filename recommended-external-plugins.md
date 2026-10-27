@@ -1,6 +1,6 @@
 # 外部来源插件清单
 
-本清单记录市场中来自外部仓库的内容,共三节:**外部插件市场推荐**(19 个),可从上游仓库直接安装;**外部插件引用**(4 个)仍由市场配置以远程仓库方式引用;**外部技能引用**(25 个)为内嵌到本地插件的第三方 Skill 副本,由 `.github/workflows/sync-external-skills.yml` 按映射表定时同步。
+本清单记录市场中来自外部仓库的内容,共三节:**外部插件市场推荐**(19 个),可从上游仓库直接安装;**外部插件引用**(4 个)仍由市场配置以远程仓库方式引用;**外部技能引用**(26 个)为内嵌到本地插件的第三方 Skill 副本,由 `.github/workflows/sync-external-skills.yml` 按映射表定时同步。
 
 ## 外部插件市场推荐(19 个)
 
@@ -35,7 +35,7 @@
 | antd-skill | 开发 | Ant Design v6 组件决策指南与离线 API 查询 | [ant-design/antd-skill](https://github.com/ant-design/antd-skill) |
 | shadcn | 设计 | shadcn/ui 组件管理与开发技能 | [shadcn-ui/ui](https://github.com/shadcn-ui/ui) |
 
-## 外部技能引用(25 个,GitHub Actions 定时同步)
+## 外部技能引用(26 个,GitHub Actions 定时同步)
 
 以下 Skill 为上游仓库的副本,内嵌在本地插件中,由 `.github/workflows/sync-external-skills.yml` 每周一检查 `.github/sync-skills-mapping.json` 中登记的上游仓库,有变更时自动开 PR 并合并。
 
@@ -66,3 +66,4 @@
 | shipping-and-launch | devops | 生产发布与上线:发布前清单、监控搭设、分阶段发布与回滚 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
 | observability-and-instrumentation | devops | 可观测性与插桩:日志、指标、追踪、告警,让生产行为可诊断 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
 | performance-optimization | coding | 性能优化:测量定位修复复测,附反模式修复与检查清单 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) |
+| a-stock-data | finance-analysis | A股全栈数据工具包:15 层 87 端点·34 数据源,行情K线/逐笔/研报/资金面/财务/期货/可转债等真实数据接口 | [simonlin1212/a-stock-data](https://github.com/simonlin1212/a-stock-data) |

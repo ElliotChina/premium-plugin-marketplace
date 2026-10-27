@@ -98,7 +98,7 @@ claude marketplace add https://github.com/ElliotChina/premium-plugin-marketplace
 | frontend-react | react-best-practices | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills/tree/main/skills/react-best-practices) |
 | frontend-react | react-view-transitions | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills/tree/main/skills/react-view-transitions) |
 
-完整清单（28 条映射，含 mattpocock / addyosmani / emilkowalski 等上游）见 [.github/sync-skills-mapping.json](.github/sync-skills-mapping.json)。
+完整清单（29 条映射，含 mattpocock / addyosmani / emilkowalski 等上游）见 [.github/sync-skills-mapping.json](.github/sync-skills-mapping.json)。
 
 ### 同步方法
 
