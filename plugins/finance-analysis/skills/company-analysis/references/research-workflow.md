@@ -4,7 +4,7 @@
 
 ## 创建与资料
 
-使用 `company_run.py start --company-dir <绝对路径> --company <名称>` 创建 run，调用路径按 [SKILL.md 的入口约定](../SKILL.md#脚本入口与调用)。`start` 自动生成 `runs/<run-id>/analysis/research.md`，包含 15 行报告蓝图、六项基础预检及指标覆盖、勾稽、交接和缺口等表格；按生成骨架填写，无需另建模板。取数前完成公司专项蓝图、基础口径，并确定[估值单位](valuation/valuation-contract.md#估值单位)。正式章节在输入冻结后写。
+使用 `company_run.py start --company-dir <绝对路径> --company <名称>` 创建 run，调用路径按 [SKILL.md 的入口约定](../SKILL.md#脚本入口与调用)。公司目录按 `<工作区根>/companies/<证券简称>-<市场>-<代码>` 命名：证券简称用交易所官方简称，市场与代码段保持 ASCII（市场取 `SH`/`SZ`/`HK`/`US`），如 `companies/贵州茅台-SH-600519`、`companies/腾讯控股-HK-00700`；`--company` 始终显式传官方简称，不依赖目录名兜底。`start` 自动生成 `runs/<run-id>/analysis/research.md`，包含 15 行报告蓝图、六项基础预检及指标覆盖、勾稽、交接和缺口等表格；按生成骨架填写，无需另建模板。取数前完成公司专项蓝图、基础口径，并确定[估值单位](valuation/valuation-contract.md#估值单位)。正式章节在输入冻结后写。
 
 原件登记使用 `company_run.py add-source --company-dir DIR --file FILE --url URL --publisher 发布方 --period 报告期 --locator 定位`。已核验网页可仅提供 URL；本地原件保存哈希。公司目录内文件直接登记相对路径，外部文件才复制；重复登记会核验原件，外部复制件遗失但原文件可读时自动恢复。引用旧 `materials/` 或历史 run 原件同样登记，不迁移旧资料；原件变动须重新登记。
 
