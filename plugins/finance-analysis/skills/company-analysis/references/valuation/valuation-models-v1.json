@@ -1,0 +1,187 @@
+{
+  "schema_version": "company-analysis-valuation-model-catalog-v1",
+  "calculator_version": "company-analysis-valuation-calculator-v1",
+  "method_families": [
+    {
+      "family": "price-multiple",
+      "indicator": "multiple",
+      "direction": "higher-is-more-expensive",
+      "required_method_fields": [
+        "method_id",
+        "family",
+        "direction",
+        "denominator_fact_id",
+        "scenarios"
+      ],
+      "required_scenario_fields": [
+        "denominator",
+        "range.lower",
+        "range.upper"
+      ],
+      "optional_scenario_fields": [],
+      "sensitivity_parameters": [
+        "denominator",
+        "multiple"
+      ],
+      "formula": "price = denominator_per_share * multiple"
+    },
+    {
+      "family": "yield",
+      "indicator": "yield",
+      "direction": "higher-is-cheaper",
+      "required_method_fields": [
+        "method_id",
+        "family",
+        "direction",
+        "denominator_fact_id",
+        "scenarios"
+      ],
+      "required_scenario_fields": [
+        "denominator",
+        "range.lower",
+        "range.upper"
+      ],
+      "optional_scenario_fields": [],
+      "sensitivity_parameters": [
+        "denominator",
+        "yield"
+      ],
+      "formula": "price = denominator_per_share / yield"
+    },
+    {
+      "family": "enterprise-multiple",
+      "indicator": "multiple",
+      "direction": "higher-is-more-expensive",
+      "required_method_fields": [
+        "method_id",
+        "family",
+        "direction",
+        "denominator_fact_id",
+        "diluted_shares_fact_id",
+        "scenarios"
+      ],
+      "required_scenario_fields": [
+        "denominator",
+        "range.lower",
+        "range.upper"
+      ],
+      "optional_method_fields": [
+        "bridge_fact_ids.debt",
+        "bridge_fact_ids.lease_liabilities",
+        "bridge_fact_ids.minority_interest",
+        "bridge_fact_ids.preferred_claims",
+        "bridge_fact_ids.excess_cash"
+      ],
+      "optional_scenario_fields": [],
+      "sensitivity_parameters": [
+        "denominator",
+        "multiple"
+      ],
+      "formula": "enterprise_value = denominator * multiple; equity_value = enterprise_value - debt - lease_liabilities - minority_interest - preferred_claims + excess_cash; price = equity_value / diluted_shares"
+    },
+    {
+      "family": "dcf-fcff",
+      "indicator": "intrinsic-price-per-share",
+      "direction": "higher-is-more-expensive",
+      "required_method_fields": [
+        "method_id",
+        "family",
+        "direction",
+        "diluted_shares_fact_id",
+        "scenarios"
+      ],
+      "required_scenario_fields": [
+        "range.lower.fcff",
+        "range.lower.wacc",
+        "range.lower.terminal_growth",
+        "range.upper.fcff",
+        "range.upper.wacc",
+        "range.upper.terminal_growth"
+      ],
+      "optional_scenario_fields": [
+        "range.lower.evidence_fact_ids",
+        "range.upper.evidence_fact_ids"
+      ],
+      "scenario_shapes": [
+        {
+          "shape": "range",
+          "required_fields": [
+            "range.lower.fcff",
+            "range.lower.wacc",
+            "range.lower.terminal_growth",
+            "range.upper.fcff",
+            "range.upper.wacc",
+            "range.upper.terminal_growth"
+          ]
+        }
+      ],
+      "optional_method_fields": [
+        "bridge_fact_ids.debt",
+        "bridge_fact_ids.lease_liabilities",
+        "bridge_fact_ids.minority_interest",
+        "bridge_fact_ids.preferred_claims",
+        "bridge_fact_ids.excess_cash"
+      ],
+      "sensitivity_parameters": [
+        "wacc",
+        "terminal_growth"
+      ],
+      "required_sensitivity_fields": [
+        "sensitivity.base_case.fcff",
+        "sensitivity.base_case.wacc",
+        "sensitivity.base_case.terminal_growth"
+      ],
+      "formula": "enterprise_value = discounted explicit annual FCFF + discounted Gordon terminal value; equity_value = enterprise_value - debt - lease_liabilities - minority_interest - preferred_claims + excess_cash; price = equity_value / diluted_shares; require wacc > terminal_growth > -1"
+    },
+    {
+      "family": "sotp",
+      "indicator": "intrinsic-price-per-share",
+      "direction": "higher-is-more-expensive",
+      "required_method_fields": [
+        "method_id",
+        "family",
+        "direction",
+        "diluted_shares_fact_id",
+        "scenarios"
+      ],
+      "required_scenario_fields": [
+        "range.lower.components",
+        "range.upper.components"
+      ],
+      "optional_scenario_fields": [
+        "non_operating_assets",
+        "excess_cash",
+        "debt_like_claims",
+        "range.lower.evidence_fact_ids",
+        "range.upper.evidence_fact_ids"
+      ],
+      "scenario_shapes": [
+        {
+          "shape": "range",
+          "required_fields": [
+            "range.lower.components",
+            "range.upper.components"
+          ]
+        }
+      ],
+      "component_fields": [
+        "component_id",
+        "value_type",
+        "value",
+        "denominator",
+        "multiple"
+      ],
+      "sensitivity_parameters": [
+        "component_value",
+        "debt_like_claims"
+      ],
+      "required_sensitivity_fields": [
+        "sensitivity.base_case.components",
+        "sensitivity.base_case.non_operating_assets",
+        "sensitivity.base_case.excess_cash",
+        "sensitivity.base_case.debt_like_claims"
+      ],
+      "formula": "sum component equity or enterprise values once, add non-operating assets and excess cash, subtract debt-like claims, divide by diluted_shares; all components in one case must share a single value_type"
+    }
+  ]
+}
