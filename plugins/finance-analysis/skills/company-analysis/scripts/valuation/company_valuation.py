@@ -10,6 +10,7 @@ import errno
 import json
 import os
 from pathlib import Path
+import re
 import stat
 import sys
 import traceback
@@ -286,6 +287,63 @@ def _iso_datetime(value: object, field: str) -> str:
     except ValueError as exc:
         raise ContractError(f"{field} must be an ISO datetime") from exc
     return text
+
+
+METHOD_ID_PATTERN = re.compile(r"[a-z][a-z0-9-]{2,40}")
+
+
+def _method_id_format(value: object, field: str) -> str:
+    method_id = _non_empty_string(value, field)
+    vocabulary = _bundled_catalog().get("method_id_vocabulary")
+    if vocabulary is None:
+        raise ContractError("bundled valuation catalog lacks method_id_vocabulary")
+    if not METHOD_ID_PATTERN.fullmatch(method_id):
+        raise ContractError(
+            f"{field} must match ^[a-z][a-z0-9-]{{2,40}}$ and use catalog vocabulary tokens, "
+            "e.g. multiple-eps-fy or yield-fcf-forward"
+        )
+    indicator = next(
+        (
+            token
+            for token in sorted(vocabulary["indicator"], key=len, reverse=True)
+            if method_id == token or method_id.startswith(token + "-")
+        ),
+        None,
+    )
+    if indicator is None:
+        raise ContractError(
+            f"{field} must start with an indicator token from the catalog vocabulary "
+            f"({', '.join(sorted(vocabulary['indicator']))}), e.g. multiple-eps-fy"
+        )
+    if method_id == indicator:
+        return method_id
+    parts = method_id[len(indicator) + 1:].split("-")
+    if any(not part for part in parts):
+        raise ContractError(
+            f"{field} must follow <indicator>[-<basis>][-<variant>] with single catalog vocabulary tokens, "
+            "e.g. multiple-eps-fy, yield-fcf-forward, intrinsic-price-per-share-midcycle"
+        )
+    if len(parts) == 1 and (parts[0] in vocabulary["basis"] or parts[0] in vocabulary["variant"]):
+        return method_id
+    if len(parts) == 2 and parts[0] in vocabulary["basis"] and parts[1] in vocabulary["variant"]:
+        return method_id
+    raise ContractError(
+        f"{field} must follow <indicator>[-<basis>][-<variant>] with single catalog vocabulary tokens, "
+        "e.g. multiple-eps-fy, yield-fcf-forward, intrinsic-price-per-share-midcycle"
+    )
+
+
+def _validate_card_method_ids(card: Mapping) -> None:
+    for list_key in (
+        "method_judgments",
+        "scenario_parameters",
+        "calibrations",
+        "reverse_valuation",
+        "sensitivity_factors",
+        "invalidation_conditions",
+    ):
+        for index, item in enumerate(card[list_key]):
+            _method_id_format(item["method_id"], f"reviewer card.{list_key}[{index}].method_id")
 
 
 def _content_hash(value: object) -> str:
@@ -849,6 +907,7 @@ def _preflight_card(args: argparse.Namespace) -> dict:
         raise StateError(str(exc), issue_type="card-format") from exc
     if card.get("reviewer_id") != "reviewer-1":
         raise ContractError("reviewer card reviewer_id must be reviewer-1")
+    _validate_card_method_ids(card)
     return {"status": "ready", "valuation_input_hash": valuation_input["valuation_input_hash"]}
 
 
@@ -864,6 +923,7 @@ def _install_card(args: argparse.Namespace) -> dict:
         raise ContractError(str(exc)) from exc
     if card.get("reviewer_id") != "reviewer-1":
         raise ContractError("reviewer card reviewer_id must be reviewer-1")
+    _validate_card_method_ids(card)
     _card(valuation_dir, valuation_input, strict=True)
     artifact_store.atomic_install(valuation_dir, "reviewer-1.json", card)
     return {"status": "installed", "reviewer_id": card["reviewer_id"]}

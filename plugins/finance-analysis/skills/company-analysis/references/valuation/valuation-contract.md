@@ -44,6 +44,8 @@
 
 提议者的工作分两段：先按上述要求出**草稿**；批判工件安装后，逐条处理批判项——采纳的在受影响条目的 `rationale` 写明调整依据，不采纳的逐条给出反驳理由（也写入相应 `rationale` 或 `sensitivity_factors` 的说明），在原槽位修订草稿。**至多一轮实质修订**，修订必须发生在安装之前（工件不可变），不得新增事实、不得放宽自身的禁用条件。
 
+method_id 按方法目录 `method_id_vocabulary` 命名，语法 `<indicator>[-<basis>][-<variant>]`，各段取词表 token：`indicator` 表价值指标（`multiple`、`yield`、`intrinsic-price-per-share`），`basis` 表分母或价值基础（如 `eps`、`book`、`revenue`、`ebitda`、`ebit`、`fcf`、`dividend`、`nav`、`ffo`），`variant` 表期间或口径（`ttm`、`fy`、`forward`、`normalized`、`midcycle`）。四条治理规则：同一方法在不同角色下用同一 ID，不因主/交叉身份换名；禁止公司名、数据源与流程词；`basis` 用单 token；同 `basis` 出现歧义时用期间或口径 `variant` 区分。非规范写法会被 `preflight-card` 与 `install-card` 拒绝。
+
 评审卡 — schema `company-analysis-valuation-reviewer-card-v1`；键恰为 `schema_version, reviewer_id, fact_snapshot_id, market_snapshot_id, valuation_input_hash, model_id, calculator_version, method_catalog_version, method_judgments, normalizations, scenario_parameters, calibrations, reverse_valuation, sensitivity_factors, invalidation_conditions`。各列表项键分别为：
 
   - `method_judgments`: `method_id, applicable, preferred_role, evidence_fact_ids, rationale, disable_conditions`；禁用项为 `code, reason, evidence_fact_ids`。
@@ -72,7 +74,7 @@
 | `target_card` | 必须等于所批判草稿卡的 `reviewer_id`（aggregate 强制核对，不一致即拒绝） |
 | `items` | 列表，可为空（无实质问题） |
 
-每条 item 键恰为 `target, issue_type, argument, counter_evidence_fact_ids, suggested_revision`：`target` 指向卡内字段路径（如 `method_judgments[m-pe].applicable`、`scenario_parameters[m-pe].method.scenarios.neutral.range`）；`issue_type` 枚举 `method-applicability / normalization / scenario-boundary / sensitivity-coverage / invalidation-gap / evidence-link`；`argument` 非空；`counter_evidence_fact_ids` 引用冻结**已核验**事实（结构类问题可为空列表）；`suggested_revision` 非空。批判优先攻击：方法适用性误判、正常化参数依据、情景边界经济含义、敏感性网格缺口、失效条件缺失、证据引用不实。
+每条 item 键恰为 `target, issue_type, argument, counter_evidence_fact_ids, suggested_revision`：`target` 指向卡内字段路径（如 `method_judgments[multiple-eps-fy].applicable`、`scenario_parameters[multiple-eps-ttm].method.scenarios.neutral.range`）；`issue_type` 枚举 `method-applicability / normalization / scenario-boundary / sensitivity-coverage / invalidation-gap / evidence-link`；`argument` 非空；`counter_evidence_fact_ids` 引用冻结**已核验**事实（结构类问题可为空列表）；`suggested_revision` 非空。批判优先攻击：方法适用性误判、正常化参数依据、情景边界经济含义、敏感性网格缺口、失效条件缺失、证据引用不实。
 
 协调者运行 `install-critique --file` 安装到 `critique.json`；校验失败退回批判者修正。安装估值卡前，协调者核对批判工件的 `target_card` 与所批判草稿一致、安装卡确为该草稿的修订版。**aggregate 强制要求 critique.json 已安装**——批判环结构上不可跳过。批判与提议者不同人；无批判名额时协调者读批判者 agent 文件自审并在工件 `critic_id` 注明。
 

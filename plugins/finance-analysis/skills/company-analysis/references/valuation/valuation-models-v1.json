@@ -1,6 +1,31 @@
 {
   "schema_version": "company-analysis-valuation-model-catalog-v1",
   "calculator_version": "company-analysis-valuation-calculator-v1",
+  "method_id_vocabulary": {
+    "indicator": {
+      "multiple": "倍数（价格倍数、企业价值倍数）",
+      "yield": "收益率（价格倒数形式）",
+      "intrinsic-price-per-share": "内在每股价值（DCF、SOTP）"
+    },
+    "basis": {
+      "eps": "每股盈利",
+      "book": "每股净资产",
+      "revenue": "收入",
+      "ebitda": "息税折旧摊销前利润",
+      "ebit": "息税前利润",
+      "fcf": "自由现金流",
+      "dividend": "每股股息",
+      "nav": "净资产价值",
+      "ffo": "REIT 营运现金流"
+    },
+    "variant": {
+      "ttm": "滚动近十二个月",
+      "fy": "财年静态期间",
+      "forward": "前瞻期间",
+      "normalized": "正常化口径",
+      "midcycle": "中周期口径"
+    }
+  },
   "method_families": [
     {
       "family": "price-multiple",

@@ -30,7 +30,7 @@ tools: ["Read", "Bash"]
 
 只交回一张符合 `company-analysis-valuation-reviewer-card-v1` 的 JSON 卡，填齐方法判断、参数、三情景、敏感性和失效条件等契约字段。结构错误由你在原槽位修正。
 
-交卡前在草稿路径运行 `python <skill-root>/scripts/valuation/company_valuation.py preflight-card --run-dir RUN --card FILE`，按返回字段修正至 `status: ready`。核对 `normalizations` 的 `kind` 与数值形状、三情景键、相邻共享边界、标准单位及 3×3 敏感性网格。协调者随后 `install-critique` 与 `install-card`、`aggregate` 完成确定性选择与计算。
+交卡前在草稿路径运行 `python <skill-root>/scripts/valuation/company_valuation.py preflight-card --run-dir RUN --card FILE`，按返回字段修正至 `status: ready`。核对 `normalizations` 的 `kind` 与数值形状、三情景键、相邻共享边界、标准单位及 3×3 敏感性网格。method_id 按估值契约“估值者必读”的命名节填写，非规范写法会被 install-card 拒绝。协调者随后 `install-critique` 与 `install-card`、`aggregate` 完成确定性选择与计算。
 
 ## 职责边界
 
