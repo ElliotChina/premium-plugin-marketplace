@@ -21,7 +21,9 @@ import scoring_consensus
 TERMINAL_RUN_STATUSES = frozenset({"completed", "aborted", "superseded"})
 
 _SCRIPT_DIR = Path(__file__).resolve().parent
-_RUBRIC_PATH = _SCRIPT_DIR.parent.parent / "references" / "scoring" / "scoring-rubric-v1.json"
+_RUBRIC_PATH = _SCRIPT_DIR.parent.parent / "references" / "scoring" / "scoring-rubric.json"
+_RUBRIC_KEYS = {"schema_version", "rubric_version", "axes", "cycle_rubric",
+                "aggregation_policy", "risk_rules"}
 _BUNDLED_RUBRIC: Mapping | None = None
 
 
@@ -108,6 +110,7 @@ def _build_parser() -> argparse.ArgumentParser:
         freeze.add_argument("--fact-snapshot", required=True)
         freeze.add_argument("--rubric", required=True)
         freeze.add_argument("--evidence-coverage", required=True)
+        freeze.add_argument("--assessment-context", required=True)
         freeze.add_argument("--model-version", required=True)
 
     install = commands.add_parser("install-card")
@@ -224,6 +227,7 @@ def _load_artifact_json(scoring_dir: Path, name: str) -> Mapping | None:
 
 def _input_from_sources(
     facts: Mapping, rubric: Mapping, evidence_coverage: Mapping, model_version: str,
+    assessment_context: Mapping,
 ) -> dict:
     if rubric != _bundled_rubric():
         raise ContractError("rubric must match the bundled scoring rubric exactly")
@@ -240,9 +244,9 @@ def _input_from_sources(
         if fact["fact_id"] in fact_ids:
             raise ContractError("fact snapshot contains duplicate fact IDs")
         fact_ids.add(fact["fact_id"])
-    if set(rubric) != {"schema_version", "rubric_version", "axes"}:
+    if set(rubric) != _RUBRIC_KEYS:
         raise ContractError("rubric has an unsupported schema")
-    if rubric.get("schema_version") != "company-analysis-scoring-rubric-v1":
+    if rubric.get("schema_version") != "company-analysis-scoring-rubric-v2":
         raise ContractError("rubric schema is not supported")
     rubric_version = rubric.get("rubric_version")
     if not isinstance(rubric_version, str) or not rubric_version.strip():
@@ -260,6 +264,10 @@ def _input_from_sources(
         "facts": list(raw_facts),
         "axes": rubric["axes"],
         "evidence_coverage": dict(evidence_coverage),
+        "cycle_rubric": rubric["cycle_rubric"],
+        "aggregation_policy": rubric["aggregation_policy"],
+        "risk_rules": rubric["risk_rules"],
+        "assessment_context": dict(assessment_context),
     }
     data["scoring_input_hash"] = scoring_consensus.scoring_input_hash(data)
     try:
@@ -314,6 +322,7 @@ def _freeze(args: argparse.Namespace) -> dict:
     facts = _source_json(args.fact_snapshot, "fact snapshot")
     rubric = _source_json(args.rubric, "rubric")
     evidence_coverage = _source_json(args.evidence_coverage, "evidence coverage")
+    assessment_context = _source_json(args.assessment_context, "assessment context")
     scoring_dir = _safe_scoring_dir(run_dir, create=True)
     existing = _load_artifact_json(scoring_dir, "input.json")
     if existing is not None:
@@ -321,7 +330,9 @@ def _freeze(args: argparse.Namespace) -> dict:
             scoring_consensus.validate_scoring_input(existing)
         except scoring_consensus.ScoringError as exc:
             raise ContractError(str(exc)) from exc
-    input_data = _input_from_sources(facts, rubric, evidence_coverage, args.model_version)
+    input_data = _input_from_sources(
+        facts, rubric, evidence_coverage, args.model_version, assessment_context,
+    )
     try:
         source_audit = evidence_contract.preflight_shared_facts(run_dir, input_data, "valuation")
     except evidence_contract.EvidenceError as exc:
@@ -342,6 +353,7 @@ def _preflight_input(args: argparse.Namespace) -> dict:
         _source_json(args.rubric, "rubric"),
         _source_json(args.evidence_coverage, "evidence coverage"),
         args.model_version,
+        _source_json(args.assessment_context, "assessment context"),
     )
     try:
         source_audit = evidence_contract.preflight_shared_facts(run_dir, input_data, "valuation")
@@ -360,8 +372,8 @@ def _coverage_warnings(coverage: Mapping) -> list[str]:
     """Flag suspicious evidence mapping without treating missing data as a blocker."""
     dimensions = coverage["dimensions"]
     warnings = []
-    if all(item["assessment"] == "inference-required" for item in dimensions):
-        warnings.append("全部评分维度均需推断；请逐维复核已核验事实是否足以直接支持部分判断")
+    if all(item["assessment"] == "unassessable" for item in dimensions):
+        warnings.append("全部评分维度均无法评估；请逐维复核已核验事实是否足以支持部分判断")
     groups: dict[tuple, list[str]] = {}
     for item in dimensions:
         signature = (tuple(item["evidence_fact_ids"]), tuple(item["missing_evidence"]))
@@ -395,7 +407,7 @@ def _aggregate(args: argparse.Namespace) -> dict:
     if card is None:
         raise StateError("需要先安装有效的 scorer-1 评分卡")
     try:
-        consensus = scoring_consensus.aggregate_scorecard_v3(scoring_input, card)
+        consensus = scoring_consensus.aggregate_scorecard(scoring_input, card)
     except scoring_consensus.ScoringError as exc:
         raise ContractError(str(exc)) from exc
     artifact_store.atomic_install(scoring_dir, "consensus.json", consensus)
@@ -481,11 +493,11 @@ def _status(args: argparse.Namespace) -> dict:
             "missing_slots": [1],
         }
     try:
-        preview = scoring_consensus.aggregate_scorecard_v3(input_data, card)
+        preview = scoring_consensus.aggregate_scorecard(input_data, card)
     except scoring_consensus.ScoringError as exc:
         return base | {"status": "invalid", "valid_cards": 1, "missing_slots": [], "error": str(exc)}
-    for axis in preview["axes"]:
-        axis_scores[axis["axis_id"]] = axis["score"]
+    for axis in preview["axis_scores"]:
+        axis_scores[axis["axis_id"]] = axis["effective_score"]
     persisted = None
     consensus_error = None
     try:
@@ -501,7 +513,7 @@ def _status(args: argparse.Namespace) -> dict:
         return base | {"status": "ready", "valid_cards": 1, "missing_slots": []}
     if consensus_error is None:
         try:
-            expected = scoring_consensus.aggregate_scorecard_v3(input_data, card)
+            expected = scoring_consensus.aggregate_scorecard(input_data, card)
             if (scoring_consensus.canonical_json_bytes(expected)
                     != scoring_consensus.canonical_json_bytes(persisted)):
                 consensus_error = "consensus does not match frozen scoring artifacts"
@@ -513,21 +525,21 @@ def _status(args: argparse.Namespace) -> dict:
             "affected_axis_scores": {axis_id: None for axis_id in axis_scores},
             "consensus_hash": None, "error": consensus_error,
         }
-    for axis in persisted["axes"]:
-        axis_scores[axis["axis_id"]] = axis["score"]
+    for axis in persisted["axis_scores"]:
+        axis_scores[axis["axis_id"]] = axis["effective_score"]
     return base | {
         "status": "complete",
         "valid_cards": 1,
         "missing_slots": [],
         "consensus_hash": scoring_consensus.content_hash(persisted),
-        "ambiguous_dimensions": persisted.get("ambiguous_dimensions", []),
+        "core_quality": persisted["core_quality"]["score"],
     }
 
 
 def _status_guidance(result: dict) -> dict:
     status = result["status"]
     if status == "complete":
-        issue_type, next_action = "none", "评分共识已完成；读取共识结果和置信度。"
+        issue_type, next_action = "none", "评分共识已完成；读取核心质量分、敏感性区间与风险状态。"
     elif status == "not-frozen":
         issue_type, next_action = "input-not-frozen", "完成评分与估值输入预检，确认同一事实快照后冻结评分输入。"
     elif status == "incomplete":

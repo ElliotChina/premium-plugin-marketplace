@@ -25,6 +25,7 @@ for _subdir in ("scoring", "valuation"):
 import company_scoring
 import company_valuation
 import evidence_contract
+import scoring_consensus
 import valuation_consensus
 
 
@@ -198,10 +199,35 @@ def _research_template(company: str) -> str:
 
 ## 数据缺口与补查
 
-每个独立事实缺口一行。记录实际查过的来源与结果；未继续查询时说明理由。未取得资料仍继续评分和估值，用推断及置信度反映限制。报告相应章节使用同一编号列示缺口与影响。
+每个独立事实缺口一行。记录实际查过的来源与结果；未继续查询时说明理由。未取得资料仍继续评分和估值，用推断档位与缺口说明反映限制。报告相应章节使用同一编号列示缺口与影响。
 
-| 编号 | 字段、期间、口径 | 影响章节和结论 | 已查来源、结果或未查理由 | 替代依据与置信度影响 |
+| 编号 | 字段、期间、口径 | 影响章节和结论 | 已查来源、结果或未查理由 | 替代依据与对结论的影响 |
 |---|---|---|---|---|
+
+## 风险规则核查
+
+评分冻结前逐条核对六项公司级风险规则；触发须列证据事实，未触发须写排除依据，无法判定记 unresolved 并说明卡点。规则动作（维度或公司级上限）由评分脚本确定性执行，不在此表手动折算。
+
+| 规则 | 状态 | 证据事实或排除依据 | 冻结前处理 |
+|---|---|---|---|
+| confirmed-material-misstatement | 待填写 | 待填写 | 待填写 |
+| confirmed-shareholder-expropriation | 待填写 | 待填写 | 待填写 |
+| uncovered-liquidity-gap | 待填写 | 待填写 | 待填写 |
+| core-license-loss | 待填写 | 待填写 | 待填写 |
+| stress-covenant-breach | 待填写 | 待填写 | 待填写 |
+| material-reporting-uncertainty | 待填写 | 待填写 | 待填写 |
+
+## 前景与估值桥接
+
+未来前景轴不进入核心质量分；逐维把前景判断桥接到估值情景假设，防止同一判断在评分和估值中重复计分。无对应假设的维度写“未桥接”及原因。
+
+| 前景维度 | 判断与依据 | 对应估值情景假设 |
+|---|---|---|
+| addressable-demand-growth | 待填写 | 待填写 |
+| supply-profit-pool | 待填写 | 待填写 |
+| share-business-expansion | 待填写 | 待填写 |
+| growth-economics-funding | 待填写 | 待填写 |
+| technology-policy-change | 待填写 | 待填写 |
 
 ## 冻结前反方审视
 
@@ -216,7 +242,7 @@ def _research_template(company: str) -> str:
 
 ## 最终结论审视
 
-完成评分与估值评审和 15 章正文后，核对支持与反对证据、分数与估值区间、缺口与置信度、结论强度及推翻条件。记录审视后的报告修订；实质事实错误须按冻结规则另建 run。
+完成评分与估值评审和 15 章正文后，核对支持与反对证据、分数与敏感性区间、估值区间、缺口与风险状态、结论强度及推翻条件。记录审视后的报告修订；实质事实错误须按冻结规则另建 run。
 
 | 审视项目 | 发现及依据 | 报告修订或保留理由 |
 |---|---|---|
@@ -315,6 +341,36 @@ def _report_source_ids(body: str) -> tuple[list[str], list[str]]:
         if SOURCE_RANGE.search(bracket):
             errors.append(f"来源范围引用 [{bracket}] 请逐项列出编号")
     return sorted(cited), errors
+
+
+def _scoring_summary_consistency(run_dir: Path, body: str) -> list[str]:
+    """Require exactly one scoring summary block in the report, matching the consensus."""
+    scoring_dir = run_dir / "analysis" / "scoring"
+    consensus_path = scoring_dir / "consensus.json"
+    input_path = scoring_dir / "input.json"
+    if not consensus_path.is_file() or not input_path.is_file():
+        return []
+    try:
+        consensus = _json(consensus_path)
+        scoring_input = _json(input_path)
+        scoring_consensus.validate_consensus(consensus)
+        scoring_consensus.validate_scoring_input(scoring_input)
+        expected = scoring_consensus.render_scoring_summary(
+            consensus, scoring_input["assessment_context"],
+        )
+    except (OSError, ValueError, KeyError) as exc:
+        return [f"评分共识工件无法复核：{exc}"]
+    blocks = re.findall(
+        re.escape(scoring_consensus.SUMMARY_START) + r"(.*?)"
+        + re.escape(scoring_consensus.SUMMARY_END), body, re.S,
+    )
+    if len(blocks) != 1:
+        return [f"报告需要恰好一个评分摘要块；当前 {len(blocks)} 个"]
+    normalize = lambda text: text.replace("\r\n", "\n")
+    actual = scoring_consensus.SUMMARY_START + blocks[0] + scoring_consensus.SUMMARY_END
+    if normalize(actual) != normalize(expected):
+        return ["报告评分摘要块与共识 summary_markdown 不一致；请重新生成"]
+    return []
 
 
 def check(args: argparse.Namespace) -> dict:
@@ -457,6 +513,8 @@ def check(args: argparse.Namespace) -> dict:
     valuation = company_valuation.status(str(run_dir))
     if scoring.get("status") != "complete":
         errors.append(f"评分未完成：{scoring.get('status')}")
+    else:
+        errors.extend(_scoring_summary_consistency(run_dir, body))
     if valuation.get("status") not in {"complete", "complete-indicative", "recalculated"}:
         errors.append(f"估值没有可交付区间：{valuation.get('status')}")
     else:

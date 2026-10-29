@@ -266,15 +266,18 @@ def _nullable_non_empty_string(value: object, field: str) -> str | None:
 
 
 def _fact_value(value: object, field: str, *, status: str) -> object:
-    # Scoring and valuation share one frozen snapshot byte-for-byte, so values
-    # must be decimal strings (valuation's requirement) on both sides.
+    # Scoring and valuation share one frozen snapshot byte-for-byte: numeric
+    # facts carry decimal strings, qualitative facts carry non-empty text.
     if value is None:
         if status == "verified":
             raise EvidenceError(f"{field} must not be null for verified facts")
         return value
     if isinstance(value, str) and value.strip():
         return value
-    raise EvidenceError(f"{field} must be a non-empty decimal string or null; bool and number values are rejected")
+    raise EvidenceError(
+        f"{field} must be a non-empty string (numeric facts use decimal strings) or null; "
+        "bool and number values are rejected"
+    )
 
 
 def _currency_code(value: object, field: str) -> str | None:

@@ -1,0 +1,161 @@
+{
+  "skill_name": "company-analysis",
+  "evals": [
+    {
+      "id": 1,
+      "name": "全面深度公司分析",
+      "prompt": "帮我全面深度分析这家公司的质量和投资价值，出具一份完整的研究报告",
+      "expected_output": "走完五阶段研究管线：五方向研究、反方审视、评分与估值输入冻结、独立评审与确定性聚合，产出 15 章可追溯报告",
+      "files": [],
+      "assertions": [
+        {
+          "name": "启动公司分析 run 并分派五方向研究",
+          "description": "使用 company_run.py start 建 run，按名额分派行业与同业、财务与现金流、业务与护城河、资本配置与股东、风险与反证五个方向"
+        },
+        {
+          "name": "评分与估值共用同一事实快照",
+          "description": "评分与估值对同一 fact_snapshot 运行 preflight-input 并分别 freeze，两边快照 ID 与事实一致"
+        },
+        {
+          "name": "输出五轴评分与核心质量分",
+          "description": "报告呈现行业质量、业务质量、财务质量、资本配置与治理、未来前景五个独立轴分，以及由确定性计算得到的核心质量分 Q 与敏感性区间"
+        },
+        {
+          "name": "报告含恰好一个评分摘要块",
+          "description": "正文的 scoring-summary 定界块恰好一对，且与 consensus.json 的 summary_markdown 一致（check 强制）"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "对话中直接要求打分",
+      "prompt": "给贵州茅台打个分吧，0 到 100 分",
+      "expected_output": "不直接在对话中给分；说明公司质量评分需要先建立 run、登记来源、冻结事实快照后由评分者在冻结输入上完成，询问是否启动完整分析",
+      "files": [],
+      "assertions": [
+        {
+          "name": "不在对话中直接输出质量分数",
+          "description": "拒绝无冻结输入依据的即兴打分，解释评分必须证据锚定且分数由脚本确定性计算"
+        },
+        {
+          "name": "说明启动路径",
+          "description": "告知需要先完成预检与冻结流程，或引导改用其他轻量数据技能回答单点问题"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "关键数据缺失时的评分",
+      "prompt": "这家公司公开资料很少，好几年的分产品毛利率和经营数据都查不到，还能评分吗？",
+      "expected_output": "能评。查不到的维度按证据三态如实标注：有部分核验依据的给 inferred 档位并列缺口，完全无法评估的标 unassessable，其所在轴分与核心质量分如实为 null，不硬猜档位",
+      "files": [],
+      "assertions": [
+        {
+          "name": "缺数据不自动降档",
+          "description": "缺口改变证据状态与敏感性，不改变档位中心；不因缺数据而虚构中间值"
+        },
+        {
+          "name": "无法评估的维度如实置空",
+          "description": "unassessable 维度使轴分与 Q 为 null，报告写明补齐条件，不输出伪造的完整分数"
+        },
+        {
+          "name": "缺口逐项记录",
+          "description": "缺口进入研究检查表并编号，报告相应章节说明已查来源、替代依据与影响"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "弱周期行业的景气评估",
+      "prompt": "分析这家必需消费品公司，注意它基本不受宏观经济周期影响",
+      "expected_output": "周期模块标 weak-cycle：phase 与 direction 为 not-applicable，不给组件档位，不硬套周期模板",
+      "files": [],
+      "assertions": [
+        {
+          "name": "弱周期不硬套周期阶段",
+          "description": "cycle_assessment 使用 weak-cycle 而非编造 trough/expansion 等阶段判断"
+        },
+        {
+          "name": "景气强度不参与核心质量分",
+          "description": "周期强度为 null 且不进入 Q；行业质量与前景也不计入 Q"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "重大不利事实触发风险规则",
+      "prompt": "这家公司年报被出具了保留意见的审计报告，评分时会怎么处理？",
+      "expected_output": "已核验的非标审计事实触发 confirmed-material-misstatement 或 material-reporting-uncertainty：对应维度档位被脚本压至上限，公司级风险状态为 restricted 或 attention，不能被其他高分掩盖",
+      "files": [],
+      "assertions": [
+        {
+          "name": "风险规则由不利事实触发",
+          "description": "触发基于已核验事实而非猜测；上限动作由脚本确定性执行，评分卡内没有手写上限"
+        },
+        {
+          "name": "风险状态单列呈现",
+          "description": "restricted/attention 状态、触发规则、证据与上限出处（applied_rules）在报告风险章单列"
+        },
+        {
+          "name": "无法判定时如实标记",
+          "description": "证据不足时记 unresolved 而非强行二选一，风险状态相应为 unassessed"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "评分与估值的边界",
+      "prompt": "把公司的质量分数直接换算成目标价吧，这样最直观",
+      "expected_output": "拒绝把质量分或 Q 直接换算成估值；估值走独立的三情景方法评审与确定性计算，评分不进入估值公式，估值位置也不转成质量分",
+      "files": [],
+      "assertions": [
+        {
+          "name": "不以评分推导目标价",
+          "description": "明确说明质量评分与估值独立，不存在分数到价格的换算系数"
+        },
+        {
+          "name": "前景判断不重复计分",
+          "description": "未来前景轴的判断桥接到估值情景假设时只计一次，反方审视会检查重复计分"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "跨档证据的呈现",
+      "prompt": "某个维度的证据好坏参半，评分卡里应该怎么表达？",
+      "expected_output": "选更接近的一档并在 ambiguous_with 标注相邻档；共识层据此生成核心质量分的敏感性区间，报告如实呈现证据跨两档及改判条件",
+      "files": [],
+      "assertions": [
+        {
+          "name": "跨档不改档位中心",
+          "description": "ambiguous_with 只影响敏感性区间，不改变该维档位，也不直接扣分"
+        },
+        {
+          "name": "敏感性区间可解释",
+          "description": "报告说明区间由跨档维度取替代档重算得到，并写明改判条件"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "报告发布前的机器检查",
+      "prompt": "报告写完了，准备发布",
+      "expected_output": "运行 company_run.py check：15 章状态与覆盖率核对、来源审计、评分与估值状态机 complete、正文含主方法区间上下界、评分摘要块恰好一个且与共识一致，全部通过后 publish",
+      "files": [],
+      "assertions": [
+        {
+          "name": "check 通过才发布",
+          "description": "不跳过机器检查；check 返回的错误逐项修复，机器检查不能代替实质复核"
+        },
+        {
+          "name": "摘要块不一致会拦下",
+          "description": "正文评分摘要块缺失、重复或与 consensus.json 不一致时 check 报错，不手工圆场"
+        },
+        {
+          "name": "最终结论审视留痕",
+          "description": "发布前在 research.md 记录最终结论审视：分数与敏感性区间、反证、缺口、风险状态及报告修订"
+        }
+      ]
+    }
+  ]
+}

@@ -11,7 +11,7 @@
 | a-stock-data | A股全栈数据工具包：15 层 87 端点、34 数据源，行情 K 线/逐笔/研报/资金面/财务/期货/可转债，自包含内嵌全部可运行代码 | [外部同步](https://github.com/simonlin1212/a-stock-data) |
 | mx-data | 妙想数据技能（东方财富数据库）：金融数据查询、公告研报检索、宏观查询、市场热点发现、可比公司分析五个子能力，共用授权 | [妙想技能库](https://ai.eastmoney.com/skills) |
 | ifind-finance-data | 同花顺 iFinD 综合金融数据查询：智能选股/选基、投研级数据指标、行情、快查/法智数据库 | 本地收录 |
-| company-analysis | 多 agent 深度公司分析：五阶段流程产出 15 章可追溯报告，含三人独立质量评分与三情景估值 | 自研 |
+| company-analysis | 多 agent 深度公司分析：五阶段流程产出 15 章可追溯报告，含五轴证据锚定质量评分与三情景估值 | 自研 |
 
 > 「外部同步」技能由 CI 工作流（`.github/workflows/sync-external-skills.yml`）每周检查上游自动更新；其余技能为手动收录，无自动同步，更新需从来源手动复制。
 
