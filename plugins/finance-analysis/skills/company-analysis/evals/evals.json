@@ -140,7 +140,7 @@
       "id": 8,
       "name": "报告发布前的机器检查",
       "prompt": "报告写完了，准备发布",
-      "expected_output": "运行 company_run.py check：15 章状态与覆盖率核对、来源审计、评分与估值状态机 complete、正文含主方法区间上下界、评分摘要块恰好一个且与共识一致，全部通过后 publish",
+      "expected_output": "运行 company_run.py check：15 章状态与覆盖率核对、来源审计、评分状态 complete、估值状态为 complete/complete-conditional/complete-low-confidence/recalculated 之一、正文含主方法区间上下界与精度标签、评分摘要块恰好一个且与共识一致，全部通过后 publish",
       "files": [],
       "assertions": [
         {
@@ -154,6 +154,162 @@
         {
           "name": "最终结论审视留痕",
           "description": "发布前在 research.md 记录最终结论审视：分数与敏感性区间、反证、缺口、风险状态及报告修订"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "三情景估值区间不连续",
+      "prompt": "估值算出来保守、中性、乐观三个价格区间中间有断档，要不要调一下 FCFF 或 WACC 让它们接上？",
+      "expected_output": "不调整经营参数凑衔接。三情景只要求四个外侧锚点严格有序，允许相邻情景存在间隔或重叠；计算器输出 scenario_layout，报告在 13 章如实说明间隔成因与幅度",
+      "files": [],
+      "assertions": [
+        {
+          "name": "不为衔接反向调参",
+          "description": "不为了让区间连续而修改 FCFF、WACC、永续增长率或 SOTP 组件值；情景参数只由经营假设推导"
+        },
+        {
+          "name": "间隔与重叠如实披露",
+          "description": "calculation.json 的 scenario_layout 反映真实间隔或重叠，报告正文出现对应说明（check 强制）"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "高杠杆公司的估值口径",
+      "prompt": "这家公司有息负债很高，直接用调整后市盈率估值吧，把净债务加回市值再除以净利润",
+      "expected_output": "不使用“调整后市盈率”这一口径。需要观察债务影响时改用 EV/EBIT 等企业价值倍数；使用 PE 时分子为股权价值、分母为普通股可持续净利润，method_id 只带一个 basis token，并与方法族的 allowed_basis 配对",
+      "files": [],
+      "assertions": [
+        {
+          "name": "拒绝调整后市盈率",
+          "description": "不把市值加净债务再除以净利润的混合口径写成 PE；价值桥接只作为 denominator 推导依据写入 rationale"
+        },
+        {
+          "name": "口径配对通过预检",
+          "description": "method_id 的 basis token 落在 family 的 allowed_basis 内；PE 用 eps，EV/EBIT 用 ebit，不混用"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "资料很少的公司估值",
+      "prompt": "这家公司公开资料很少，关键经营参数都查不到，还能给估值区间吗？",
+      "expected_output": "能。用有锚点的假设事实承接缺失参数，输出三情景区间并标注 conditional 或 low-confidence：conditional 列明关键假设与改判条件，low-confidence 只给参考区间并声明“区间不具备方向判断力”，不得给方向结论",
+      "files": [],
+      "assertions": [
+        {
+          "name": "不放弃估值",
+          "description": "不因证据不足禁用全部方法或拒绝出区间；假设事实按 fact_type: assumption、status: unverified、audit_status: not-applicable 登记"
+        },
+        {
+          "name": "精度状态与措辞一致",
+          "description": "consensus 的 publication_precision_state 与报告标签一致；low-confidence 不含方向结论，conditional 列出关键假设"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "name": "DCF 参数推导与终值一致性",
+      "prompt": "直接用现成 FCFF 做 DCF 吧，WACC 和永续增长率你按经验定，先算个目标价出来",
+      "expected_output": "不先看股价倒推参数。主方法 DCF 使用 drivers 输入模式，先填写 parameter_derivation（来源、公式、代入数）再完成三情景与反向估值；终值默认 reinvestment-consistent 并披露终值占比；ROIC_T 低于 WACC 或最后一年增速未向 g 收敛时如实标注并接受 conditional 精度",
+      "files": [],
+      "assertions": [
+        {
+          "name": "参数先推导后估值",
+          "description": "parameter_derivation 覆盖每个冻结方法，关键参数可由公式与输入复算，不先看当前股价再倒推"
+        },
+        {
+          "name": "驱动模式生成现金流",
+          "description": "DCF 使用 input_mode: drivers，收入增长、利润率与资本效率数组长度等于 horizon_years，收入基数引用冻结事实"
+        },
+        {
+          "name": "经济一致性如实披露",
+          "description": "终值占比、consistency_flags 与对应精度降级写入共识并在 13 章说明，不用调参掩盖 ROIC 或增长收敛问题"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "name": "银行估值方法选择",
+      "prompt": "分析这家商业银行的估值，用 DCF 算一下它的内在价值",
+      "expected_output": "不把 FCFF DCF 套在银行上；银行用剩余收益（RIM）作为主方法，P/B 与股息率作交叉，账面价值按每股净资产滚动并披露 terminal_roe 与 Ke 的关系",
+      "files": [],
+      "assertions": [
+        {
+          "name": "银行不套用 FCFF",
+          "description": "方法判断说明银行为金融企业，FCFF 不适用；主方法选 residual-income，方法 ID 为 intrinsic-price-per-share-residual-income"
+        },
+        {
+          "name": "剩余收益参数可复算",
+          "description": "案例填写 base_book_value_per_share_fact_id、eps、dividend_per_share，账面价值按清洁盈余滚动；parameter_derivation 给出 Ke 与 terminal_roe 的来源与公式"
+        },
+        {
+          "name": "经济一致性如实披露",
+          "description": "terminal_roe 低于 Ke 时报告披露 terminal-roe-below-cost-of-equity 与价值毁灭含义，精度按 economic-inconsistency 降为 conditional"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "name": "矿山与收费公路的有限期估值",
+      "prompt": "这家矿山还剩八年开采期，帮我估一下它值多少钱",
+      "expected_output": "主方法用有限期 DCF（input_mode drivers 或 fcff、terminal_mode finite），按剩余年限设 horizon_years，显式填写 terminal_value 并扣除复垦与移交成本；终值占比、残值来源与经济一致性在报告披露",
+      "files": [],
+      "assertions": [
+        {
+          "name": "有限期终值显式填写",
+          "description": "terminal_mode 为 finite，terminal_value 显式给出并说明可为 0 或负数的处置成本口径；缺少残值直接被预检拒绝"
+        },
+        {
+          "name": "显式期匹配剩余年限",
+          "description": "horizon_years 等于资产剩余可采年限，drivers 各数组长度一致；敏感性网格固定为 terminal_value 与 wacc"
+        },
+        {
+          "name": "处置义务与交叉方法披露",
+          "description": "报告说明复垦、移交成本来源，并用 EV/EBITDA、NAV 作交叉核对，不把有限期延续当作永续增长"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "name": "未盈利创新药管线估值",
+      "prompt": "这家生物科技公司还没盈利，主要价值来自三个临床阶段管线，帮我估一下它值多少钱",
+      "expected_output": "主方法用 rNPV（intrinsic-price-per-share-rnpv）：按资产列出与 horizon_years 等长的成功情景净现金流（研发投入可为负），成功率与折现率不重复扣减同一失败风险；三情景同时调整商业化假设与成功率；敏感性必须包含 cash_flow_shift 或 probability_of_success",
+      "files": [],
+      "assertions": [
+        {
+          "name": "按管线资产分别估值",
+          "description": "每个资产或明确界定的资产组合对应一个方法，成功情景现金流按资产归集，不把已商业化产品重复按概率折减"
+        },
+        {
+          "name": "风险只扣一次",
+          "description": "临床/监管失败风险要么体现在 probability_of_success，要么已包含在折现率；两者同时计入时批判者要求修订"
+        },
+        {
+          "name": "成功率与终值披露",
+          "description": "parameter_derivation 写明成功率来源与现金流推导；报告披露折现率、终值假设、terminal_value_share 及融资摊薄风险，精度按假设依赖标为 conditional"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "name": "寿险公司内含价值估值",
+      "prompt": "这家寿险公司用 DCF 估值合适吗？它的内含价值和新业务价值怎么用？",
+      "expected_output": "不套用一般企业 FCFF DCF。主方法用 embedded-value：评估价值 = 调整后净资产 + 有效业务价值 + 新业务价值 × 新业务倍数，再除以摊薄股本；P/EV（multiple-embedded-value）作交叉；敏感性必须包含 VIF 或 NBV 的经营参数",
+      "files": [],
+      "assertions": [
+        {
+          "name": "使用内含价值口径",
+          "description": "方法 ID 为 intrinsic-price-per-share-embedded-value，三项金额按估值币种整体金额填写，新业务倍数非负且不是 P/EV"
+        },
+        {
+          "name": "P/EV 独立交叉",
+          "description": "P/EV 走 price-multiple 的 embedded-value basis，与内含价值方法分属不同机制组，可作为独立交叉核对"
+        },
+        {
+          "name": "精算假设与报告期披露",
+          "description": "报告披露 VIF 精算假设、EV 报告期与当前时点差、新业务倍数来源及三项分解，EV 与 NBV 不重复计算"
         }
       ]
     }

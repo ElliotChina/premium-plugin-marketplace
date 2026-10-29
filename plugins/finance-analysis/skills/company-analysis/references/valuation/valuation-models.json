@@ -1,0 +1,460 @@
+{
+  "schema_version": "company-analysis-valuation-model-catalog-v2",
+  "calculator_version": "company-analysis-valuation-calculator-v2",
+  "method_id_vocabulary": {
+    "indicator": {
+      "multiple": "倍数（价格倍数、企业价值倍数）",
+      "yield": "收益率（价格倒数形式）",
+      "intrinsic-price-per-share": "内在每股价值（DCF、RIM、rNPV、内含价值、SOTP）"
+    },
+    "basis": {
+      "eps": "每股盈利",
+      "book": "每股净资产",
+      "revenue": "收入",
+      "ebitda": "息税折旧摊销前利润",
+      "ebit": "息税前利润",
+      "fcf": "自由现金流",
+      "fcfe": "股权自由现金流",
+      "dividend": "每股股息",
+      "nav": "净资产价值",
+      "ffo": "REIT 营运现金流",
+      "residual-income": "剩余收益",
+      "rnpv": "风险调整净现值（管线）",
+      "embedded-value": "内含价值"
+    },
+    "variant": {
+      "ttm": "滚动近十二个月",
+      "fy": "财年静态期间",
+      "forward": "前瞻期间",
+      "normalized": "正常化口径",
+      "midcycle": "中周期口径",
+      "liquidation": "清算价值口径"
+    }
+  },
+  "method_families": [
+    {
+      "family": "price-multiple",
+      "indicator": "multiple",
+      "direction": "higher-is-more-expensive",
+      "allowed_basis": ["eps", "book", "revenue", "fcf", "dividend", "nav", "ffo", "embedded-value"],
+      "required_method_fields": [
+        "method_id",
+        "family",
+        "direction",
+        "denominator_fact_id",
+        "scenarios"
+      ],
+      "required_scenario_fields": [
+        "denominator",
+        "range.lower",
+        "range.upper"
+      ],
+      "optional_scenario_fields": [],
+      "sensitivity_parameters": [
+        "denominator",
+        "multiple"
+      ],
+      "formula": "price = denominator_per_share * multiple"
+    },
+    {
+      "family": "yield",
+      "indicator": "yield",
+      "direction": "higher-is-cheaper",
+      "allowed_basis": ["dividend", "fcf"],
+      "required_method_fields": [
+        "method_id",
+        "family",
+        "direction",
+        "denominator_fact_id",
+        "scenarios"
+      ],
+      "required_scenario_fields": [
+        "denominator",
+        "range.lower",
+        "range.upper"
+      ],
+      "optional_scenario_fields": [],
+      "sensitivity_parameters": [
+        "denominator",
+        "yield"
+      ],
+      "formula": "price = denominator_per_share / yield"
+    },
+    {
+      "family": "enterprise-multiple",
+      "indicator": "multiple",
+      "direction": "higher-is-more-expensive",
+      "allowed_basis": ["revenue", "ebitda", "ebit", "fcf"],
+      "required_method_fields": [
+        "method_id",
+        "family",
+        "direction",
+        "denominator_fact_id",
+        "diluted_shares_fact_id",
+        "scenarios"
+      ],
+      "required_scenario_fields": [
+        "denominator",
+        "range.lower",
+        "range.upper"
+      ],
+      "optional_method_fields": [
+        "bridge_fact_ids.debt",
+        "bridge_fact_ids.lease_liabilities",
+        "bridge_fact_ids.minority_interest",
+        "bridge_fact_ids.preferred_claims",
+        "bridge_fact_ids.excess_cash"
+      ],
+      "optional_scenario_fields": [],
+      "sensitivity_parameters": [
+        "denominator",
+        "multiple"
+      ],
+      "formula": "enterprise_value = denominator * multiple; equity_value = enterprise_value - debt - lease_liabilities - minority_interest - preferred_claims + excess_cash; price = equity_value / diluted_shares"
+    },
+    {
+      "family": "dcf-fcff",
+      "indicator": "intrinsic-price-per-share",
+      "direction": "higher-is-more-expensive",
+      "allowed_basis": [],
+      "input_modes": ["drivers", "fcff"],
+      "default_input_mode": "drivers",
+      "terminal_modes": ["reinvestment-consistent", "gordon", "finite"],
+      "default_terminal_mode": "reinvestment-consistent",
+      "required_method_fields": [
+        "method_id",
+        "family",
+        "direction",
+        "diluted_shares_fact_id",
+        "input_mode",
+        "horizon_years",
+        "scenarios"
+      ],
+      "required_scenario_fields": [
+        "range.lower.wacc",
+        "range.upper.wacc"
+      ],
+      "optional_scenario_fields": [
+        "range.lower.fcff",
+        "range.lower.drivers",
+        "range.lower.terminal_growth",
+        "range.lower.terminal_value",
+        "range.lower.terminal_nopat",
+        "range.lower.terminal_roic",
+        "range.lower.terminal_mode",
+        "range.upper.fcff",
+        "range.upper.drivers",
+        "range.upper.terminal_growth",
+        "range.upper.terminal_value",
+        "range.upper.terminal_nopat",
+        "range.upper.terminal_roic",
+        "range.upper.terminal_mode",
+        "range.lower.evidence_fact_ids",
+        "range.upper.evidence_fact_ids"
+      ],
+      "scenario_shapes": [
+        {
+          "shape": "range",
+          "required_fields": [
+            "range.lower.wacc",
+            "range.upper.wacc"
+          ],
+          "terminal_mode_requirements": {
+            "reinvestment-consistent": ["range.lower.terminal_growth", "range.lower.terminal_nopat or terminal_roic"],
+            "gordon": ["range.lower.terminal_growth"],
+            "finite": ["range.lower.terminal_value"]
+          }
+        }
+      ],
+      "optional_method_fields": [
+        "bridge_fact_ids.debt",
+        "bridge_fact_ids.lease_liabilities",
+        "bridge_fact_ids.minority_interest",
+        "bridge_fact_ids.preferred_claims",
+        "bridge_fact_ids.excess_cash"
+      ],
+      "sensitivity_parameters": [
+        "wacc",
+        "terminal_growth",
+        "terminal_value",
+        "revenue_growth_shift",
+        "operating_margin_shift",
+        "sales_to_capital_shift"
+      ],
+      "required_sensitivity_fields": [
+        "sensitivity.base_case.wacc"
+      ],
+      "formula": "drivers mode: revenue_t = revenue_0 * product(1 + growth_i); ebit_t = revenue_t * margin_t; nopat_t = ebit_t * (1 - tax_rate); reinvestment_t = (revenue_t - revenue_prev) / sales_to_capital_t; fcff_t = nopat_t - reinvestment_t. fcff mode accepts explicit annual fcff values. gordon terminal value = fcff_n * (1 + g) / (wacc - g); reinvestment-consistent terminal value = nopat_n * (1 + g) * (1 - g / roic_t) / (wacc - g); finite terminal value = terminal_value (may be zero or negative, net of handover or rehabilitation costs). enterprise_value = discounted explicit fcff + discounted terminal value; equity_value = enterprise_value - debt - lease_liabilities - minority_interest - preferred_claims + excess_cash; price = equity_value / diluted_shares; require wacc > terminal_growth > -1 when a growth model is used"
+    },
+    {
+      "family": "dcf-equity",
+      "indicator": "intrinsic-price-per-share",
+      "direction": "higher-is-more-expensive",
+      "allowed_basis": ["fcfe", "dividend"],
+      "cash_flow_types": ["fcfe", "dividend"],
+      "required_method_fields": [
+        "method_id",
+        "family",
+        "direction",
+        "cash_flow_type",
+        "diluted_shares_fact_id",
+        "horizon_years",
+        "scenarios"
+      ],
+      "required_scenario_fields": [
+        "range.lower.cash_flows",
+        "range.lower.cost_of_equity",
+        "range.lower.terminal_growth",
+        "range.upper.cash_flows",
+        "range.upper.cost_of_equity",
+        "range.upper.terminal_growth"
+      ],
+      "optional_scenario_fields": [
+        "range.lower.evidence_fact_ids",
+        "range.upper.evidence_fact_ids"
+      ],
+      "scenario_shapes": [
+        {
+          "shape": "range",
+          "required_fields": [
+            "range.lower.cash_flows",
+            "range.lower.cost_of_equity",
+            "range.lower.terminal_growth",
+            "range.upper.cash_flows",
+            "range.upper.cost_of_equity",
+            "range.upper.terminal_growth"
+          ]
+        }
+      ],
+      "sensitivity_parameters": [
+        "cash_flow_shift",
+        "cost_of_equity",
+        "terminal_growth"
+      ],
+      "required_sensitivity_fields": [
+        "sensitivity.base_case.cash_flows",
+        "sensitivity.base_case.cost_of_equity",
+        "sensitivity.base_case.terminal_growth"
+      ],
+      "formula": "equity_value = sum(cash_flow_t / (1 + cost_of_equity)^t) + terminal_value / (1 + cost_of_equity)^n; terminal_value = cash_flow_n * (1 + g) / (cost_of_equity - g); price = equity_value / diluted_shares; no enterprise bridge; cash_flow_type must equal the method_id basis token; dividend cash flows must not be negative; require cost_of_equity > terminal_growth > -1"
+    },
+    {
+      "family": "residual-income",
+      "indicator": "intrinsic-price-per-share",
+      "direction": "higher-is-more-expensive",
+      "allowed_basis": ["residual-income"],
+      "required_method_fields": [
+        "method_id",
+        "family",
+        "direction",
+        "horizon_years",
+        "scenarios"
+      ],
+      "required_scenario_fields": [
+        "range.lower.drivers",
+        "range.lower.cost_of_equity",
+        "range.lower.terminal_growth",
+        "range.lower.terminal_roe",
+        "range.upper.drivers",
+        "range.upper.cost_of_equity",
+        "range.upper.terminal_growth",
+        "range.upper.terminal_roe"
+      ],
+      "optional_scenario_fields": [
+        "range.lower.evidence_fact_ids",
+        "range.upper.evidence_fact_ids"
+      ],
+      "scenario_shapes": [
+        {
+          "shape": "range",
+          "required_fields": [
+            "range.lower.drivers",
+            "range.lower.cost_of_equity",
+            "range.lower.terminal_growth",
+            "range.lower.terminal_roe",
+            "range.upper.drivers",
+            "range.upper.cost_of_equity",
+            "range.upper.terminal_growth",
+            "range.upper.terminal_roe"
+          ]
+        }
+      ],
+      "sensitivity_parameters": [
+        "eps_shift",
+        "terminal_roe",
+        "cost_of_equity",
+        "terminal_growth"
+      ],
+      "required_sensitivity_fields": [
+        "sensitivity.base_case.drivers",
+        "sensitivity.base_case.cost_of_equity",
+        "sensitivity.base_case.terminal_growth",
+        "sensitivity.base_case.terminal_roe"
+      ],
+      "formula": "per share: B_t = B_{t-1} + EPS_t - DPS_t; RI_t = EPS_t - cost_of_equity * B_{t-1}; terminal value = (terminal_roe - cost_of_equity) * B_n / (cost_of_equity - g); price = B_0 + sum(RI_t / (1 + cost_of_equity)^t) + terminal value / (1 + cost_of_equity)^n; book value per share must stay positive; terminal_roe below cost_of_equity flags economic inconsistency; require cost_of_equity > terminal_growth > -1"
+    },
+    {
+      "family": "rnpv",
+      "indicator": "intrinsic-price-per-share",
+      "direction": "higher-is-more-expensive",
+      "allowed_basis": ["rnpv"],
+      "required_method_fields": [
+        "method_id",
+        "family",
+        "direction",
+        "diluted_shares_fact_id",
+        "horizon_years",
+        "scenarios"
+      ],
+      "required_scenario_fields": [
+        "range.lower.cash_flows",
+        "range.lower.probability_of_success",
+        "range.lower.discount_rate",
+        "range.lower.terminal_value",
+        "range.upper.cash_flows",
+        "range.upper.probability_of_success",
+        "range.upper.discount_rate",
+        "range.upper.terminal_value"
+      ],
+      "optional_scenario_fields": [
+        "range.lower.evidence_fact_ids",
+        "range.upper.evidence_fact_ids"
+      ],
+      "scenario_shapes": [
+        {
+          "shape": "range",
+          "required_fields": [
+            "range.lower.cash_flows",
+            "range.lower.probability_of_success",
+            "range.lower.discount_rate",
+            "range.lower.terminal_value",
+            "range.upper.cash_flows",
+            "range.upper.probability_of_success",
+            "range.upper.discount_rate",
+            "range.upper.terminal_value"
+          ]
+        }
+      ],
+      "sensitivity_parameters": [
+        "cash_flow_shift",
+        "probability_of_success",
+        "discount_rate",
+        "terminal_value"
+      ],
+      "required_sensitivity_fields": [
+        "sensitivity.base_case.cash_flows",
+        "sensitivity.base_case.probability_of_success",
+        "sensitivity.base_case.discount_rate",
+        "sensitivity.base_case.terminal_value"
+      ],
+      "formula": "risk_adjusted_value = probability_of_success * (sum(cash_flow_t / (1 + discount_rate)^t) + terminal_value / (1 + discount_rate)^n); price = risk_adjusted_value / diluted_shares; cash_flows are success-case net cash flows and may be negative; probability_of_success must be in (0, 1]; the same clinical or regulatory risk is applied only once, either through probability_of_success or through discount_rate, never both"
+    },
+    {
+      "family": "embedded-value",
+      "indicator": "intrinsic-price-per-share",
+      "direction": "higher-is-more-expensive",
+      "allowed_basis": ["embedded-value"],
+      "required_method_fields": [
+        "method_id",
+        "family",
+        "direction",
+        "diluted_shares_fact_id",
+        "scenarios"
+      ],
+      "required_scenario_fields": [
+        "range.lower.adjusted_net_worth",
+        "range.lower.value_of_in_force",
+        "range.lower.new_business_value",
+        "range.lower.new_business_multiple",
+        "range.upper.adjusted_net_worth",
+        "range.upper.value_of_in_force",
+        "range.upper.new_business_value",
+        "range.upper.new_business_multiple"
+      ],
+      "optional_scenario_fields": [
+        "range.lower.evidence_fact_ids",
+        "range.upper.evidence_fact_ids"
+      ],
+      "scenario_shapes": [
+        {
+          "shape": "range",
+          "required_fields": [
+            "range.lower.adjusted_net_worth",
+            "range.lower.value_of_in_force",
+            "range.lower.new_business_value",
+            "range.lower.new_business_multiple",
+            "range.upper.adjusted_net_worth",
+            "range.upper.value_of_in_force",
+            "range.upper.new_business_value",
+            "range.upper.new_business_multiple"
+          ]
+        }
+      ],
+      "sensitivity_parameters": [
+        "adjusted_net_worth_shift",
+        "value_of_in_force_shift",
+        "new_business_value_shift",
+        "new_business_multiple"
+      ],
+      "required_sensitivity_fields": [
+        "sensitivity.base_case.adjusted_net_worth",
+        "sensitivity.base_case.value_of_in_force",
+        "sensitivity.base_case.new_business_value",
+        "sensitivity.base_case.new_business_multiple"
+      ],
+      "formula": "appraisal_value = adjusted_net_worth + value_of_in_force + new_business_value * new_business_multiple; price = appraisal_value / diluted_shares; components are aggregate amounts in the valuation currency; new_business_multiple must not be negative; appraisal_value must be positive"
+    },
+    {
+      "family": "sotp",
+      "indicator": "intrinsic-price-per-share",
+      "direction": "higher-is-more-expensive",
+      "allowed_basis": [],
+      "optional_basis": ["nav"],
+      "required_method_fields": [
+        "method_id",
+        "family",
+        "direction",
+        "diluted_shares_fact_id",
+        "scenarios"
+      ],
+      "required_scenario_fields": [
+        "range.lower.components",
+        "range.upper.components"
+      ],
+      "optional_scenario_fields": [
+        "non_operating_assets",
+        "excess_cash",
+        "debt_like_claims",
+        "range.lower.evidence_fact_ids",
+        "range.upper.evidence_fact_ids"
+      ],
+      "scenario_shapes": [
+        {
+          "shape": "range",
+          "required_fields": [
+            "range.lower.components",
+            "range.upper.components"
+          ]
+        }
+      ],
+      "component_fields": [
+        "component_id",
+        "value_type",
+        "value",
+        "denominator",
+        "multiple"
+      ],
+      "sensitivity_parameters": [
+        "component_value",
+        "debt_like_claims"
+      ],
+      "required_sensitivity_fields": [
+        "sensitivity.base_case.components",
+        "sensitivity.base_case.non_operating_assets",
+        "sensitivity.base_case.excess_cash",
+        "sensitivity.base_case.debt_like_claims"
+      ],
+      "formula": "sum component equity or enterprise values once, add non-operating assets and excess cash, subtract debt-like claims, divide by diluted_shares; all components in one case must share a single value_type; optional nav basis marks adjusted NAV aggregation, liquidation variant marks liquidation values"
+    }
+  ]
+}

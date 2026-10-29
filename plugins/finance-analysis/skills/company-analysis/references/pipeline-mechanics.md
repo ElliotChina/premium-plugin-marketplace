@@ -24,7 +24,7 @@
 
 ## status 自检原理
 
-`status` 是内建验证器：重新加载全部工件 → 重放聚合与确定性计算 → 与落盘结果逐字节比对 → 校验 `transaction.json` 的哈希标记。`company_run.py publish` 内含的 `check` 调用两侧 `status` 并要求评分 `complete`、估值 `complete`/`complete-indicative`/`recalculated`；另核对报告正文呈现主方法中性区间上下界、共识 `primary_range` 与确定性计算一致、indicative 精度已在报告披露，以及报告包含且仅包含一个与共识 `summary_markdown` 逐字节一致的评分摘要块。机器检查不替代实质复核。
+`status` 是内建验证器：重新加载全部工件 → 重放聚合与确定性计算 → 与落盘结果逐字节比对 → 校验 `transaction.json` 的哈希标记。`company_run.py publish` 内含的 `check` 调用两侧 `status` 并要求评分 `complete`、估值 `complete`/`complete-conditional`/`complete-low-confidence`/`recalculated`；另核对报告正文呈现主方法中性区间上下界、共识 `primary_range` 与确定性计算一致、精度状态（supported/conditional/low-confidence）与终值占比、情景间隔或重叠、重大交叉分歧均已按规则披露，以及报告包含且仅包含一个与共识 `summary_markdown` 逐字节一致的评分摘要块。机器检查不替代实质复核。
 
 ## 命令面
 

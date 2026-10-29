@@ -24,7 +24,7 @@ compatibility: "required_tools: Bash"
 
 1. **范围与蓝图。** 用 `python <skill-root>/scripts/company_run.py start --company-dir <绝对路径> --company <名称>` 创建 run。公司目录命名 `<工作区根>/companies/<证券简称>-<市场>-<代码>`（如 `companies/贵州茅台-SH-600519`，市场取 `SH`/`SZ`/`HK`/`US`），`--company` 始终显式传交易所官方简称。按自动生成的 `analysis/research.md` 骨架填写 15 行公司专项蓝图和六项基础预检，锁定主体、期间、币种和证券份额并复用归档原件。协调者读取[研究流程](references/research-workflow.md)；摘录估值事实前确定[规范单位](references/valuation/valuation-contract.md#估值单位)。
 2. **研究与反方审视。** 按研究流程的名额优先级先分五个研究方向（研究员最高），评审名额（评分一位、估值提议与批判两位）在研究启动后创建，依依赖顺序分派 agent（类型 `finance-analysis:researcher-*`）：第一层[行业与同业](../../agents/researcher-industry.md)与[财务与现金流](../../agents/researcher-financial.md)并行，第二层[业务与护城河](../../agents/researcher-business.md)与[资本配置与股东](../../agents/researcher-capital.md)接收前层交付，第三层[风险与反证](../../agents/researcher-risk.md)汇集全部方向报告；无法分派的方向由协调者读同一 agent 文件按同一方法完成。研究员按各自交付模板把方向报告写入 run，按[取数路线](references/research/source-access.md)自主取证，协调者核验、去重和登记，形成 02–11 章底稿与估值候选，再按[反方审视 agent](../../agents/challenger.md)（类型 `finance-analysis:challenger`）审视并裁决。
-3. **预检与冻结。** 按[评分契约](references/scoring/scoring-contract.md#协调者输入准备)逐维匹配事实与缺口，按[估值契约](references/valuation/valuation-contract.md#协调者输入准备)准备方法、三情景和敏感性。两边对同一事实快照运行 `preflight-input`，修正来源、结构和经济口径错误，再分别 `freeze`。正式章节在冻结后写，避免输入修正导致重写。
+3. **预检与冻结。** 按[评分契约](references/scoring/scoring-contract.md#协调者输入准备)逐维匹配事实与缺口，按[估值契约](references/valuation/valuation-contract.md#协调者输入准备)准备方法、DCF 驱动参数与终值模式（含有限期残值）、股权 DCF 与剩余收益的现金流/EPS 路径、资产基础重估、rNPV 的成功情景现金流与成功率、寿险内含价值的三项分解与三情景、敏感性。两边对同一事实快照运行 `preflight-input`，修正来源、结构和经济口径错误，再分别 `freeze`。正式章节在冻结后写，避免输入修正导致重写。
 4. **独立评审。** 启动 [scorer](../../agents/scorer.md)（类型 `finance-analysis:scorer`）对冻结评分输入做证据锚定档位评分；启动 [valuer](../../agents/valuer.md)（类型 `finance-analysis:valuer`）出估值卡草稿，再由 [valuation-critic](../../agents/valuation-critic.md)（类型 `finance-analysis:valuation-critic`）逐项批判，valuer 在原槽位修订一次。安装顺序不可乱：评分侧直接 `install-card`；估值侧先 `install-critique`（批判工件）、待提议者修订草稿后再 `install-card`——卡一经安装即不可变。结构错误由安装前的 `preflight-card` 拦下并在原槽位修正；`install-card` 执行同样的严格校验，失败即拒绝安装。随后分别 `aggregate` 完成确定性聚合与计算；已安装卡若仍发现问题，本 run 无法修复或发布，只能新建 run 重做，原 run 保留。只从完成的共识与确定性计算读取结果。
 5. **写作与交付。** 按[报告规范](references/report-format.md)勾稽正文数值、写完 15 章，完成最终结论审视。`company_run.py publish` 内含最终检查；需要提前排错时单独运行 `check`。输出为 `runs/<run-id>/reports/analysis.md` 和公司级 `reports/latest.md`；HTML 等展示版本按需使用独立发布技能。
 
@@ -54,4 +54,4 @@ compatibility: "required_tools: Bash"
 
 ## 按职责读取
 
-协调者按阶段读取流程、研究方法及契约的协调者段落；研究者只读对应方向负责的章节方法、共用口径和取数路线。评分者只读冻结输入和评分契约的“评分档位规则”“周期评估规则”“风险规则核查”“评分卡 schema”四节；估值者只读冻结输入、估值契约的“估值单位”“估值者必读（提议者）”，以及方法目录中本次候选的相关方法族。重算和 HTML 资料只在对应任务出现时读取。评分量表、估值方法目录和计算脚本保留各自的权威职责。
+协调者按阶段读取流程、研究方法及契约的协调者段落；研究者只读对应方向负责的章节方法、共用口径和取数路线。评分者只读冻结输入和评分契约的“评分档位规则”“周期评估规则”“风险规则核查”“评分卡 schema”四节；估值者只读冻结输入、估值契约的“估值单位”“估值者必读（提议者）”“公司特征与可执行方法”，以及方法目录中本次候选的相关方法族；候选含 rNPV 或寿险内含价值时加读[行业专用方法](references/valuation/industry-methods.md)，批判者同样加读。重算和 HTML 资料只在对应任务出现时读取。评分量表、估值方法目录和计算脚本保留各自的权威职责。

@@ -41,6 +41,9 @@ CONSENSUS_KEYS = (
     "methods",
     "status",
     "publication_precision_state",
+    "precision_reasons",
+    "cross_check_divergence",
+    "independence",
     "fact_snapshot_id",
     "market_snapshot_id",
     "model_version",
@@ -53,6 +56,7 @@ CONSENSUS_KEYS = (
     "primary_range",
     "calibrations",
     "reverse_valuation",
+    "parameter_derivation",
     "sensitivity_factors",
     "invalidation_conditions",
 )
@@ -68,7 +72,7 @@ VALUATION_ARTIFACTS = frozenset({
 })
 
 _SCRIPT_DIR = Path(__file__).resolve().parent
-_CATALOG_PATH = _SCRIPT_DIR.parent.parent / "references" / "valuation" / "valuation-models-v1.json"
+_CATALOG_PATH = _SCRIPT_DIR.parent.parent / "references" / "valuation" / "valuation-models.json"
 _BUNDLED_CATALOG: Mapping | None = None
 
 def _bundled_catalog() -> Mapping:
@@ -317,15 +321,20 @@ def _method_id_format(value: object, field: str) -> str:
         )
     if method_id == indicator:
         return method_id
-    parts = method_id[len(indicator) + 1:].split("-")
-    if any(not part for part in parts):
-        raise ContractError(
-            f"{field} must follow <indicator>[-<basis>][-<variant>] with single catalog vocabulary tokens, "
-            "e.g. multiple-eps-fy, yield-fcf-forward, intrinsic-price-per-share-midcycle"
-        )
-    if len(parts) == 1 and (parts[0] in vocabulary["basis"] or parts[0] in vocabulary["variant"]):
-        return method_id
-    if len(parts) == 2 and parts[0] in vocabulary["basis"] and parts[1] in vocabulary["variant"]:
+    remainder = method_id[len(indicator) + 1:]
+    basis = next(
+        (
+            token
+            for token in sorted(vocabulary["basis"], key=len, reverse=True)
+            if remainder == token or remainder.startswith(token + "-")
+        ),
+        None,
+    )
+    if basis is not None:
+        remainder = remainder[len(basis) + 1:] if remainder != basis else ""
+        if not remainder or remainder in vocabulary["variant"]:
+            return method_id
+    elif remainder in vocabulary["variant"]:
         return method_id
     raise ContractError(
         f"{field} must follow <indicator>[-<basis>][-<variant>] with single catalog vocabulary tokens, "
@@ -339,6 +348,7 @@ def _validate_card_method_ids(card: Mapping) -> None:
         "scenario_parameters",
         "calibrations",
         "reverse_valuation",
+        "parameter_derivation",
         "sensitivity_factors",
         "invalidation_conditions",
     ):
@@ -594,7 +604,7 @@ def _validate_calculation(data: Mapping, label: str, *, source_input: Mapping | 
     return calculation
 
 
-def _validate_precise_consensus(data: Mapping, baseline_input: Mapping) -> Mapping:
+def _validate_consensus_artifact(data: Mapping, baseline_input: Mapping, *, require_supported: bool) -> Mapping:
     consensus = _exact_keys(data, CONSENSUS_KEYS, "consensus assumptions")
     if consensus.get("schema_version") != valuation_consensus.ASSUMPTIONS_SCHEMA:
         raise ContractError("consensus assumptions.schema_version is not supported")
@@ -603,8 +613,14 @@ def _validate_precise_consensus(data: Mapping, baseline_input: Mapping) -> Mappi
     for key in ("valuation_input_hash", "fact_snapshot_id", "market_snapshot_id", "model_version", "method_catalog_version"):
         if consensus.get(key) != baseline_input.get(key):
             raise StateError(f"consensus assumptions.{key} must match the baseline input")
-    if consensus.get("status") != "consensus" or consensus.get("publication_precision_state") != "precise":
-        raise StateError("source consensus must be precise")
+    precision = consensus.get("publication_precision_state")
+    if require_supported:
+        if precision != "supported":
+            raise StateError("source consensus must be supported")
+    elif precision not in {"supported", "conditional", "low-confidence"}:
+        raise ContractError("consensus assumptions.publication_precision_state is not publishable")
+    if consensus.get("status") != valuation_consensus.STATUS_BY_PRECISION.get(precision):
+        raise ContractError("consensus assumptions.status does not match its precision state")
     _calculate(baseline_input, consensus)
     return consensus
 
@@ -661,23 +677,24 @@ def _load_authenticated_recalculation_source(args: argparse.Namespace) -> tuple[
     required_hashes = ("consensus_hash", "calculation_hash", "transaction_hash")
     if (
         source_status.get("status") != "complete"
-        or source_status.get("precision_state") != "precise"
+        or source_status.get("precision_state") != "supported"
         or any(not source_status.get(key) for key in required_hashes)
     ):
-        raise StateError("source run must be an authenticated complete precise aggregate run")
+        raise StateError("source run must be an authenticated complete supported aggregate run")
 
     source_valuation_dir = _safe_valuation_dir(source_run, create=False)
     source_input_path = _safe_artifact(source_valuation_dir, "input.json")
     source_consensus_path = _safe_artifact(source_valuation_dir, "consensus-assumptions.json")
     source_calculation_path = _safe_artifact(source_valuation_dir, "calculation.json")
     baseline_input = _require_exact_source_artifact(args.baseline_input, source_input_path, "baseline input")
-    source_consensus = _validate_precise_consensus(
+    source_consensus = _validate_consensus_artifact(
         _require_exact_source_artifact(
             args.consensus_assumptions,
             source_consensus_path,
             "consensus assumptions",
         ),
         baseline_input,
+        require_supported=True,
     )
     source_calculation = _load_artifact_json(source_valuation_dir, "calculation.json")
     if source_calculation is None:
@@ -709,9 +726,10 @@ def _load_baseline_triplet(args: argparse.Namespace) -> Mapping | None:
         valuation_consensus.validate_valuation_input(baseline_input)
     except valuation_consensus.ValuationConsensusError as exc:
         raise ContractError(str(exc)) from exc
-    baseline_consensus = _validate_precise_consensus(
+    baseline_consensus = _validate_consensus_artifact(
         _source_json(args.baseline_consensus, "baseline consensus"),
         baseline_input,
+        require_supported=True,
     )
     return _validate_recomputed_calculation(
         baseline_input,
@@ -966,7 +984,7 @@ def _aggregate_single(
     items: list[tuple[str, Mapping]] = [("consensus-assumptions.json", consensus)]
     calculation = None
     diff = None
-    if consensus["publication_precision_state"] in {"precise", "indicative"}:
+    if consensus["publication_precision_state"] in {"supported", "conditional", "low-confidence"}:
         calculation = _calculate(valuation_input, consensus, baseline)
         items.append(("calculation.json", calculation))
         if baseline is not None:
@@ -982,12 +1000,11 @@ def _aggregate_single(
         **({"valuation-diff.json": diff} if diff is not None else {}),
     }
     transaction = artifact_store.install_all(valuation_dir, "aggregate", items, artifacts)
-    if consensus["status"] == "consensus":
-        status = "complete"
-    elif consensus["status"] == "indicative-consensus":
-        status = "complete-indicative"
-    else:
-        status = "evidence-insufficient"
+    status = {
+        "consensus": "complete",
+        "conditional-consensus": "complete-conditional",
+        "low-confidence-consensus": "complete-low-confidence",
+    }.get(consensus["status"], "evidence-insufficient")
     return {
         "status": status,
         "valuation_input_hash": valuation_input["valuation_input_hash"],
@@ -1052,7 +1069,15 @@ def _recalculate(args: argparse.Namespace) -> dict:
 
     new_calculation = _calculate(new_input, new_consensus, baseline_calculation)
     if new_consensus["primary_method_id"] is None:
-        raise ContractError("precise source consensus must have a primary method")
+        raise ContractError("supported source consensus must have a primary method")
+    new_consensus.update(valuation_consensus.assess_precision(
+        new_input,
+        new_consensus["methods"],
+        new_consensus["primary_method_id"],
+        new_consensus["cross_check_method_ids"],
+        new_consensus["primary_role_fallback"],
+        new_calculation,
+    ))
     try:
         new_consensus["primary_range"] = valuation_consensus.expected_primary_range(
             new_calculation, new_consensus["primary_method_id"]
@@ -1238,8 +1263,8 @@ def _reauthenticate_recalculation_source(valuation_dir: Path, provenance: Mappin
     if source_run.is_symlink() or not source_run.is_dir():
         raise ContractError("recalculation source run must be a sibling run directory")
     source_status = _status(argparse.Namespace(run_dir=str(source_run)))
-    if source_status.get("status") != "complete" or source_status.get("precision_state") != "precise":
-        raise ContractError("recalculation source run must still be a complete precise aggregate run")
+    if source_status.get("status") != "complete" or source_status.get("precision_state") != "supported":
+        raise ContractError("recalculation source run must still be a complete supported aggregate run")
     source_valuation_dir = _safe_valuation_dir(source_run, create=False)
     source_input = _load_artifact_json(source_valuation_dir, "input.json")
     source_consensus = _load_artifact_json(source_valuation_dir, "consensus-assumptions.json")
@@ -1319,7 +1344,7 @@ def _status(args: argparse.Namespace) -> dict:
                 raise ContractError("recalculation runs must not include reviewer cards")
             if consensus is None or calculation is None or diff is None:
                 raise ContractError("recalculation runs require consensus, calculation, and diff artifacts")
-            _validate_precise_consensus(consensus, valuation_input)
+            _validate_consensus_artifact(consensus, valuation_input, require_supported=False)
             diff_data = _validate_calculation_against_sources(valuation_input, consensus, calculation, diff)
             assert diff_data is not None
             _validate_recalculation_provenance(provenance, valuation_input, consensus, diff_data)
@@ -1394,7 +1419,7 @@ def _status(args: argparse.Namespace) -> dict:
                 != valuation_consensus.canonical_json_bytes(consensus)):
             raise ContractError("consensus assumptions do not match frozen valuation artifacts")
         precision_state = consensus["publication_precision_state"]
-        if precision_state in {"precise", "indicative"}:
+        if precision_state in {"supported", "conditional", "low-confidence"}:
             if calculation is None:
                 raise ContractError("publishable consensus requires calculation")
             _validate_calculation_against_sources(valuation_input, consensus, calculation, diff)
@@ -1413,12 +1438,11 @@ def _status(args: argparse.Namespace) -> dict:
         _validate_transaction_marker(transaction, "aggregate", artifacts)
     except (ContractError, StateError) as exc:
         return {"status": "invalid", **base, "precision_state": precision_state, "error": str(exc)}
-    if consensus["status"] == "consensus":
-        final_status = "complete"
-    elif consensus["status"] == "indicative-consensus":
-        final_status = "complete-indicative"
-    else:
-        final_status = "evidence-insufficient"
+    final_status = {
+        "consensus": "complete",
+        "conditional-consensus": "complete-conditional",
+        "low-confidence-consensus": "complete-low-confidence",
+    }.get(consensus["status"], "evidence-insufficient")
     return {
         "status": final_status,
         **base,
@@ -1434,11 +1458,13 @@ def _status(args: argparse.Namespace) -> dict:
 
 def _status_guidance(result: dict) -> dict:
     status = result["status"]
-    if status in {"complete", "recalculated", "complete-indicative"}:
+    if status in {"complete", "recalculated", "complete-conditional", "complete-low-confidence"}:
         if result.get("market_position_status") == "unavailable":
             issue_type, next_action = "market-position-unavailable", "价值区间已完成；当前价格位置暂不可判定，仅在取得可核验股价后另开 run 补算。"
+        elif status == "complete-low-confidence":
+            issue_type, next_action = "none", "参考区间已完成；只能呈现区间，不得给出方向结论，正文须声明“区间不具备方向判断力”。"
         else:
-            issue_type, next_action = "none", "估值区间已完成；从 calculation.json 读取区间及当前价格位置。"
+            issue_type, next_action = "none", "估值区间已完成；从 calculation.json 读取区间、精度状态及当前价格位置。"
     elif status == "not-frozen":
         issue_type, next_action = "input-not-frozen", "修正估值输入，完成双预检并冻结共同事实快照。"
     elif status == "incomplete":

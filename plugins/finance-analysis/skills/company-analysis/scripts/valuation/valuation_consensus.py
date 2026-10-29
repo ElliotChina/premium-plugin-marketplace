@@ -18,7 +18,7 @@ sys.path.insert(0, str(_SCRIPT_DIR.parent))
 import evidence_contract as _evidence
 import valuation_calculator as _calculator
 
-_CATALOG_PATH = _SCRIPT_DIR.parent.parent / "references" / "valuation" / "valuation-models-v1.json"
+_CATALOG_PATH = _SCRIPT_DIR.parent.parent / "references" / "valuation" / "valuation-models.json"
 _CATALOG: Mapping | None = None
 
 
@@ -36,7 +36,7 @@ def _catalog() -> Mapping:
 
 
 INPUT_SCHEMA = "company-analysis-valuation-input-v1"
-CARD_SCHEMA = "company-analysis-valuation-reviewer-card-v1"
+CARD_SCHEMA = "company-analysis-valuation-reviewer-card-v2"
 CRITIQUE_SCHEMA = "company-analysis-valuation-critique-v1"
 CRITIQUE_ISSUE_TYPES = frozenset({
     "method-applicability",
@@ -45,10 +45,13 @@ CRITIQUE_ISSUE_TYPES = frozenset({
     "sensitivity-coverage",
     "invalidation-gap",
     "evidence-link",
+    "derivation-gap",
+    "basis-mismatch",
+    "economic-inconsistency",
 })
 ASSUMPTIONS_SCHEMA = _calculator.ASSUMPTIONS_SCHEMA
 CALCULATOR_VERSION = _calculator.CALCULATOR_VERSION
-CATALOG_VERSION = "company-analysis-valuation-model-catalog-v1"
+CATALOG_VERSION = "company-analysis-valuation-model-catalog-v2"
 SCENARIOS = ("conservative", "neutral", "optimistic")
 ROLES = frozenset({"primary", "cross-check", "exclude"})
 FORBIDDEN_KEY_FRAGMENTS = frozenset({
@@ -68,6 +71,36 @@ FORBIDDEN_KEY_FRAGMENTS = frozenset({
 })
 QUANT = Decimal("0.000001")
 ZERO = Decimal("0")
+PRECISION_STATES = frozenset({"supported", "conditional", "low-confidence", "suppressed"})
+STATUS_BY_PRECISION = {
+    "supported": "consensus",
+    "conditional": "conditional-consensus",
+    "low-confidence": "low-confidence-consensus",
+    "suppressed": "evidence-insufficient",
+}
+LOW_CONFIDENCE_REASONS = frozenset({"primary-role-fallback", "cross-check-direction-conflict"})
+CONDITIONAL_REASONS = frozenset({
+    "assumption-input",
+    "unbound-scenario-evidence",
+    "terminal-value-share",
+    "non-independent-cross-check",
+    "cross-check-divergence",
+    "economic-inconsistency",
+})
+FAMILY_INDEPENDENCE_GROUPS = {
+    "price-multiple": "market-multiples",
+    "yield": "market-multiples",
+    "enterprise-multiple": "market-multiples",
+    "dcf-fcff": "cashflow-intrinsic",
+    "dcf-equity": "cashflow-intrinsic",
+    "residual-income": "cashflow-intrinsic",
+    "rnpv": "cashflow-intrinsic",
+    "embedded-value": "cashflow-intrinsic",
+    "sotp": "asset-revaluation",
+}
+TERMINAL_VALUE_DISCLOSURE = Decimal("0.75")
+TERMINAL_VALUE_PRECISION_CAP = Decimal("0.85")
+DIVERGENCE_SPREAD_LIMIT = Decimal("0.40")
 
 
 class ValuationConsensusError(ValueError):
@@ -156,6 +189,7 @@ def validate_reviewer_card(card: Mapping, valuation_input: Mapping) -> Mapping:
         "scenario_parameters",
         "calibrations",
         "reverse_valuation",
+        "parameter_derivation",
         "sensitivity_factors",
         "invalidation_conditions",
     ), "reviewer card")
@@ -188,7 +222,8 @@ def validate_reviewer_card(card: Mapping, valuation_input: Mapping) -> Mapping:
     _validate_normalizations(data["normalizations"], facts)
     _validate_scenario_parameters(data["scenario_parameters"], methods, valuation_input)
     _validate_calibrations(data["calibrations"], methods, facts)
-    _validate_reverse_valuation(data["reverse_valuation"], methods, facts)
+    _validate_reverse_valuation(data["reverse_valuation"], methods, valuation_input)
+    _validate_parameter_derivation(data["parameter_derivation"], methods, valuation_input)
     _validate_sensitivity_factors(data["sensitivity_factors"], methods, facts)
     _validate_invalidation_conditions(data["invalidation_conditions"], methods, facts)
     return card
@@ -295,14 +330,18 @@ def aggregate_reviewer_card(valuation_input: Mapping, card: Mapping, critique: M
         "normalizations": deepcopy_json(card["normalizations"]),
         "calibrations": _calibration_audit([card]),
         "reverse_valuation": _reverse_audit([card]),
+        "parameter_derivation": deepcopy_json(card["parameter_derivation"]),
         "sensitivity_factors": _sensitivity_factor_audit([card]),
         "invalidation_conditions": _invalidation_condition_audit([card]),
     }
     if primary_method_id is None:
         return base | {
             "methods": [],
-            "status": "evidence-insufficient",
+            "status": STATUS_BY_PRECISION["suppressed"],
             "publication_precision_state": "suppressed",
+            "precision_reasons": [],
+            "cross_check_divergence": _empty_divergence(),
+            "independence": {"primary_group": None, "cross_check_groups": [], "state": None},
             "primary_range": None,
         }
     selected_method_ids = sorted([primary_method_id, *cross_check_method_ids])
@@ -312,36 +351,106 @@ def aggregate_reviewer_card(valuation_input: Mapping, card: Mapping, critique: M
     ]
     aggregate_calculation = _calculate(
         valuation_input,
-        _calculator_assumptions(valuation_input, primary_method_id, cross_check_method_ids, methods),
+        _calculator_assumptions(
+            valuation_input, primary_method_id, cross_check_method_ids, methods,
+            card["parameter_derivation"],
+        ),
     )
-    indicative_input = (
-        _uses_assumption_input(
-            valuation_input,
-            {"primary_method_id": primary_method_id, "cross_check_method_ids": cross_check_method_ids},
-        )
-        or primary_role_fallback
-        or _unbound_scenario_evidence(methods)
-    )
-    return base | {
+    return base | assess_precision(
+        valuation_input,
+        methods,
+        primary_method_id,
+        cross_check_method_ids,
+        primary_role_fallback,
+        aggregate_calculation,
+    ) | {
         "methods": methods,
-        "status": "indicative-consensus" if indicative_input else "consensus",
-        "publication_precision_state": "indicative" if indicative_input else "precise",
         "primary_range": expected_primary_range(aggregate_calculation, primary_method_id),
     }
 
 
-def _uses_assumption_input(valuation_input: Mapping, selection: Mapping) -> bool:
+def assess_precision(
+    valuation_input: Mapping,
+    methods: Sequence[Mapping],
+    primary_method_id: str,
+    cross_check_method_ids: Sequence[str],
+    primary_role_fallback: bool,
+    calculation: Mapping,
+) -> dict:
+    """Deterministic precision state, reasons, divergence, and independence for a selection."""
+    families = _methods_by_id(valuation_input["methods"])
+    reasons: list[dict] = []
+    if _uses_assumption_input(
+        valuation_input,
+        {"primary_method_id": primary_method_id, "cross_check_method_ids": list(cross_check_method_ids)},
+        methods,
+    ):
+        reasons.append({"code": "assumption-input", "method_id": None})
+    if primary_role_fallback:
+        reasons.append({"code": "primary-role-fallback", "method_id": primary_method_id})
+    for method_id in _unbound_scenario_evidence(methods):
+        reasons.append({"code": "unbound-scenario-evidence", "method_id": method_id})
+    for method_id in _terminal_value_share_over_cap(calculation):
+        reasons.append({"code": "terminal-value-share", "method_id": method_id})
+    for method_id in _economic_inconsistency(calculation):
+        reasons.append({"code": "economic-inconsistency", "method_id": method_id})
+    independence = _independence(families, primary_method_id, cross_check_method_ids)
+    if independence["state"] == "non-independent":
+        reasons.append({"code": "non-independent-cross-check", "method_id": primary_method_id})
+    divergence = _cross_check_divergence(
+        calculation, primary_method_id, cross_check_method_ids, valuation_input["market"],
+    )
+    if divergence["is_material"]:
+        reasons.append({"code": "cross-check-divergence", "method_id": None})
+    if divergence["direction_conflict"]:
+        reasons.append({"code": "cross-check-direction-conflict", "method_id": None})
+    reasons.sort(key=lambda item: (item["code"], item["method_id"] or ""))
+    codes = {item["code"] for item in reasons}
+    if codes & LOW_CONFIDENCE_REASONS:
+        precision = "low-confidence"
+    elif codes & CONDITIONAL_REASONS:
+        precision = "conditional"
+    else:
+        precision = "supported"
+    return {
+        "status": STATUS_BY_PRECISION[precision],
+        "publication_precision_state": precision,
+        "precision_reasons": reasons,
+        "cross_check_divergence": divergence,
+        "independence": independence,
+    }
+
+
+def _uses_assumption_input(
+    valuation_input: Mapping, selection: Mapping, methods: Sequence[Mapping],
+) -> bool:
     selected = {selection["primary_method_id"], *selection["cross_check_method_ids"]}
     facts = {fact["fact_id"]: fact for fact in valuation_input["facts"]}
+
+    def is_assumption(fact_id: str) -> bool:
+        fact = facts.get(fact_id)
+        return bool(fact) and fact["fact_type"] == "assumption" and fact["status"] == "unverified"
+
     for method in valuation_input["methods"]:
         if method["method_id"] not in selected:
             continue
         fact_ids = [method[key] for key in ("denominator_fact_id", "diluted_shares_fact_id") if key in method]
         fact_ids.extend(method.get("bridge_fact_ids", {}).values())
-        if any(
-            facts[fact_id]["fact_type"] == "assumption" and facts[fact_id]["status"] == "unverified"
-            for fact_id in fact_ids
-        ):
+        if any(is_assumption(fact_id) for fact_id in fact_ids):
+            return True
+    for method in methods:
+        base_fact_key = _calculator.CASE_BASE_FACT_KEYS.get(method["family"])
+        if method["method_id"] not in selected or base_fact_key is None:
+            continue
+        if method["family"] == "dcf-fcff" and method["input_mode"] != "drivers":
+            continue
+        cases = [
+            scenario["range"][side]
+            for scenario in method["scenarios"].values()
+            for side in ("lower", "upper")
+        ]
+        cases.append(method["sensitivity"]["base_case"])
+        if any(is_assumption(case["drivers"][base_fact_key]) for case in cases):
             return True
     return False
 
@@ -382,7 +491,7 @@ def _reverse_audit(ordered_cards: Sequence[Mapping]) -> list[dict]:
             for card in ordered_cards
             for item in card["reverse_valuation"]
         ],
-        key=lambda item: (item["method_id"], item["reviewer_id"], item["interpretation"]),
+        key=lambda item: (item["method_id"], item["reviewer_id"], item["implied_variable"]["name"]),
     )
 
 
@@ -409,7 +518,8 @@ def _invalidation_condition_audit(ordered_cards: Sequence[Mapping]) -> list[dict
 
 
 def _calculator_assumptions(
-    valuation_input: Mapping, primary_method_id: str, cross_check_method_ids: Sequence[str], methods: Sequence[Mapping],
+    valuation_input: Mapping, primary_method_id: str, cross_check_method_ids: Sequence[str],
+    methods: Sequence[Mapping], parameter_derivation: Sequence[Mapping] = (),
 ) -> dict:
     return {
         "schema_version": ASSUMPTIONS_SCHEMA,
@@ -418,6 +528,7 @@ def _calculator_assumptions(
         "primary_method_id": primary_method_id,
         "cross_check_method_ids": list(cross_check_method_ids),
         "methods": list(methods),
+        "parameter_derivation": list(parameter_derivation),
     }
 
 
@@ -444,16 +555,123 @@ def expected_primary_range(calculation: Mapping, primary_method_id: str) -> dict
     }
 
 
-def _unbound_scenario_evidence(methods: Sequence[Mapping]) -> bool:
-    # dcf/sotp scenarios cite evidence per bound; an unbound range stays indicative.
+def _unbound_scenario_evidence(methods: Sequence[Mapping]) -> list[str]:
+    # dcf/sotp scenarios cite evidence per bound; an unbound range caps precision.
+    unbound = []
     for method in methods:
-        if method["family"] not in {"dcf-fcff", "sotp"}:
+        if method["family"] not in {
+            "dcf-fcff", "dcf-equity", "residual-income", "rnpv", "embedded-value", "sotp",
+        }:
             continue
-        for scenario in method["scenarios"].values():
-            for side in ("lower", "upper"):
-                if "evidence_fact_ids" not in scenario["range"][side]:
-                    return True
-    return False
+        if any(
+            "evidence_fact_ids" not in scenario["range"][side]
+            for scenario in method["scenarios"].values()
+            for side in ("lower", "upper")
+        ):
+            unbound.append(method["method_id"])
+    return unbound
+
+
+def _terminal_value_share_over_cap(calculation: Mapping) -> list[str]:
+    """DCF methods whose terminal value dominates enterprise value beyond the precision cap."""
+    over_cap = []
+    for method in calculation.get("methods", []):
+        share = method.get("terminal_value_share")
+        if share is None:
+            continue
+        largest = max(
+            _decimal(share["lower"], "terminal_value_share.lower"),
+            _decimal(share["upper"], "terminal_value_share.upper"),
+        )
+        if largest >= TERMINAL_VALUE_PRECISION_CAP:
+            over_cap.append(method["method_id"])
+    return over_cap
+
+
+def _economic_inconsistency(calculation: Mapping) -> list[str]:
+    """DCF methods whose terminal economics or growth convergence failed deterministic checks."""
+    return [
+        method["method_id"]
+        for method in calculation.get("methods", [])
+        if method.get("consistency_flags")
+    ]
+
+
+def _neutral_range(method_result: Mapping) -> tuple[Decimal, Decimal]:
+    scenario = next(item for item in method_result["scenarios"] if item["scenario"] == "neutral")
+    return (
+        _decimal(scenario["price_range"]["lower"], "neutral price range lower"),
+        _decimal(scenario["price_range"]["upper"], "neutral price range upper"),
+    )
+
+
+def _price_signal(price: Decimal, price_range: tuple[Decimal, Decimal]) -> str:
+    if price < price_range[0]:
+        return "below-range"
+    if price > price_range[1]:
+        return "above-range"
+    return "inside-range"
+
+
+def _empty_divergence() -> dict:
+    return {"pairs": [], "is_material": False, "direction_conflict": False}
+
+
+def _cross_check_divergence(
+    calculation: Mapping,
+    primary_method_id: str,
+    cross_check_method_ids: Sequence[str],
+    market: Mapping,
+) -> dict:
+    """Computed cross-method divergence; the report must explain any material gap."""
+    results = {method["method_id"]: method for method in calculation["methods"]}
+    primary_range = _neutral_range(results[primary_method_id])
+    current = market.get("current_price")
+    price = None if current is None else _decimal(current["value"], "market.current_price.value")
+    pairs = []
+    for method_id in cross_check_method_ids:
+        cross_range = _neutral_range(results[method_id])
+        overlap = primary_range[0] <= cross_range[1] and cross_range[0] <= primary_range[1]
+        primary_center = (primary_range[0] + primary_range[1]) / 2
+        cross_center = (cross_range[0] + cross_range[1]) / 2
+        spread = abs(primary_center - cross_center) / primary_center if primary_center > ZERO else None
+        material = (not overlap) or (spread is not None and spread > DIVERGENCE_SPREAD_LIMIT)
+        direction_conflict = False
+        if price is not None:
+            direction_conflict = {
+                _price_signal(price, primary_range),
+                _price_signal(price, cross_range),
+            } == {"below-range", "above-range"}
+        pairs.append({
+            "methods": [primary_method_id, method_id],
+            "range_overlap": overlap,
+            "spread_ratio": None if spread is None else _format_decimal(spread),
+            "is_material": material,
+            "direction_conflict": direction_conflict,
+        })
+    return {
+        "pairs": pairs,
+        "is_material": any(pair["is_material"] for pair in pairs),
+        "direction_conflict": any(pair["direction_conflict"] for pair in pairs),
+    }
+
+
+def _independence(
+    families: Mapping[str, Mapping],
+    primary_method_id: str,
+    cross_check_method_ids: Sequence[str],
+) -> dict:
+    """Cross methods from the primary's mechanism group are not independent evidence."""
+    primary_group = FAMILY_INDEPENDENCE_GROUPS.get(families[primary_method_id]["family"])
+    groups = [
+        {
+            "method_id": method_id,
+            "group": FAMILY_INDEPENDENCE_GROUPS.get(families[method_id]["family"]),
+        }
+        for method_id in cross_check_method_ids
+    ]
+    state = "non-independent" if any(item["group"] == primary_group for item in groups) else "independent"
+    return {"primary_group": primary_group, "cross_check_groups": groups, "state": state}
 
 
 def _validate_method_judgments(value: object, methods: Mapping[str, Mapping], facts: Mapping[str, Mapping]) -> None:
@@ -569,19 +787,43 @@ def _validate_scenarios(method: Mapping, facts: Mapping[str, Mapping], field: st
             data = _exact_keys(scenarios[scenario], ("denominator", "range"), f"{field}.{scenario}")
             _positive_decimal(data["denominator"], f"{field}.{scenario}.denominator")
             _simple_range(data["range"], f"{field}.{scenario}.range", positive=True)
-        _require_shared_boundaries(scenarios, field, yield_family=False)
+        _require_ordered_scenario_ranges(scenarios, field, yield_family=False)
     elif family == "yield":
         for scenario in SCENARIOS:
             data = _exact_keys(scenarios[scenario], ("denominator", "range"), f"{field}.{scenario}")
             _positive_decimal(data["denominator"], f"{field}.{scenario}.denominator")
             _simple_range(data["range"], f"{field}.{scenario}.range", positive=True)
-        _require_shared_boundaries(scenarios, field, yield_family=True)
+        _require_ordered_scenario_ranges(scenarios, field, yield_family=True)
     elif family == "dcf-fcff":
         for scenario in SCENARIOS:
             data = _exact_keys(scenarios[scenario], ("range",), f"{field}.{scenario}")
             lower, upper = _case_range(data["range"], f"{field}.{scenario}.range")
-            _validate_dcf_case(lower, facts, f"{field}.{scenario}.range.lower")
-            _validate_dcf_case(upper, facts, f"{field}.{scenario}.range.upper")
+            _validate_dcf_case(lower, method, facts, f"{field}.{scenario}.range.lower")
+            _validate_dcf_case(upper, method, facts, f"{field}.{scenario}.range.upper")
+    elif family == "dcf-equity":
+        for scenario in SCENARIOS:
+            data = _exact_keys(scenarios[scenario], ("range",), f"{field}.{scenario}")
+            lower, upper = _case_range(data["range"], f"{field}.{scenario}.range")
+            _validate_equity_dcf_case(lower, method, facts, f"{field}.{scenario}.range.lower")
+            _validate_equity_dcf_case(upper, method, facts, f"{field}.{scenario}.range.upper")
+    elif family == "residual-income":
+        for scenario in SCENARIOS:
+            data = _exact_keys(scenarios[scenario], ("range",), f"{field}.{scenario}")
+            lower, upper = _case_range(data["range"], f"{field}.{scenario}.range")
+            _validate_residual_income_case(lower, method, facts, f"{field}.{scenario}.range.lower")
+            _validate_residual_income_case(upper, method, facts, f"{field}.{scenario}.range.upper")
+    elif family == "rnpv":
+        for scenario in SCENARIOS:
+            data = _exact_keys(scenarios[scenario], ("range",), f"{field}.{scenario}")
+            lower, upper = _case_range(data["range"], f"{field}.{scenario}.range")
+            _validate_rnpv_case(lower, method, facts, f"{field}.{scenario}.range.lower")
+            _validate_rnpv_case(upper, method, facts, f"{field}.{scenario}.range.upper")
+    elif family == "embedded-value":
+        for scenario in SCENARIOS:
+            data = _exact_keys(scenarios[scenario], ("range",), f"{field}.{scenario}")
+            lower, upper = _case_range(data["range"], f"{field}.{scenario}.range")
+            _validate_embedded_value_case(lower, facts, f"{field}.{scenario}.range.lower")
+            _validate_embedded_value_case(upper, facts, f"{field}.{scenario}.range.upper")
     elif family == "sotp":
         for scenario in SCENARIOS:
             data = _exact_keys(scenarios[scenario], ("range",), f"{field}.{scenario}")
@@ -592,45 +834,97 @@ def _validate_scenarios(method: Mapping, facts: Mapping[str, Mapping], field: st
         raise ValuationConsensusError("method.family is not supported")
 
 
-def _require_shared_boundaries(scenarios: Mapping, field: str, *, yield_family: bool) -> None:
+def _require_ordered_scenario_ranges(scenarios: Mapping, field: str, *, yield_family: bool) -> None:
+    """Only the four outer anchors must be ordered; gaps and overlaps are allowed."""
     ranges = {
         scenario: _simple_range(scenarios[scenario]["range"], f"{field}.{scenario}.range", positive=True)
         for scenario in SCENARIOS
     }
     if yield_family:
-        thresholds = (
+        anchors = (
             ranges["optimistic"][0],
-            ranges["optimistic"][1],
+            ranges["neutral"][0],
             ranges["neutral"][1],
             ranges["conservative"][1],
         )
-        if ranges["optimistic"][1] != ranges["neutral"][0] or ranges["neutral"][1] != ranges["conservative"][0]:
-            raise ValuationConsensusError(f"{field} yield ranges must share scenario boundaries")
+        ordering = "optimistic < neutral < conservative"
     else:
-        thresholds = (
+        anchors = (
             ranges["conservative"][0],
-            ranges["conservative"][1],
+            ranges["neutral"][0],
             ranges["neutral"][1],
             ranges["optimistic"][1],
         )
-        if ranges["conservative"][1] != ranges["neutral"][0] or ranges["neutral"][1] != ranges["optimistic"][0]:
-            raise ValuationConsensusError(f"{field} ranges must share scenario boundaries")
-    if not all(left < right for left, right in zip(thresholds, thresholds[1:])):
-        raise ValuationConsensusError(f"{field} scenario ranges must be strictly ordered")
+        ordering = "conservative < neutral < optimistic"
+    if not all(left < right for left, right in zip(anchors, anchors[1:])):
+        raise ValuationConsensusError(f"{field} scenario ranges must be ordered: {ordering}")
 
 
 def _validate_sensitivity(method: Mapping, facts: Mapping[str, Mapping], field: str) -> None:
     sensitivity = _mapping(method["sensitivity"], field)
     family = method["family"]
-    expected_parameters = _calculator.SENSITIVITY_PARAMETERS[family]
     expected_keys = {"row_parameter", "row_values", "column_parameter", "column_values"}
-    if family in {"dcf-fcff", "sotp"}:
+    if family in {
+        "dcf-fcff", "dcf-equity", "residual-income", "rnpv", "embedded-value", "sotp",
+    }:
         expected_keys.add("base_case")
     if set(sensitivity) != expected_keys:
         raise ValuationConsensusError(f"{field} must be a valid 3x3 sensitivity grid")
+    base_case = _mapping(sensitivity["base_case"], f"{field}.base_case") if "base_case" in sensitivity else None
+    if family == "dcf-fcff":
+        _validate_dcf_case(base_case, method, facts, f"{field}.base_case")
+    elif family == "dcf-equity":
+        _validate_equity_dcf_case(base_case, method, facts, f"{field}.base_case")
+    elif family == "residual-income":
+        _validate_residual_income_case(base_case, method, facts, f"{field}.base_case")
+    elif family == "rnpv":
+        _validate_rnpv_case(base_case, method, facts, f"{field}.base_case")
+    elif family == "embedded-value":
+        _validate_embedded_value_case(base_case, facts, f"{field}.base_case")
+    elif family == "sotp":
+        _validate_sotp_case(base_case, facts, f"{field}.base_case")
     row_parameter = _non_empty_string(sensitivity["row_parameter"], f"{field}.row_parameter")
     column_parameter = _non_empty_string(sensitivity["column_parameter"], f"{field}.column_parameter")
-    if row_parameter == column_parameter or {row_parameter, column_parameter} != expected_parameters:
+    if row_parameter == column_parameter:
+        raise ValuationConsensusError(f"{field} row_parameter and column_parameter must differ")
+    selected = {row_parameter, column_parameter}
+    if family == "dcf-fcff":
+        if base_case is not None and base_case.get("terminal_mode", "reinvestment-consistent") == "finite":
+            if selected != _calculator.DCF_FINITE_SENSITIVITY_PARAMETERS:
+                raise ValuationConsensusError(f"{field} finite sensitivity parameters must be exactly terminal_value, wacc")
+        elif method["input_mode"] == "drivers":
+            if not selected <= _calculator.DCF_DRIVER_SENSITIVITY_PARAMETERS:
+                joined = ", ".join(sorted(_calculator.DCF_DRIVER_SENSITIVITY_PARAMETERS))
+                raise ValuationConsensusError(f"{field} parameters must be drawn from: {joined}")
+            if not selected & _calculator.DCF_DRIVER_SHIFTS:
+                raise ValuationConsensusError(f"{field} driver sensitivity must include an operating driver shift")
+        elif selected != _calculator.SENSITIVITY_PARAMETERS[family]:
+            raise ValuationConsensusError(f"{field} parameters must match method family")
+    elif family == "dcf-equity":
+        if not selected <= _calculator.SENSITIVITY_PARAMETERS[family]:
+            joined = ", ".join(sorted(_calculator.SENSITIVITY_PARAMETERS[family]))
+            raise ValuationConsensusError(f"{field} parameters must be drawn from: {joined}")
+        if not selected & _calculator.DCF_EQUITY_OPERATING_PARAMETERS:
+            raise ValuationConsensusError(f"{field} sensitivity must include a cash flow shift")
+    elif family == "residual-income":
+        if not selected <= _calculator.SENSITIVITY_PARAMETERS[family]:
+            joined = ", ".join(sorted(_calculator.SENSITIVITY_PARAMETERS[family]))
+            raise ValuationConsensusError(f"{field} parameters must be drawn from: {joined}")
+        if not selected & _calculator.RESIDUAL_INCOME_OPERATING_PARAMETERS:
+            raise ValuationConsensusError(f"{field} sensitivity must include an operating parameter")
+    elif family == "rnpv":
+        if not selected <= _calculator.SENSITIVITY_PARAMETERS[family]:
+            joined = ", ".join(sorted(_calculator.SENSITIVITY_PARAMETERS[family]))
+            raise ValuationConsensusError(f"{field} parameters must be drawn from: {joined}")
+        if not selected & _calculator.RNPV_OPERATING_PARAMETERS:
+            raise ValuationConsensusError(f"{field} sensitivity must include an operating parameter")
+    elif family == "embedded-value":
+        if not selected <= _calculator.SENSITIVITY_PARAMETERS[family]:
+            joined = ", ".join(sorted(_calculator.SENSITIVITY_PARAMETERS[family]))
+            raise ValuationConsensusError(f"{field} parameters must be drawn from: {joined}")
+        if not selected & _calculator.EMBEDDED_VALUE_OPERATING_PARAMETERS:
+            raise ValuationConsensusError(f"{field} sensitivity must include an operating parameter")
+    elif selected != _calculator.SENSITIVITY_PARAMETERS[family]:
         raise ValuationConsensusError(f"{field} parameters must match method family")
     for key in ("row_values", "column_values"):
         values = _list(sensitivity[key], f"{field}.{key}")
@@ -638,10 +932,6 @@ def _validate_sensitivity(method: Mapping, facts: Mapping[str, Mapping], field: 
             raise ValuationConsensusError(f"{field}.{key} must contain exactly three values")
         for index, value in enumerate(values):
             _decimal(value, f"{field}.{key}[{index}]")
-    if family == "dcf-fcff":
-        _validate_dcf_case(sensitivity["base_case"], facts, f"{field}.base_case")
-    elif family == "sotp":
-        _validate_sotp_case(sensitivity["base_case"], facts, f"{field}.base_case")
 
 
 def _validate_calibrations(value: object, methods: Mapping[str, Mapping], facts: Mapping[str, Mapping]) -> None:
@@ -660,18 +950,93 @@ def _validate_calibrations(value: object, methods: Mapping[str, Mapping], facts:
         _non_empty_string(item["rationale"], "calibrations.rationale")
 
 
-def _validate_reverse_valuation(value: object, methods: Mapping[str, Mapping], facts: Mapping[str, Mapping]) -> None:
+def _validate_reverse_valuation(value: object, methods: Mapping[str, Mapping], valuation_input: Mapping) -> None:
+    facts = _facts_by_id(valuation_input)
     entries = _entries_for_methods(value, methods, "reviewer card.reverse_valuation")
     for index, reverse in enumerate(entries):
+        field = f"reviewer card.reverse_valuation[{index}]"
         item = _exact_keys(reverse, (
             "method_id",
-            "interpretation",
+            "fixed_parameters",
+            "implied_variable",
+            "implied_horizon_years",
+            "feasibility",
             "evidence_fact_ids",
             "invalidation_condition",
-        ), f"reviewer card.reverse_valuation[{index}]")
-        _non_empty_string(item["interpretation"], "reverse_valuation.interpretation")
-        _verified_evidence_fact_ids(item["evidence_fact_ids"], "reverse_valuation.evidence_fact_ids", facts)
-        _non_empty_string(item["invalidation_condition"], "reverse_valuation.invalidation_condition")
+        ), field)
+        fixed = _list(item["fixed_parameters"], f"{field}.fixed_parameters")
+        if not fixed:
+            raise ValuationConsensusError(f"{field}.fixed_parameters must not be empty")
+        fixed_names = set()
+        for fixed_index, entry in enumerate(fixed):
+            data = _exact_keys(entry, ("parameter", "value", "unit"), f"{field}.fixed_parameters[{fixed_index}]")
+            name = _non_empty_string(data["parameter"], f"{field}.fixed_parameters[{fixed_index}].parameter")
+            if name in fixed_names:
+                raise ValuationConsensusError(f"{field}.fixed_parameters contains duplicate parameter")
+            fixed_names.add(name)
+            _decimal(data["value"], f"{field}.fixed_parameters[{fixed_index}].value")
+            _non_empty_string(data["unit"], f"{field}.fixed_parameters[{fixed_index}].unit")
+        implied = _exact_keys(item["implied_variable"], ("name", "value", "unit"), f"{field}.implied_variable")
+        implied_name = _non_empty_string(implied["name"], f"{field}.implied_variable.name")
+        if implied_name in fixed_names:
+            raise ValuationConsensusError(f"{field}.implied_variable.name must not also be a fixed parameter")
+        _decimal(implied["value"], f"{field}.implied_variable.value")
+        _non_empty_string(implied["unit"], f"{field}.implied_variable.unit")
+        _positive_decimal(item["implied_horizon_years"], f"{field}.implied_horizon_years")
+        feasibility = _exact_keys(
+            item["feasibility"],
+            ("history_comparison", "capacity_constraint", "market_size", "verdict"),
+            f"{field}.feasibility",
+        )
+        for key in ("history_comparison", "capacity_constraint", "market_size"):
+            _non_empty_string(feasibility[key], f"{field}.feasibility.{key}")
+        if feasibility["verdict"] not in {"plausible", "stretched", "implausible"}:
+            raise ValuationConsensusError(f"{field}.feasibility.verdict is not supported")
+        _verified_evidence_fact_ids(item["evidence_fact_ids"], f"{field}.evidence_fact_ids", facts)
+        _non_empty_string(item["invalidation_condition"], f"{field}.invalidation_condition")
+
+
+def _validate_parameter_derivation(
+    value: object, methods: Mapping[str, Mapping], valuation_input: Mapping,
+) -> None:
+    """Every method carries at least one auditable parameter derivation row."""
+    facts = _facts_by_id(valuation_input)
+    entries = _list(value, "reviewer card.parameter_derivation")
+    seen = set()
+    covered = set()
+    for index, derivation in enumerate(entries):
+        field = f"reviewer card.parameter_derivation[{index}]"
+        item = _exact_keys(derivation, (
+            "method_id",
+            "parameter",
+            "value",
+            "formula",
+            "inputs",
+            "evidence_fact_ids",
+        ), field)
+        method_id = _non_empty_string(item["method_id"], f"{field}.method_id")
+        if method_id not in methods:
+            raise ValuationConsensusError(f"{field}.method_id must identify an input method")
+        parameter = _non_empty_string(item["parameter"], f"{field}.parameter")
+        identity = (method_id, parameter)
+        if identity in seen:
+            raise ValuationConsensusError("parameter_derivation contains duplicate method_id and parameter")
+        seen.add(identity)
+        covered.add(method_id)
+        _decimal(item["value"], f"{field}.value")
+        _non_empty_string(item["formula"], f"{field}.formula")
+        inputs = _mapping(item["inputs"], f"{field}.inputs")
+        if not inputs:
+            raise ValuationConsensusError(f"{field}.inputs must not be empty")
+        for name, input_value in inputs.items():
+            _non_empty_string(name, f"{field}.inputs key")
+            _decimal(input_value, f"{field}.inputs.{name}")
+        _verified_evidence_fact_ids(item["evidence_fact_ids"], f"{field}.evidence_fact_ids", facts)
+    missing = sorted(set(methods) - covered)
+    if missing:
+        raise ValuationConsensusError(
+            "parameter_derivation must cover every input method: " + ", ".join(missing)
+        )
 
 
 def _validate_sensitivity_factors(value: object, methods: Mapping[str, Mapping], facts: Mapping[str, Mapping]) -> None:
@@ -722,6 +1087,7 @@ def _validate_structural_methods(methods: object, facts: Mapping[str, Mapping], 
     items = _list(methods, "valuation input.methods")
     if not items:
         raise ValuationConsensusError("valuation input.methods must be a non-empty list")
+    vocabulary = _catalog()["method_id_vocabulary"]
     by_id = {}
     for index, method in enumerate(items):
         item = _mapping(method, f"valuation input.methods[{index}]")
@@ -730,6 +1096,9 @@ def _validate_structural_methods(methods: object, facts: Mapping[str, Mapping], 
             raise ValuationConsensusError("valuation input.methods contains duplicate method_id")
         family = _non_empty_string(item.get("family"), f"valuation input.methods[{index}].family")
         catalog = _catalog_family(family)
+        _validate_method_basis(
+            method_id, family, catalog, vocabulary, f"valuation input.methods[{index}].method_id",
+        )
         required_keys = set(catalog["required_method_fields"]) - {"scenarios"}
         optional_keys = set()
         if any(field.startswith("bridge_fact_ids.") for field in catalog.get("optional_method_fields", [])):
@@ -739,6 +1108,20 @@ def _validate_structural_methods(methods: object, facts: Mapping[str, Mapping], 
             raise ValuationConsensusError(f"valuation input.methods[{index}] has invalid structural keys")
         if item["direction"] != catalog["direction"]:
             raise ValuationConsensusError(f"valuation input.methods[{index}].direction must match method catalog")
+        if family in {"dcf-fcff", "dcf-equity", "residual-income", "rnpv"}:
+            horizon = item["horizon_years"]
+            if isinstance(horizon, bool) or not isinstance(horizon, int) or horizon <= 0:
+                raise ValuationConsensusError(f"valuation input.methods[{index}].horizon_years must be a positive integer")
+        if family == "dcf-fcff" and item["input_mode"] not in _calculator.DCF_INPUT_MODES:
+            raise ValuationConsensusError(f"valuation input.methods[{index}].input_mode is not supported")
+        if family == "dcf-equity":
+            cash_flow_type = item["cash_flow_type"]
+            if cash_flow_type not in _calculator.DCF_EQUITY_CASH_FLOW_TYPES:
+                raise ValuationConsensusError(f"valuation input.methods[{index}].cash_flow_type is not supported")
+            if _method_basis_token(method_id, vocabulary) != cash_flow_type:
+                raise ValuationConsensusError(
+                    f"valuation input.methods[{index}].method_id basis must equal cash_flow_type {cash_flow_type}"
+                )
         for key in ("denominator_fact_id", "diluted_shares_fact_id"):
             if key in item:
                 _validate_fact_reference(
@@ -792,7 +1175,8 @@ def _validate_bridge_fact_ids(value: object, field: str, facts: Mapping[str, Map
 
 
 def _validate_fact_reference(
-    value: object, field: str, facts: Mapping[str, Mapping], current_price_currency: str, *, require_currency: bool,
+    value: object, field: str, facts: Mapping[str, Mapping],
+    current_price_currency: str = "", *, require_currency: bool,
 ) -> None:
     fact_id = _non_empty_string(value, field)
     if fact_id not in facts:
@@ -873,6 +1257,53 @@ def _catalog_family(family: str) -> Mapping:
     raise ValuationConsensusError("valuation input.methods.family is not supported")
 
 
+def _method_basis_token(method_id: str, vocabulary: Mapping) -> str | None:
+    indicator = next(
+        (
+            token for token in sorted(vocabulary["indicator"], key=len, reverse=True)
+            if method_id == token or method_id.startswith(token + "-")
+        ),
+        None,
+    )
+    if indicator is None or method_id == indicator:
+        return None
+    remainder = method_id[len(indicator) + 1:]
+    return next(
+        (
+            token
+            for token in sorted(vocabulary["basis"], key=len, reverse=True)
+            if remainder == token or remainder.startswith(token + "-")
+        ),
+        None,
+    )
+
+
+def _validate_method_basis(
+    method_id: str, family: str, catalog: Mapping, vocabulary: Mapping, field: str,
+) -> None:
+    """Method IDs must carry a basis token the family's numerator/denominator pairing allows."""
+    allowed = catalog.get("allowed_basis")
+    if not isinstance(allowed, list):
+        raise ValuationConsensusError("bundled valuation catalog family lacks allowed_basis")
+    optional = catalog.get("optional_basis")
+    if optional is not None and not isinstance(optional, list):
+        raise ValuationConsensusError("bundled valuation catalog family has invalid optional_basis")
+    optional = optional or []
+    basis = _method_basis_token(method_id, vocabulary)
+    if not allowed:
+        if basis is not None and basis not in optional:
+            raise ValuationConsensusError(f"{field} must not carry a basis token for family {family}")
+        return
+    if basis is None:
+        raise ValuationConsensusError(
+            f"{field} must carry one basis token for family {family}: {', '.join(allowed)}"
+        )
+    if basis not in allowed and basis not in optional:
+        raise ValuationConsensusError(
+            f"{field} basis {basis} is not allowed for family {family}; allowed: {', '.join(allowed)}"
+        )
+
+
 def _verified_evidence_fact_ids(value: object, field: str, facts: Mapping[str, Mapping]) -> list[str]:
     fact_ids = _unique_string_list(value, field)
     if not fact_ids:
@@ -903,20 +1334,159 @@ def _case_range(value: object, field: str) -> tuple[Mapping, Mapping]:
     return _mapping(data["lower"], f"{field}.lower"), _mapping(data["upper"], f"{field}.upper")
 
 
-def _validate_dcf_case(value: object, facts: Mapping[str, Mapping], field: str) -> None:
+def _validate_dcf_case(value: object, method: Mapping, facts: Mapping[str, Mapping], field: str) -> None:
     data = _mapping(value, field)
-    required = ("fcff", "wacc", "terminal_growth")
-    keys = required + (("evidence_fact_ids",) if "evidence_fact_ids" in data else ())
-    data = _exact_keys(value, keys, field)
-    fcff = _list(data["fcff"], f"{field}.fcff")
-    if not fcff:
-        raise ValuationConsensusError(f"{field}.fcff must be a non-empty list")
-    for index, cash_flow in enumerate(fcff):
-        _decimal(cash_flow, f"{field}.fcff[{index}]")
-    wacc = _positive_decimal(data["wacc"], f"{field}.wacc")
+    mode = method["input_mode"]
+    horizon = method["horizon_years"]
+    terminal_mode = data.get("terminal_mode", "reinvestment-consistent")
+    if terminal_mode not in _calculator.DCF_TERMINAL_MODES:
+        raise ValuationConsensusError(f"{field}.terminal_mode is not supported")
+    common = {"wacc", "terminal_mode", "evidence_fact_ids"}
+    flow_key = "fcff" if mode == "fcff" else "drivers"
+    wacc = _positive_decimal(data.get("wacc"), f"{field}.wacc")
+    required = {flow_key, "wacc"}
+    if terminal_mode == "finite":
+        required.add("terminal_value")
+        missing = sorted(required - set(data))
+        extra = sorted(set(data) - (required | common))
+        if missing or extra:
+            raise ValuationConsensusError(
+                f"{field} has invalid finite case keys: missing {', '.join(missing) or 'none'}; "
+                f"unexpected {', '.join(extra) or 'none'}"
+            )
+        _decimal(data["terminal_value"], f"{field}.terminal_value")
+    else:
+        required.add("terminal_growth")
+        if terminal_mode == "reinvestment-consistent":
+            required.add("terminal_nopat" if mode == "fcff" else "terminal_roic")
+        missing = sorted(required - set(data))
+        extra = sorted(set(data) - (required | common))
+        if missing or extra:
+            raise ValuationConsensusError(
+                f"{field} has invalid {terminal_mode} case keys: missing {', '.join(missing) or 'none'}; "
+                f"unexpected {', '.join(extra) or 'none'}"
+            )
+        terminal_growth = _decimal(data["terminal_growth"], f"{field}.terminal_growth")
+        if terminal_growth <= Decimal(-1):
+            raise ValuationConsensusError(f"{field}.terminal_growth must be greater than -1")
+        if wacc <= terminal_growth:
+            raise ValuationConsensusError(f"{field}.wacc must exceed terminal_growth")
+        if terminal_mode == "reinvestment-consistent":
+            if mode == "fcff":
+                _positive_decimal(data["terminal_nopat"], f"{field}.terminal_nopat")
+            else:
+                roic = _positive_decimal(data["terminal_roic"], f"{field}.terminal_roic")
+                if roic <= terminal_growth:
+                    raise ValuationConsensusError(f"{field}.terminal_roic must exceed terminal_growth")
+    if mode == "fcff":
+        flows = _list(data["fcff"], f"{field}.fcff")
+        if len(flows) != horizon:
+            raise ValuationConsensusError(f"{field}.fcff length must equal horizon_years")
+        for index, cash_flow in enumerate(flows):
+            _decimal(cash_flow, f"{field}.fcff[{index}]")
+    else:
+        drivers = _exact_keys(data["drivers"], _calculator.DCF_DRIVER_FIELDS, f"{field}.drivers")
+        base_fact_id = _non_empty_string(drivers["base_revenue_fact_id"], f"{field}.drivers.base_revenue_fact_id")
+        _validate_fact_reference(base_fact_id, f"{field}.drivers.base_revenue_fact_id", facts, require_currency=False)
+        for key in ("revenue_growth", "operating_margin", "sales_to_capital"):
+            values = _list(drivers[key], f"{field}.drivers.{key}")
+            if len(values) != horizon:
+                raise ValuationConsensusError(f"{field}.drivers.{key} length must equal horizon_years")
+            for index, entry in enumerate(values):
+                _decimal(entry, f"{field}.drivers.{key}[{index}]")
+        _decimal(drivers["tax_rate"], f"{field}.drivers.tax_rate")
+    if "evidence_fact_ids" in data:
+        _verified_evidence_fact_ids(data["evidence_fact_ids"], f"{field}.evidence_fact_ids", facts)
+
+
+def _validate_equity_dcf_case(value: object, method: Mapping, facts: Mapping[str, Mapping], field: str) -> None:
+    data = _mapping(value, field)
+    horizon = method["horizon_years"]
+    cash_flow_type = method.get("cash_flow_type")
+    if cash_flow_type not in _calculator.DCF_EQUITY_CASH_FLOW_TYPES:
+        raise ValuationConsensusError(f"{field} requires a supported cash_flow_type")
+    required = {"cash_flows", "cost_of_equity", "terminal_growth"}
+    if not required <= set(data) <= required | {"evidence_fact_ids"}:
+        raise ValuationConsensusError(f"{field} has invalid dcf-equity case keys")
+    flows = _list(data["cash_flows"], f"{field}.cash_flows")
+    if len(flows) != horizon:
+        raise ValuationConsensusError(f"{field}.cash_flows length must equal horizon_years")
+    for index, cash_flow in enumerate(flows):
+        amount = _decimal(cash_flow, f"{field}.cash_flows[{index}]")
+        if cash_flow_type == "dividend" and amount < ZERO:
+            raise ValuationConsensusError(f"{field}.cash_flows dividends must not be negative")
+    cost_of_equity = _positive_decimal(data["cost_of_equity"], f"{field}.cost_of_equity")
     terminal_growth = _decimal(data["terminal_growth"], f"{field}.terminal_growth")
-    if wacc <= terminal_growth:
-        raise ValuationConsensusError(f"{field}.wacc must exceed terminal_growth")
+    if terminal_growth <= Decimal(-1):
+        raise ValuationConsensusError(f"{field}.terminal_growth must be greater than -1")
+    if cost_of_equity <= terminal_growth:
+        raise ValuationConsensusError(f"{field}.cost_of_equity must exceed terminal_growth")
+    if "evidence_fact_ids" in data:
+        _verified_evidence_fact_ids(data["evidence_fact_ids"], f"{field}.evidence_fact_ids", facts)
+
+
+def _validate_residual_income_case(value: object, method: Mapping, facts: Mapping[str, Mapping], field: str) -> None:
+    data = _mapping(value, field)
+    horizon = method["horizon_years"]
+    required = {"drivers", "cost_of_equity", "terminal_growth", "terminal_roe"}
+    if not required <= set(data) <= required | {"evidence_fact_ids"}:
+        raise ValuationConsensusError(f"{field} has invalid residual-income case keys")
+    drivers = _exact_keys(data["drivers"], _calculator.RESIDUAL_INCOME_DRIVER_FIELDS, f"{field}.drivers")
+    base_fact_id = _non_empty_string(
+        drivers["base_book_value_per_share_fact_id"], f"{field}.drivers.base_book_value_per_share_fact_id")
+    _validate_fact_reference(base_fact_id, f"{field}.drivers.base_book_value_per_share_fact_id", facts, require_currency=False)
+    base_fact = facts[base_fact_id]
+    if _calculator.canonical_per_share_unit(base_fact["unit"], base_fact["currency"]) is None:
+        raise ValuationConsensusError(f"{field}.drivers.base_book_value_per_share_fact_id must be a per-share fact")
+    for key in ("eps", "dividend_per_share"):
+        values = _list(drivers[key], f"{field}.drivers.{key}")
+        if len(values) != horizon:
+            raise ValuationConsensusError(f"{field}.drivers.{key} length must equal horizon_years")
+        for index, entry in enumerate(values):
+            amount = _decimal(entry, f"{field}.drivers.{key}[{index}]")
+            if key == "dividend_per_share" and amount < ZERO:
+                raise ValuationConsensusError(f"{field}.drivers.dividend_per_share must not be negative")
+    cost_of_equity = _positive_decimal(data["cost_of_equity"], f"{field}.cost_of_equity")
+    terminal_growth = _decimal(data["terminal_growth"], f"{field}.terminal_growth")
+    _decimal(data["terminal_roe"], f"{field}.terminal_roe")
+    if terminal_growth <= Decimal(-1):
+        raise ValuationConsensusError(f"{field}.terminal_growth must be greater than -1")
+    if cost_of_equity <= terminal_growth:
+        raise ValuationConsensusError(f"{field}.cost_of_equity must exceed terminal_growth")
+    if "evidence_fact_ids" in data:
+        _verified_evidence_fact_ids(data["evidence_fact_ids"], f"{field}.evidence_fact_ids", facts)
+
+
+def _validate_rnpv_case(value: object, method: Mapping, facts: Mapping[str, Mapping], field: str) -> None:
+    data = _mapping(value, field)
+    horizon = method["horizon_years"]
+    required = set(_calculator.RNPV_CASE_FIELDS)
+    if not required <= set(data) <= required | {"evidence_fact_ids"}:
+        raise ValuationConsensusError(f"{field} has invalid rnpv case keys")
+    flows = _list(data["cash_flows"], f"{field}.cash_flows")
+    if len(flows) != horizon:
+        raise ValuationConsensusError(f"{field}.cash_flows length must equal horizon_years")
+    for index, cash_flow in enumerate(flows):
+        _decimal(cash_flow, f"{field}.cash_flows[{index}]")
+    probability = _decimal(data["probability_of_success"], f"{field}.probability_of_success")
+    if not (ZERO < probability <= Decimal(1)):
+        raise ValuationConsensusError(f"{field}.probability_of_success must be in (0, 1]")
+    _positive_decimal(data["discount_rate"], f"{field}.discount_rate")
+    _decimal(data["terminal_value"], f"{field}.terminal_value")
+    if "evidence_fact_ids" in data:
+        _verified_evidence_fact_ids(data["evidence_fact_ids"], f"{field}.evidence_fact_ids", facts)
+
+
+def _validate_embedded_value_case(value: object, facts: Mapping[str, Mapping], field: str) -> None:
+    data = _mapping(value, field)
+    required = set(_calculator.EMBEDDED_VALUE_CASE_FIELDS)
+    if not required <= set(data) <= required | {"evidence_fact_ids"}:
+        raise ValuationConsensusError(f"{field} has invalid embedded-value case keys")
+    for key in ("adjusted_net_worth", "value_of_in_force", "new_business_value"):
+        _decimal(data[key], f"{field}.{key}")
+    multiple = _decimal(data["new_business_multiple"], f"{field}.new_business_multiple")
+    if multiple < ZERO:
+        raise ValuationConsensusError(f"{field}.new_business_multiple must not be negative")
     if "evidence_fact_ids" in data:
         _verified_evidence_fact_ids(data["evidence_fact_ids"], f"{field}.evidence_fact_ids", facts)
 

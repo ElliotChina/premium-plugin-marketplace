@@ -61,7 +61,7 @@ CORE_COVERAGE = (
     ("C22", "市盈率的行业与历史比较", "12–14"),
     ("C23", "市净率的行业与历史比较", "12–14"),
     ("C24", "ROE与行业ROE比较", "12–14"),
-    ("C25", "PR与调整后PE交叉检查", "12–14"),
+    ("C25", "PR与EV/EBIT交叉检查", "12–14"),
     ("C26", "现金流折现与三情景敏感性", "12–14"),
     ("C27", "赛道供需、竞争格局与前景", "04"),
     ("C28", "同行市值、ROE、毛利率与净利率比较", "04"),
@@ -101,11 +101,39 @@ def _valuation_report_consistency(consensus: dict, calculation: dict, body: str)
         errors.append(f"报告正文缺少主方法中性区间下界 {expected_range['lower']}")
     if not _range_bound_present(body, str(expected_range["upper"])):
         errors.append(f"报告正文缺少主方法中性区间上界 {expected_range['upper']}")
-    if consensus.get("publication_precision_state") == "indicative" and not (
-        "推断估值区间" in body or "indicative" in body
+    precision = consensus.get("publication_precision_state")
+    if precision == "supported" and "证据支持的估值区间" not in body:
+        errors.append("估值精度为 supported；报告必须标注“证据支持的估值区间”")
+    elif precision == "conditional":
+        if "条件性估值区间" not in body:
+            errors.append("估值精度为 conditional；报告必须标注“条件性估值区间”")
+        if "关键假设" not in body:
+            errors.append("估值精度为 conditional；报告必须列出关键假设与改判条件")
+    elif precision == "low-confidence":
+        if "参考区间" not in body:
+            errors.append("估值精度为 low-confidence；报告必须标注“参考区间”")
+        if "区间不具备方向判断力" not in body:
+            errors.append("估值精度为 low-confidence；报告必须声明“区间不具备方向判断力”")
+    if _terminal_value_share_reached(calculation) and "终值占比" not in body:
+        errors.append("DCF 或 rNPV 终值占比达到披露阈值；报告必须披露终值占比")
+    if any(method.get("scenario_layout") for method in calculation.get("methods", [])) and not (
+        "间隔" in body or "重叠" in body
     ):
-        errors.append("估值精度为 indicative；报告必须披露推断估值区间性质")
+        errors.append("情景区间存在间隔或重叠；报告必须如实标注")
+    if consensus.get("cross_check_divergence", {}).get("is_material") and "分歧" not in body:
+        errors.append("主方法与交叉方法分歧重大；报告必须给出分歧诊断")
     return errors
+
+
+def _terminal_value_share_reached(calculation: dict) -> bool:
+    threshold = valuation_consensus.TERMINAL_VALUE_DISCLOSURE
+    for method in calculation.get("methods", []):
+        share = method.get("terminal_value_share")
+        if share is None:
+            continue
+        if max(Decimal(share["lower"]), Decimal(share["upper"])) >= threshold:
+            return True
+    return False
 
 
 def _json(path: Path) -> dict:
@@ -515,7 +543,9 @@ def check(args: argparse.Namespace) -> dict:
         errors.append(f"评分未完成：{scoring.get('status')}")
     else:
         errors.extend(_scoring_summary_consistency(run_dir, body))
-    if valuation.get("status") not in {"complete", "complete-indicative", "recalculated"}:
+    if valuation.get("status") not in {
+        "complete", "complete-conditional", "complete-low-confidence", "recalculated",
+    }:
         errors.append(f"估值没有可交付区间：{valuation.get('status')}")
     else:
         try:
