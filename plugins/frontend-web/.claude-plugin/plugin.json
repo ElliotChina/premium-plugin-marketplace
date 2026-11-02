@@ -1,6 +1,6 @@
 {
   "name": "frontend-web",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Web 前端界面技能插件：基于 Web Interface Guidelines 进行 UI 代码审查（可访问性、设计与用户体验最佳实践），并提供建设生产级可访问响应式 UI 的前端工程技能（含 WCAG 可访问性检查清单）",
   "author": {
     "name": "elliot",
