@@ -1,16 +1,16 @@
 # Premium Plugin Marketplace
 
-个人精选的 Claude Code 插件市场集合，包含 20 个高质量插件，涵盖前端开发、设计、测试、金融、视频等多个领域。
+个人精选的 Claude Code 插件市场集合，包含 21 个高质量插件，涵盖前端开发、设计、测试、金融、视频等多个领域。
 
 ## 特性
 
-- **20 个精选插件** - 16 个本地维护 + 4 个外部引用
+- **21 个精选插件** - 17 个本地维护 + 4 个外部引用
 - **持续更新** - 本地技能跟随上游仓库同步
 - **按需裁剪** - 已移除的外部插件见[外部插件推荐](recommended-external-plugins.md)，可随时从上游仓库自行安装
 
 ## 插件列表
 
-### 本地插件（16 个）
+### 本地插件（17 个）
 
 | 插件 | 说明 | 分类 |
 |------|------|------|
@@ -29,6 +29,7 @@
 | **image** | Unsplash 图片搜索下载 | 设计 |
 | **slide** | Reveal.js 幻灯片制作 | 生产力 |
 | **excalidraw** | 自然语言生成 Excalidraw 图表：流程图、架构图、思维导图等（来自 [awesome-copilot](https://github.com/github/awesome-copilot)） | 设计 |
+| **drawio** | 自然语言生成 Draw.io 图表：流程图、架构图、时序图、ER 图、UML 类图等，附模板与 XML 校验脚本（来自 [awesome-copilot](https://github.com/github/awesome-copilot)） | 设计 |
 | **deepwiki** | AI 驱动的 GitHub 仓库文档查询 | 开发 |
 
 ### 外部引用插件（4 个）
@@ -54,6 +55,7 @@ premium-plugin-marketplace/
 │   ├── coding/
 │   ├── deepwiki/
 │   ├── devops/
+│   ├── drawio/
 │   ├── excalidraw/
 │   ├── finance-analysis/
 │   ├── frontend-next/
@@ -98,7 +100,7 @@ claude marketplace add https://github.com/ElliotChina/premium-plugin-marketplace
 | frontend-react | react-best-practices | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills/tree/main/skills/react-best-practices) |
 | frontend-react | react-view-transitions | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills/tree/main/skills/react-view-transitions) |
 
-完整清单（29 条映射，含 mattpocock / addyosmani / emilkowalski 等上游）见 [.github/sync-skills-mapping.json](.github/sync-skills-mapping.json)。
+完整清单（30 条映射，含 mattpocock / addyosmani / emilkowalski 等上游）见 [.github/sync-skills-mapping.json](.github/sync-skills-mapping.json)。
 
 ### 同步方法
 

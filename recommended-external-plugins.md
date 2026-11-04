@@ -35,7 +35,7 @@
 | antd-skill | 开发 | Ant Design v6 组件决策指南与离线 API 查询 | [ant-design/antd-skill](https://github.com/ant-design/antd-skill) |
 | shadcn | 设计 | shadcn/ui 组件管理与开发技能 | [shadcn-ui/ui](https://github.com/shadcn-ui/ui) |
 
-## 外部技能引用(26 个,GitHub Actions 定时同步)
+## 外部技能引用(27 个,GitHub Actions 定时同步)
 
 以下 Skill 为上游仓库的副本,内嵌在本地插件中,由 `.github/workflows/sync-external-skills.yml` 每周一检查 `.github/sync-skills-mapping.json` 中登记的上游仓库,有变更时自动开 PR 并合并。
 
@@ -46,6 +46,7 @@
 | react-best-practices | frontend-react | React 性能与正确性最佳实践 | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) |
 | react-view-transitions | frontend-react | View Transitions 用法、实现与排错 | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) |
 | excalidraw-diagram-generator | excalidraw | 自然语言生成 .excalidraw 图表:流程图、架构图、思维导图等 | [github/awesome-copilot](https://github.com/github/awesome-copilot) |
+| draw-io-diagram-generator | drawio | 自然语言生成/编辑/校验 .drawio 图表:流程图、架构图、时序图、ER 图、UML 类图,附模板与 XML 校验脚本 | [github/awesome-copilot](https://github.com/github/awesome-copilot) |
 | humanizer-zh | writing | 中文去 AI 味润色:消除空话、重复与模板化表达 | [op7418/humanizer-zh](https://github.com/op7418/humanizer-zh) |
 | human-writing | writing | 活人感中文创作与改稿,覆盖知乎、公众号、小说等文体 | [KKKKhazix/human-writing](https://github.com/KKKKhazix/human-writing) |
 | grill-me | product-design | 方案拷问入口:调用 grilling 对方案发起多轮追问 | [mattpocock/skills](https://github.com/mattpocock/skills) |

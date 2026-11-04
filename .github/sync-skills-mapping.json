@@ -25,6 +25,11 @@
     "path": "skills/excalidraw-diagram-generator"
   },
   {
+    "local": "plugins/drawio/skills/draw-io-diagram-generator",
+    "repo": "github/awesome-copilot",
+    "path": "skills/draw-io-diagram-generator"
+  },
+  {
     "local": "plugins/writing/skills/humanizer-zh",
     "repo": "op7418/humanizer-zh",
     "path": "",

@@ -1,0 +1,19 @@
+{
+  "name": "drawio",
+  "version": "0.1.0",
+  "description": "Draw.io 图表生成插件，通过自然语言描述生成、编辑与校验 .drawio 图表文件：流程图、系统架构图、时序图、ER 图、UML 类图等，内置 mxGraph XML 参考、样式与形状库、现成模板及 XML 校验脚本，可在 draw.io / VS Code 中直接打开",
+  "author": {
+    "name": "elliot",
+    "url": "https://github.com/ElliotChina"
+  },
+  "license": "MIT",
+  "keywords": [
+    "drawio",
+    "diagram",
+    "flowchart",
+    "architecture",
+    "uml",
+    "er-diagram",
+    "sequence-diagram"
+  ]
+}
