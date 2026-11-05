@@ -30,7 +30,7 @@
     },
     {
       "name": "image",
-      "description": "Unsplash 图片搜索下载插件，快速获取高质量免费照片用于项目开发",
+      "description": "Unsplash / Pexels / Pixabay 图片与视频搜索下载插件，快速获取高质量免费素材用于项目开发",
       "category": "design",
       "source": "./plugins/image",
       "author": {
@@ -40,7 +40,10 @@
       "keywords": [
         "image",
         "unsplash",
-        "photo"
+        "pexels",
+        "pixabay",
+        "photo",
+        "stock-photo"
       ]
     },
     {

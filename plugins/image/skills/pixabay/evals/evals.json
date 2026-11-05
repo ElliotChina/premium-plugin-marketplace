@@ -1,0 +1,29 @@
+{
+  "skill_name": "pixabay",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "帮我写一个搜索 Pixabay 照片的函数，搜索关键词是 'mountain'，需要横向照片，每页 10 张",
+      "expected_output": "提供一个正确使用 Pixabay API 搜索照片的代码示例，包含正确的认证方式（API Key 通过 key 查询参数传递，非 Authorization header）、查询参数（q=mountain, orientation=horizontal, image_type=photo, per_page=10）",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "我需要在网站长期使用几张 Pixabay 图片，直接把 API 返回的 URL 写进 img 标签可以吗？",
+      "expected_output": "说明不可以：Pixabay 返回的 URL 仅 24 小时有效且禁止永久 hotlinking，必须下载图片到本地/自有服务器后引用本地路径，并给出下载代码示例",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "我有一个 Pixabay 图片的 webformatURL：https://cdn.pixabay.com/photo/xxx_640.jpg，我需要更大尺寸 1280px 的版本",
+      "expected_output": "解释将 URL 中的 _640 后缀替换为 _1280（等同 largeImageURL），并说明 fullHDURL（1920px）和原图 imageURL 需要官方审批权限才能获取",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "帮我搜索 Pixabay 上的实拍视频素材 'ocean waves' 并在项目里长期使用",
+      "expected_output": "提供使用 https://pixabay.com/api/videos/ 端点的代码（key 仍是 query 参数，video_type=footage），说明视频同样禁止永久 hotlinking、需下载到本地使用，并解释 videos 对象各档位（medium/small/tiny 所有视频都有，large 不一定有）",
+      "files": []
+    }
+  ]
+}

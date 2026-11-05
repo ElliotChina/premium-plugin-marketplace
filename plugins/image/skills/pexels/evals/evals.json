@@ -1,0 +1,29 @@
+{
+  "skill_name": "pexels",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "帮我写一个搜索 Pexels 照片的函数，搜索关键词是 'mountain'，需要横向风景照，每页 10 张",
+      "expected_output": "提供一个正确使用 Pexels API 搜索照片的代码示例，包含正确的认证方式（Authorization 头直接放裸 Key，无 Bearer/Client-ID 前缀）、查询参数（query=mountain, orientation=landscape, per_page=10）",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "我需要为我的网站首页获取几张背景图素材，帮我调用 Pexels API 获取精选照片",
+      "expected_output": "提供获取精选照片的代码，使用 /v1/curated 端点，展示如何使用返回的 src.large 等 URL，并说明 Pexels 署名要求",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "我有一个 Pexels 照片的原始 URL：https://images.pexels.com/photos/123456/pexels-photo-123456.jpeg，我需要获取 800x600 的裁剪版本",
+      "expected_output": "解释如何在 URL 上追加 ?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop 参数获取裁剪版本",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "帮我写一个搜索 Pexels 视频的函数，搜索关键词是 'ocean'，需要横向视频，每页 5 个",
+      "expected_output": "提供使用 /v1/videos/search 端点的代码，认证与照片相同（Authorization 头裸 Key），查询参数（query=ocean, orientation=landscape, per_page=5），并说明如何从 video_files 数组按分辨率选择 mp4 文件",
+      "files": []
+    }
+  ]
+}
