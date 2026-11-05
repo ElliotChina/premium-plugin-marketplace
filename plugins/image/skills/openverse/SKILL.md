@@ -32,6 +32,10 @@ curl "https://api.openverse.org/v1/images/?q=mountain" \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 ```
 
+⚠️ 注册实测注意：
+- 注册后 Openverse 发验证邮件，**点击验证链接前额度不提升**（token 可用但仍走匿名额度，`GET /v1/rate_limit/` 返回 `verified: false`）
+- `access_token` 仅 **12 小时有效**（`expires_in: 43200`），过期后用长期有效的 client_id/secret 重新调 `/v1/auth_tokens/token/` 刷新；不要把 token 当长期凭据
+
 配置了 token 时用环境变量 `OPENVERSE_ACCESS_TOKEN`；未配置则匿名调用。
 
 ---
