@@ -1,6 +1,7 @@
 ---
 name: mediawiki
 description: Search and download freely-licensed images from MediaWiki wikis (Wikimedia Commons, Wikipedia) via the Action API. **TRIGGER when users need:** freely-licensed stock photos, public domain images, historical photos, maps, diagrams, technical illustrations, or mention MediaWiki/Wikipedia/Wikimedia/Commons/维基/百科/素材/找图. Use when building websites, apps, presentations, or documents requiring freely-usable visual content — even if MediaWiki isn't explicitly named.
+disable-model-invocation: true
 ---
 
 # MediaWiki Image Skill
@@ -18,7 +19,7 @@ description: Search and download freely-licensed images from MediaWiki wikis (Wi
 ```bash
 # 请求示例必须带 User-Agent
 curl "https://commons.wikimedia.org/w/api.php?action=query&format=json&..." \
-  -H "User-Agent: my-project/1.0 (https://example.com; contact@example.com)"
+  -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
 ```
 
 ---
@@ -60,7 +61,7 @@ Commons 收录 CC0 / 公有领域（PD）/ CC BY / CC BY-SA 等多种许可的�
 
 ```bash
 curl "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&list=search&srsearch=mountain%20landscape&srnamespace=6&srlimit=10" \
-  -H "User-Agent: my-project/1.0 (contact@example.com)"
+  -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
 ```
 
 **常用参数：**
@@ -91,7 +92,7 @@ curl "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatver
 
 ```bash
 curl "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&prop=imageinfo&titles=File:Mont%20Blanc.jpg&iiprop=url%7Csize%7Cmime%7Cextmetadata&iiurlwidth=800" \
-  -H "User-Agent: my-project/1.0 (contact@example.com)"
+  -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
 ```
 
 **关键参数：**
@@ -153,7 +154,7 @@ curl "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatver
 匿名请求也必须带 UA，格式 `项目名/版本 (联系方式)`。缺失或泛用 UA（如默认 curl UA）可能被 Wikimedia 拒绝或封禁：
 
 ```bash
-✅ -H "User-Agent: my-project/1.0 (https://example.com; contact@example.com)"
+✅ -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
 ❌ 不带 User-Agent / 只有 "curl/8.0"
 ```
 
@@ -202,7 +203,7 @@ async function searchCommonsImages(query: string, thumbWidth = 800, limit = 5): 
     iiextmetadatafilter: 'LicenseShortName|Artist|ImageDescription|DateTimeOriginal',
   });
   const res = await fetch(`https://commons.wikimedia.org/w/api.php?${params}`, {
-    headers: { 'User-Agent': 'my-project/1.0 (https://example.com; contact@example.com)' },
+    headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36' },
   });
   const data = await res.json();
   return (data.query?.pages ?? []) as CommonsImage[];
@@ -222,7 +223,7 @@ for (const img of images) {
 ```python
 import requests
 
-UA = {'User-Agent': 'my-project/1.0 (https://example.com; contact@example.com)'}
+UA = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'}
 
 def get_file_info(file_title: str, thumb_width: int = 800) -> dict:
     """查询 Commons 文件的 URL、尺寸与许可

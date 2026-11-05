@@ -1,0 +1,29 @@
+{
+  "skill_name": "image-search",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "帮我找几张雪山湖泊的图片，多找几个来源对比一下",
+      "expected_output": "运行 scripts/image_search.py 进行聚合搜索（如 python scripts/image_search.py 'snowy mountain lake'），向用户展示多个来源的候选（用 preview URL 预览），说明各结果的 license 与 attribution_required 状态",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "用聚合搜索帮我搜 'modern office'，只需要 Pexels 和 Unsplash 的结果，每个来源 8 张",
+      "expected_output": "运行 python scripts/image_search.py 'modern office' --providers pexels,unsplash --per-provider 8，检查 skipped/errors 字段确认两个来源都参与（缺 Key 时提示用户配置环境变量），展示结果",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "帮我搜 'abstract gradient background' 并下载最合适的前 2 张到项目 images 目录",
+      "expected_output": "运行 python scripts/image_search.py 'abstract gradient background' --download 2 -o images/，确认 downloaded 数组中的本地文件路径，并根据 license/attribution 字段说明各文件的署名要求",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "聚合搜索提示 openverse 来源出错了，其他来源正常，这个结果还能用吗？",
+      "expected_output": "解释单来源失败只记入 errors 不影响其他来源，providers_used 与 results 中的其余来源结果完整可用；如需 openverse 结果可稍后单独重试",
+      "files": []
+    }
+  ]
+}

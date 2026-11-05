@@ -1,6 +1,7 @@
 ---
 name: openverse
 description: Search and download openly-licensed images aggregated by Openverse (Flickr, Wikimedia Commons, museum collections) via the Openverse REST API. **TRIGGER when users need:** openly-licensed / CC-licensed / public domain stock photos, artwork, illustrations, historical imagery, or mention Openverse/开放许可/CC 图片/公有领域/素材/找图. Use when building websites, apps, presentations, or documents requiring freely-usable visual content with per-image license metadata — even if Openverse isn't explicitly named.
+disable-model-invocation: true
 ---
 
 # Openverse Image Skill
@@ -68,7 +69,7 @@ Openverse 是**元数据索引**，不是图床。每条结果的 `url` 指向�
 
 ```bash
 curl "https://api.openverse.org/v1/images/?q=mountain%20lake&license=cc0,pdm,by&size=large&aspect_ratio=wide&page_size=10" \
-  -H "User-Agent: my-project/1.0" -H "Accept: application/json"
+  -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36" -H "Accept: application/json"
 ```
 
 **常用参数：**
@@ -202,7 +203,7 @@ interface SearchOptions {
 
 async function searchOpenverseImages(q: string, opts: SearchOptions = {}): Promise<OpenverseImage[]> {
   const headers: Record<string, string> = {
-    'User-Agent': 'my-project/1.0',
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
     'Accept': 'application/json',
   };
   if (process.env.OPENVERSE_ACCESS_TOKEN) {
@@ -237,7 +238,7 @@ for (const img of images) {
 ```python
 import os, pathlib, requests
 
-UA = {'User-Agent': 'my-project/1.0', 'Accept': 'application/json'}
+UA = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36', 'Accept': 'application/json'}
 
 def search_and_download(query: str, dest_dir: str = 'assets/images',
                         license_list: str = 'cc0,pdm,by,by-sa', page_size: int = 10) -> list:

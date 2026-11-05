@@ -1,6 +1,7 @@
 ---
 name: pixabay
 description: Search and download free high-quality photos, illustrations, vectors and videos from Pixabay for any project. **TRIGGER when users need:** stock photos, hero images, backgrounds, banners, thumbnails, cover images, illustrations, vectors, stock videos, footage, or mention Pixabay/图片/照片/素材/找图/视频. Use when building websites, apps, presentations, or marketing materials requiring visual content — even if Pixabay isn't explicitly named.
+disable-model-invocation: true
 ---
 
 # Pixabay Photo Skill

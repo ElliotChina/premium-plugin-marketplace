@@ -1,6 +1,7 @@
 ---
 name: pexels
 description: Search and download free high-quality photos and videos from Pexels for any project. **TRIGGER when users need:** stock photos, hero images, backgrounds, banners, thumbnails, cover images, stock videos, footage, or mention Pexels/图片/照片/素材/找图/视频. Use when building websites, apps, presentations, or marketing materials requiring visual content — even if Pexels isn't explicitly named.
+disable-model-invocation: true
 ---
 
 # Pexels Photo Skill

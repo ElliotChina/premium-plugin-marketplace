@@ -1,13 +1,12 @@
 # image
 
-Unsplash / Pexels / Pixabay / MediaWiki / Openverse 图片与视频搜索下载插件，快速获取高质量免费素材用于项目开发。
-
-> 从 [devflow](../devflow/) 插件迁移而来。
+Unsplash / Pexels / Pixabay / MediaWiki / Openverse 图片与视频搜索下载插件，支持五来源聚合搜索，快速获取高质量免费素材用于项目开发。
 
 ## 命令列表
 
 | 命令 | 用途 |
 |------|------|
+| `/image:image-search` | 五来源聚合搜索：一次并发查询 Unsplash/Pexels/Pixabay/Wikimedia Commons/Openverse，统一 JSON 输出，可下载前 N 张 |
 | `/image:unsplash` | Unsplash 图片搜索下载 |
 | `/image:pexels` | Pexels 图片/视频搜索下载 |
 | `/image:pixabay` | Pixabay 图片/插画/矢量图/视频搜索下载 |
@@ -16,14 +15,28 @@ Unsplash / Pexels / Pixabay / MediaWiki / Openverse 图片与视频搜索下载�
 
 ## 安装
 
+从本市场安装：
+
 ```bash
-claude plugin add /path/to/image
+claude marketplace add https://github.com/ElliotChina/premium-plugin-marketplace
 ```
+
+然后在 Claude Code 中执行：
+
+```
+/plugin install image@premium-plugin-marketplace
+```
+
+## 调用方式
+
+- `image-search`：支持 agent 自动触发，也可手动调用
+- 其余技能（unsplash / pexels / pixabay / mediawiki / openverse）：仅限用户手动调用（如 `/image:pexels`），agent 不会自动触发
 
 ## 环境变量
 
 | 技能 | 环境变量 | 获取方式 |
 |------|---------|---------|
+| image-search | 同下（复用各来源 Key，零配置来源可直接用） | 聚合脚本按可用 Key 自动选择参与搜索的来源 |
 | unsplash | `UNSPLASH_ACCESS_KEY` | https://unsplash.com/developers 创建应用 |
 | pexels | `PEXELS_API_KEY` | https://www.pexels.com/api/ 注册即得（照片与视频共用） |
 | pixabay | `PIXABAY_API_KEY` | https://pixabay.com/api/docs/ 登录后页面可见（图片与视频共用） |

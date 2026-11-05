@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 """Openverse access token 获取与自动刷新。
 
-读取 OPENVERSE_CLIENT_ID / OPENVERSE_CLIENT_SECRET 环境变量，token 缓存于
-~/.cache/openverse_token.json，临期或缺失时自动用 client 凭据换取新 token。
+降级策略（与 image-search 技能保持一致）：
+环境变量 OPENVERSE_ACCESS_TOKEN → 缓存文件 ~/.cache/openverse_token.json（临期内复用）
+→ client 凭据动态换取并写回缓存。
+读取 OPENVERSE_CLIENT_ID / OPENVERSE_CLIENT_SECRET 环境变量换取新 token。
 stdout 仅输出 token，可直接用于 shell 替换：
     export OPENVERSE_ACCESS_TOKEN="$(python scripts/openverse_token.py)"
 
@@ -42,7 +44,7 @@ def refresh(client_id: str, client_secret: str) -> str:
     }).encode()
     # Openverse 拦截默认 UA（Python-urllib/3.x 返回 403），必须带自定义 User-Agent
     req = urllib.request.Request(TOKEN_URL, data=body, method="POST", headers={
-        "User-Agent": "openverse-token-refresh/1.0",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
     })
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
@@ -62,6 +64,11 @@ def refresh(client_id: str, client_secret: str) -> str:
 
 
 def main() -> None:
+    # 与 image-search 技能一致的降级策略：环境变量 → 缓存文件 → client 凭据动态换取
+    env_token = os.environ.get("OPENVERSE_ACCESS_TOKEN")
+    if env_token:
+        print(env_token)
+        return
     token, expires_at = load_cached()
     if token and time.time() < expires_at - BUFFER:
         print(token)

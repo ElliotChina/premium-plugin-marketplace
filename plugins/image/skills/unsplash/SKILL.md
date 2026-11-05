@@ -1,6 +1,7 @@
 ---
 name: unsplash
 description: Search and download free high-quality photos from Unsplash for any project. **TRIGGER when users need:** stock photos, hero images, backgrounds, banners, thumbnails, cover images, or mention Unsplash/图片/照片/素材/找图. Use when building websites, apps, presentations, or marketing materials requiring visual content — even if Unsplash isn't explicitly named.
+disable-model-invocation: true
 ---
 
 # Unsplash Photo Skill

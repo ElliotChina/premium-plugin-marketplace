@@ -30,7 +30,7 @@
     },
     {
       "name": "image",
-      "description": "Unsplash / Pexels / Pixabay / MediaWiki / Openverse 图片与视频搜索下载插件，快速获取高质量免费素材用于项目开发",
+      "description": "Unsplash / Pexels / Pixabay / MediaWiki / Openverse 图片与视频搜索下载插件，支持五来源聚合搜索，快速获取高质量免费素材用于项目开发",
       "category": "design",
       "source": "./plugins/image",
       "author": {
@@ -39,6 +39,8 @@
       },
       "keywords": [
         "image",
+        "image-search",
+        "aggregate-search",
         "unsplash",
         "pexels",
         "pixabay",
