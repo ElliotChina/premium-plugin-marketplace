@@ -1,0 +1,29 @@
+{
+  "skill_name": "mediawiki",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "帮我写一个搜索 Wikimedia Commons 图片的函数，搜索关键词是 'mountain lake'，每页 10 张",
+      "expected_output": "提供正确调用 MediaWiki Action API 的代码：端点 https://commons.wikimedia.org/w/api.php、action=query&list=search、srsearch=mountain lake、srnamespace=6（File 命名空间）、srlimit=10、format=json&formatversion=2，并携带自定义 User-Agent",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "我有一个 Commons 文件名 'File:Mont Blanc.jpg'，需要获取它的原图 URL、尺寸和许可信息",
+      "expected_output": "使用 action=query&prop=imageinfo&titles=File:Mont Blanc.jpg，iiprop=url|size|mime|extmetadata，说明 extmetadata 的 LicenseShortName 是署名依据、Artist 等字段值为 HTML 需清理，并建议用 iiextmetadatafilter 只取需要的键",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "我搜 MediaWiki API 想找图片，但搜索结果全是百科条目，一张图都没有",
+      "expected_output": "解释默认 srnamespace=0 只搜条目命名空间，搜图片需加 srnamespace=6（File 命名空间），或改用 generator=search&gsrnamespace=6&prop=imageinfo 合并查询一步拿到图片 URL",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "我在网页里用 Wikimedia Commons 的 CC BY-SA 图片，需要怎么处理署名？",
+      "expected_output": "说明 CC BY/CC BY-SA 必须署名作者与许可：格式如 '\"文件名\" by 作者, via Wikimedia Commons, CC BY-SA 4.0'，链接到 descriptionurl；CC0/PD 无强制署名义务；并说明网页展示用 iiurlwidth 的缩略图、extmetadata 的 HTML 值需清理后使用",
+      "files": []
+    }
+  ]
+}
