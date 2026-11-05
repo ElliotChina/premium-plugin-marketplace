@@ -19,7 +19,7 @@ description: Search and download free high-quality photos from Unsplash for any 
 **如果未配置，提示用户：**
 - 获取 Key: https://unsplash.com/developers → 创建应用 → 复制 Access Key
 - 配置命令: `export UNSPLASH_ACCESS_KEY=your_key_here`
-- API 限制: Demo 50次/小时, Production 5000次/小时
+- API 限制: Demo 50次/小时, Production 1000次/小时（`images.unsplash.com` 的图片请求不计入限额，仅 `api.unsplash.com` 的 JSON 请求计数）
 
 <details>
 <summary>📖 详细配置步骤（点击展开）</summary>
@@ -58,11 +58,13 @@ source ~/.zshrc
 ```bash
 # 搜索特定主题（推荐）
 curl "https://api.unsplash.com/search/photos?query=mountain&orientation=landscape&per_page=5" \
-  -H "Authorization: Client-ID $UNSPLASH_ACCESS_KEY"
+  -H "Authorization: Client-ID $UNSPLASH_ACCESS_KEY" \
+  -H "Accept-Version: v1"
 
 # 随机照片（适合背景/占位符）
 curl "https://api.unsplash.com/photos/random?query=nature&orientation=landscape&count=3" \
-  -H "Authorization: Client-ID $UNSPLASH_ACCESS_KEY"
+  -H "Authorization: Client-ID $UNSPLASH_ACCESS_KEY" \
+  -H "Accept-Version: v1"
 ```
 
 **参数选择建议：**
@@ -123,12 +125,23 @@ API 返回的 URL 包含 `ixid`，**必须保留**：
 ❌ <img src="https://your-cdn.com/saved-image.jpg">
 ```
 
-### 3. 摄影师署名（强烈推荐）
+### 3. 摄影师署名（API 使用条款要求）
 ```html
 Photo by <a href="https://unsplash.com/@username?utm_source=your_app&utm_medium=referral">
   Photographer Name
 </a> on <a href="https://unsplash.com?utm_source=your_app&utm_medium=referral">Unsplash</a>
 ```
+
+### 4. 本地下载前调用追踪端点 ⚠️
+需要将图片**下载到本地文件**（而非直接嵌入 URL）时，必须先请求下载追踪端点，用于向摄影师上报下载统计：
+
+```bash
+curl "https://api.unsplash.com/photos/{photo_id}/download" \
+  -H "Authorization: Client-ID $UNSPLASH_ACCESS_KEY" \
+  -H "Accept-Version: v1"
+```
+
+该端点返回的 JSON 中的 URL 才是最终下载地址。仅嵌入图片 URL（hotlinking）时无需调用。
 
 ---
 
@@ -145,7 +158,7 @@ Authorization: Client-ID YOUR_ACCESS_KEY
 - `query` (必填): 搜索关键词，如 `mountain`, `office`, `food`
 - `orientation`: `landscape`(横向), `portrait`(纵向), `squarish`(方形)
 - `per_page`: 每页数量（1-30），建议 5-10
-- `color`: 颜色过滤 - `blue`, `red`, `green`, `black_and_white` 等
+- `color`: 颜色过滤，共 11 个合法值 - `black_and_white`, `black`, `white`, `yellow`, `orange`, `red`, `purple`, `magenta`, `green`, `teal`, `blue`
 - `order_by`: `relevant`(相关度，默认), `latest`(最新)
 
 **返回数据结构：**
@@ -179,9 +192,10 @@ Authorization: Client-ID YOUR_ACCESS_KEY
 适合背景图、占位符场景。
 
 **参数：**
-- `query`: 可选，过滤主题
+- `query`: 可选，过滤主题（⚠️ 不可与 `collections`/`topics` 同请求混用）
 - `orientation`: 方向过滤
-- `count`: 数量（1-30）
+- `count`: 数量（1-30，仅提供 `count` 时才返回数组，否则返回单个对象）
+- `content_filter`: 内容过滤 - `low`(默认)/`high`
 
 ---
 
@@ -208,7 +222,7 @@ https://images.unsplash.com/photo-abc?ixid=xyz123&w=800&h=600&fit=crop&fm=webp&q
 
 **常用参数：**
 - `w` / `h`: 宽度/高度 (px)
-- `fit`: `crop`(裁剪), `clamp`(填充), `scale`(缩放)
+- `fit`: `crop`(裁剪), `clamp`(不裁剪不变形、用边缘像素延伸填充), `scale`(拉伸变形)
 - `fm`: 格式 - `webp`, `jpg`, `png`
 - `q`: 质量 (1-100)，建议 80-85
 - `auto=format`: 自动选择最佳格式
@@ -279,7 +293,7 @@ photo = get_random_photo('landscape')
 # ⚠️ urls.raw 中的 ixid 参数必须保留，添加自定义参数时使用 & 追加
 url = photo['urls']['raw'] + '&w=800&fm=webp&q=85'  # 正确：用 & 追加
 print(photo['urls']['regular'])  # 图片 URL（已包含 ixid）
-print(photo['user']['name'])     # 摄影师（建议署名）
+print(photo['user']['name'])     # 摄影师（API 使用条款要求署名）
 ```
 
 ### 生成带署名的 HTML
@@ -321,14 +335,18 @@ def generate_img_html(photo: dict, width: int = 800, app_name: str = 'my_app') -
 
 | 状态码 | 原因 | 解决方案 |
 |-------|------|---------|
+| 400 | 缺少必需参数 | 检查 `query` 等必填参数 |
 | 401 | Access Key 无效 | 检查 Key 是否正确复制 |
-| 403 | 超过速率限制 | Demo: 50次/小时, Production: 5000次/小时 |
+| 403 | 超过速率限制 | Demo: 50次/小时, Production: 1000次/小时 |
 | 404 | 照片不存在 | 检查 ID 是否正确 |
 | 422 | 参数错误 | 检查参数格式 |
+
+剩余额度可通过响应头查询：`X-Ratelimit-Limit`（总额度）、`X-Ratelimit-Remaining`（剩余请求数）。
 
 ```python
 def handle_unsplash_error(status: int) -> str:
     errors = {
+        400: '缺少必需参数：检查 query 等必填参数',
         401: '认证失败：检查 UNSPLASH_ACCESS_KEY',
         403: '速率限制：请等待后重试',
         404: '资源不存在',
@@ -347,9 +365,10 @@ def handle_unsplash_error(status: int) -> str:
 **必须遵守：**
 - [ ] **保留 ixid 参数** - URL 中的 `ixid` 是 API 使用条款要求
 - [ ] **Hotlinking** - 直接使用返回的 URL，不要重新托管
+- [ ] **摄影师署名** - API 使用条款要求（使用 `utm_source` 和 `utm_medium` 参数）
+- [ ] **本地下载前调用 `/photos/:id/download`** - 下载追踪（API 使用条款要求）
 
 **强烈推荐：**
-- [ ] 添加摄影师署名（使用 `utm_source` 和 `utm_medium` 参数）
 - [ ] 选择合适尺寸（`regular`/`small`/`thumb`）
 - [ ] 使用 `loading="lazy"` 实现懒加载
 

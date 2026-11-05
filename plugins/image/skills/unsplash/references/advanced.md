@@ -50,7 +50,8 @@ const placeholder = canvas.toDataURL();
 
 ```bash
 curl "https://api.unsplash.com/photos?order_by=popular&per_page=30" \
-  -H "Authorization: Client-ID YOUR_KEY"
+  -H "Authorization: Client-ID YOUR_KEY" \
+  -H "Accept-Version: v1"
 ```
 
 ### 单张照片 `/photos/:id`
@@ -59,7 +60,8 @@ curl "https://api.unsplash.com/photos?order_by=popular&per_page=30" \
 
 ```bash
 curl "https://api.unsplash.com/photos/abc123" \
-  -H "Authorization: Client-ID YOUR_KEY"
+  -H "Authorization: Client-ID YOUR_KEY" \
+  -H "Accept-Version: v1"
 ```
 
 ### 用户照片 `/users/:username/photos`
@@ -73,7 +75,8 @@ curl "https://api.unsplash.com/photos/abc123" \
 
 ```bash
 curl "https://api.unsplash.com/users/photographer/photos?per_page=10" \
-  -H "Authorization: Client-ID YOUR_KEY"
+  -H "Authorization: Client-ID YOUR_KEY" \
+  -H "Accept-Version: v1"
 ```
 
 ### 下载跟踪 `/photos/:id/download`
@@ -82,7 +85,8 @@ curl "https://api.unsplash.com/users/photographer/photos?per_page=10" \
 
 ```bash
 curl "https://api.unsplash.com/photos/abc123/download" \
-  -H "Authorization: Client-ID YOUR_KEY"
+  -H "Authorization: Client-ID YOUR_KEY" \
+  -H "Accept-Version: v1"
 ```
 
 ---
@@ -101,14 +105,14 @@ curl "https://api.unsplash.com/photos/abc123/download" \
 | `dpr` | 设备像素比 | `dpr=2` |
 | `auto` | 自动优化 | `auto=format` |
 | `crop` | 裁剪模式 | `crop=faces`/`crop=edges` |
-| `crop-h` / `crop-w` | 裁剪区域 | `crop-h=800` |
-| `crop-x` / `crop-y` | 裁剪起点 | `crop-x=100` |
+| `rect` | 指定裁剪区域(左上角x,y + 宽,高) | `rect=100,50,800,600` |
 
 ### 适配模式详解
 
-- **crop**: 裁剪以填充指定尺寸
-- **clamp**: 保持比例，添加边框
-- **scale**: 缩放以适应尺寸（可能变形）
+- **crop**: 裁剪以填充指定尺寸（裁剪位置由 `crop` 参数控制）
+- **clamp**: 不裁剪不变形，用图像边缘像素延伸填充
+- **fill**: 保持比例，用纯色（`fill=solid`）或模糊图像（`fill=blur`）填充空白
+- **scale**: 精确缩放到指定尺寸（不保持比例，可能变形）
 
 ### 高级示例
 
@@ -123,8 +127,8 @@ https://images.unsplash.com/photo-xxx?ixid=abc&w=800&dpr=2&fm=webp
 https://images.unsplash.com/photo-xxx?ixid=abc&w=800&q=30  # 低质量
 https://images.unsplash.com/photo-xxx?ixid=abc&w=800&q=85  # 高质量
 
-# 4. 特定区域裁剪
-https://images.unsplash.com/photo-xxx?ixid=abc&crop-x=100&crop-y=50&crop-w=800&crop-h=600
+# 4. 特定区域裁剪（rect=左上角x,左上角y,宽,高）
+https://images.unsplash.com/photo-xxx?ixid=abc&rect=100,50,800,600
 ```
 
 ---
@@ -135,12 +139,15 @@ https://images.unsplash.com/photo-xxx?ixid=abc&crop-x=100&crop-y=50&crop-w=800&c
 
 | 状态码 | 原因 | 解决方案 |
 |-------|------|---------|
+| 400 | 缺少必需参数 | 补全 `query` 等必填参数 |
 | 401 | Access Key 无效 | 检查 Key 是否正确复制，没有多余空格 |
-| 403 | 超过速率限制 | Demo: 50次/小时, Production: 5000次/小时。等待重置或申请 Production API |
+| 403 | 超过速率限制 | Demo: 50次/小时, Production: 1000次/小时。等待重置或申请 Production API |
 | 404 | 照片不存在 | 照片可能已被删除，检查 ID 是否正确 |
 | 422 | 参数错误 | 检查参数格式，如 `orientation` 拼写、`per_page` 范围等 |
 | 500 | 服务器错误 | Unsplash 服务问题，稍后重试 |
 | 503 | 服务不可用 | 维护中，等待恢复 |
+
+速率限制可通过响应头查询：`X-Ratelimit-Limit`（总额度）、`X-Ratelimit-Remaining`（剩余请求数）。仅 `api.unsplash.com` 的 JSON 请求计入限额，`images.unsplash.com` 的图片请求不计入。
 
 ### 完整错误处理代码
 
@@ -253,13 +260,13 @@ results = search_photos_cached('mountain', 'landscape', get_ttl_hash())
 A: **不可以**。Unsplash 要求直接使用返回的 URL（Hotlinking），这确保了摄影师能获得准确的使用统计。
 
 ### Q: 必须为摄影师署名吗？
-A: **强烈推荐但不强制**。Unsplash 许可证允许免费使用无需署名，但署名是对摄影师的尊重。
+A: **必须**。Unsplash API Guidelines 要求为摄影师和 Unsplash 提供适当署名（Unsplash 许可证本身不强制署名，但通过 API 使用图片时按条款必须署名）。
 
 ### Q: ixid 参数可以移除吗？
 A: **绝对不可以**。`ixid` 是 API 使用条款要求，用于追踪应用使用情况。移除将违反条款。
 
 ### Q: Demo API 的 50 次/小时够用吗？
-A: 对于个人项目通常足够。如果是生产环境或高流量应用，建议申请 Production API（5000 次/小时）。
+A: 对于个人项目通常足够。如果是生产环境或高流量应用，建议申请 Production API（1000 次/小时）。
 
 ### Q: 如何申请 Production API？
 A. 访问 https://unsplash.com/oauth/applications，点击你的应用，申请 Production 级别。通常需要说明使用场景。
