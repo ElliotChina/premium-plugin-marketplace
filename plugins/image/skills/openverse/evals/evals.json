@@ -1,0 +1,29 @@
+{
+  "skill_name": "openverse",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "帮我写一个搜索 Openverse 图片的函数，关键词 'mountain lake'，每页 10 张",
+      "expected_output": "提供正确调用 https://api.openverse.org/v1/images/ 的代码：q=mountain lake、page_size=10，请求带 User-Agent 与 Accept: application/json，说明匿名无需 API Key、限流 20次/分钟 + 200次/天",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "我需要商用项目用的免署名图片，Openverse 怎么过滤？",
+      "expected_output": "用 license=cc0,pdm 参数精确枚举免署名许可（cc0 与 pdm 公有领域标记），并说明避免依赖 license_type 参数（匿名实测可能返回 HTTP 500）",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Openverse API 返回的某张图片 url 字段是 null，怎么办？",
+      "expected_output": "说明 url（原图）可为 null，应回退用 thumbnail 字段下载；都为空则跳过该结果；并提示 thumbnail 是 Openverse 代理链路不稳定，Wikimedia 来源图可用 Special:Redirect/file 构造稳定预览",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "搜索 Openverse 时频繁遇到 429 错误，如何解决？",
+      "expected_output": "说明匿名限流 20次/分钟 + 200次/天；解决方案：缓存查询结果、减少翻页、一次 page_size 拿足候选本地筛选，或通过 /v1/auth_tokens/register/ 与 /v1/auth_tokens/token/ 注册获取 Bearer token 提升额度，用 GET /v1/rate_limit/ 自查余量",
+      "files": []
+    }
+  ]
+}

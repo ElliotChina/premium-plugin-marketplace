@@ -1,7 +1,7 @@
 {
   "name": "image",
-  "version": "0.6.0",
-  "description": "Unsplash / Pexels / Pixabay / MediaWiki 图片与视频搜索下载插件，快速获取高质量免费素材用于项目开发",
+  "version": "0.7.0",
+  "description": "Unsplash / Pexels / Pixabay / MediaWiki / Openverse 图片与视频搜索下载插件，快速获取高质量免费素材用于项目开发",
   "author": {
     "name": "elliot",
     "url": "https://github.com/ElliotChina"
@@ -14,6 +14,7 @@
     "pixabay",
     "mediawiki",
     "wikimedia",
+    "openverse",
     "photo",
     "stock-photo"
   ]

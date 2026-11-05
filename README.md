@@ -26,7 +26,7 @@
 | **prototype-design** | 原型设计：prototype-app 可执行镜像原型（生产零耦合、随代码库归档）+ prototype 即抛式发散对比 | 设计 |
 | **devops** | DevOps 技能集：CI/CD 流水线、生产发布、可观测性与插桩 | 开发 |
 | **writing** | 中文写作：humanizer-zh 去 AI 味润色与 human-writing 活人感写作 | 生产力 |
-| **image** | Unsplash / Pexels / Pixabay / MediaWiki 图片与视频搜索下载 | 设计 |
+| **image** | Unsplash / Pexels / Pixabay / MediaWiki / Openverse 图片与视频搜索下载 | 设计 |
 | **slide** | Reveal.js 幻灯片制作 | 生产力 |
 | **excalidraw** | 自然语言生成 Excalidraw 图表：流程图、架构图、思维导图等（来自 [awesome-copilot](https://github.com/github/awesome-copilot)） | 设计 |
 | **drawio** | 自然语言生成 Draw.io 图表：流程图、架构图、时序图、ER 图、UML 类图等，附模板与 XML 校验脚本（来自 [awesome-copilot](https://github.com/github/awesome-copilot)） | 设计 |
