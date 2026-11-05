@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures
+from dataclasses import dataclass
 import html
 import json
 import os
@@ -48,6 +49,28 @@ ORIENT_MAP = {
     "pexels": {"landscape": "landscape", "portrait": "portrait", "square": "square"},
     "openverse": {"landscape": "wide", "portrait": "tall", "square": "square"},
 }
+# --type 内容类型映射；unsplash/pexels 为纯照片站、mediawiki 无分类，不区分类型
+TYPE_MAP = {
+    "pixabay": {"photo": "photo", "illustration": "illustration", "vector": "vector"},
+    # openverse 无矢量图分类，vector 不传 category
+    "openverse": {"photo": "photograph", "illustration": "illustration"},
+}
+# --color 主色调映射；purple 在两家取值不同
+COLOR_MAP = {
+    "unsplash": {"black": "black", "white": "white", "yellow": "yellow", "orange": "orange",
+                 "red": "red", "purple": "purple", "green": "green", "blue": "blue"},
+    "pexels": {"black": "black", "white": "white", "yellow": "yellow", "orange": "orange",
+               "red": "red", "purple": "violet", "green": "green", "blue": "blue"},
+}
+
+
+@dataclass
+class Filters:
+    """聚合层统一筛选参数；各来源按自身能力取用（直传/映射/后筛/忽略）。"""
+    orientation: str = ""        # "" / landscape / portrait / square
+    image_type: str = ""         # "" / photo / illustration / vector（pixabay 默认 photo）
+    color: str = ""              # "" / black white yellow orange red purple green blue
+    license_free: bool = False   # True = 仅保留免强制署名结果
 
 
 def _get(url: str, params: dict | None = None, headers: dict | None = None) -> dict:
@@ -100,14 +123,15 @@ def _item(
 # ---------------------------------------------------------------------------
 
 
-def search_unsplash(query: str, per_provider: int, orientation: str) -> list[dict]:
+def search_unsplash(query: str, per_provider: int, filters: Filters) -> list[dict]:
     key = os.environ["UNSPLASH_ACCESS_KEY"]
     data = _get(
         "https://api.unsplash.com/search/photos",
         params={
             "query": query,
             "per_page": per_provider,
-            **({"orientation": ORIENT_MAP["unsplash"][orientation]} if orientation in ORIENT_MAP["unsplash"] else {}),
+            **({"orientation": ORIENT_MAP["unsplash"][filters.orientation]} if filters.orientation in ORIENT_MAP["unsplash"] else {}),
+            **({"color": COLOR_MAP["unsplash"][filters.color]} if filters.color in COLOR_MAP["unsplash"] else {}),
         },
         headers={"Authorization": f"Client-ID {key}", "Accept-Version": "v1"},
     )
@@ -129,14 +153,15 @@ def search_unsplash(query: str, per_provider: int, orientation: str) -> list[dic
     ]
 
 
-def search_pexels(query: str, per_provider: int, orientation: str) -> list[dict]:
+def search_pexels(query: str, per_provider: int, filters: Filters) -> list[dict]:
     key = os.environ["PEXELS_API_KEY"]
     data = _get(
         "https://api.pexels.com/v1/search",
         params={
             "query": query,
             "per_page": per_provider,
-            **({"orientation": orientation} if orientation in ORIENT_MAP["pexels"] else {}),
+            **({"orientation": filters.orientation} if filters.orientation in ORIENT_MAP["pexels"] else {}),
+            **({"color": COLOR_MAP["pexels"][filters.color]} if filters.color in COLOR_MAP["pexels"] else {}),
         },
         # Pexels 认证是裸 Key，无 Bearer/Client-ID 前缀
         headers={"Authorization": key},
@@ -159,19 +184,19 @@ def search_pexels(query: str, per_provider: int, orientation: str) -> list[dict]
     ]
 
 
-def search_pixabay(query: str, per_provider: int, orientation: str) -> list[dict]:
+def search_pixabay(query: str, per_provider: int, filters: Filters) -> list[dict]:
     key = os.environ["PIXABAY_API_KEY"]
-    # Pixabay 无 orientation 参数，用横向要求的常见最小宽高近似过滤
+    # Pixabay 无 orientation/color 参数：横向要求的常见最小宽高近似过滤
     params = {
         "key": key,
         "q": query,
-        "image_type": "photo",
         "per_page": per_provider,
         "safesearch": "true",
+        "image_type": TYPE_MAP["pixabay"].get(filters.image_type, "photo"),
     }
-    if orientation == "landscape":
+    if filters.orientation == "landscape":
         params["min_width"] = 960
-    elif orientation == "portrait":
+    elif filters.orientation == "portrait":
         params["min_height"] = 960
     data = _get("https://pixabay.com/api/", params=params)
     return [
@@ -192,7 +217,7 @@ def search_pixabay(query: str, per_provider: int, orientation: str) -> list[dict
     ]
 
 
-def search_mediawiki(query: str, per_provider: int, orientation: str) -> list[dict]:
+def search_mediawiki(query: str, per_provider: int, filters: Filters) -> list[dict]:
     headers = {"User-Agent": USER_AGENT}
     data = _get(
         "https://commons.wikimedia.org/w/api.php",
@@ -241,10 +266,14 @@ def search_mediawiki(query: str, per_provider: int, orientation: str) -> list[di
                 attribution_required=attribution_required,
             )
         )
-    # Commons 搜索 API 无 orientation 参数，按宽高事后过滤
-    if orientation == "landscape":
+    # Commons 搜索 API 无 orientation/类型参数：orientation 按宽高事后过滤；
+    # license_free 保守只留 CC0 / 公有领域（许可未知即排除）
+    if filters.license_free:
+        items = [i for i in items
+                 if "cc0" in i["license"].lower() or "public domain" in i["license"].lower()]
+    if filters.orientation == "landscape":
         items = [i for i in items if (i["width"] or 0) >= (i["height"] or 1)]
-    elif orientation == "portrait":
+    elif filters.orientation == "portrait":
         items = [i for i in items if (i["height"] or 0) >= (i["width"] or 1)]
     return items
 
@@ -305,7 +334,7 @@ def _openverse_token() -> str:
     return token
 
 
-def search_openverse(query: str, per_provider: int, orientation: str) -> list[dict]:
+def search_openverse(query: str, per_provider: int, filters: Filters) -> list[dict]:
     headers = {"User-Agent": USER_AGENT, "Accept": "application/json"}
     token = _openverse_token()
     if token:
@@ -315,7 +344,10 @@ def search_openverse(query: str, per_provider: int, orientation: str) -> list[di
         params={
             "q": query,
             "page_size": per_provider,
-            **({"aspect_ratio": ORIENT_MAP["openverse"][orientation]} if orientation in ORIENT_MAP["openverse"] else {}),
+            **({"aspect_ratio": ORIENT_MAP["openverse"][filters.orientation]} if filters.orientation in ORIENT_MAP["openverse"] else {}),
+            **({"category": TYPE_MAP["openverse"][filters.image_type]} if filters.image_type in TYPE_MAP["openverse"] else {}),
+            # 免署名档服务端过滤，省匿名额度
+            **({"license": "cc0,pdm"} if filters.license_free else {}),
         },
         headers=headers,
     )
@@ -436,6 +468,23 @@ def main(argv: list[str] | None = None) -> int:
         help=f"逗号分隔的来源列表（默认: 全部可用来源，可选 {','.join(ALL_PROVIDERS)}）",
     )
     parser.add_argument("--orientation", choices=("any", "landscape", "portrait", "square"), default="any")
+    parser.add_argument(
+        "--type",
+        choices=("photo", "illustration", "vector"),
+        default="",
+        help="内容类型过滤；服务端过滤仅 pixabay/openverse 支持，其余来源不区分类型",
+    )
+    parser.add_argument(
+        "--color",
+        choices=tuple(COLOR_MAP["unsplash"]),
+        default="",
+        help="主色调过滤（black/white/yellow/orange/red/purple/green/blue）；仅 unsplash/pexels 支持",
+    )
+    parser.add_argument(
+        "--license-free",
+        action="store_true",
+        help="仅保留免强制署名结果：openverse 服务端过滤 CC0/公有领域，Commons 结果后筛，其余来源本就免强制署名",
+    )
     parser.add_argument("--per-provider", type=int, default=5, help="每个来源取多少条（默认 5）")
     parser.add_argument("--download", type=int, default=0, metavar="N", help="下载混排前 N 张到 -o 目录")
     parser.add_argument("-o", "--output", default="images", help="下载目录（默认 ./images）")
@@ -452,11 +501,27 @@ def main(argv: list[str] | None = None) -> int:
     print(f"搜索来源: {', '.join(providers)}", file=sys.stderr)
 
     orientation = "" if args.orientation == "any" else args.orientation
+    filters = Filters(
+        orientation=orientation,
+        image_type=args.type,
+        color=args.color,
+        license_free=args.license_free,
+    )
+    # 各来源对筛选参数的支持面不同，明示无效组合避免"以为过滤了其实没有"
+    no_type = [p for p in providers if args.type and args.type not in TYPE_MAP.get(p, {})]
+    if no_type:
+        print(f"  [note] --type 服务端过滤仅 pixabay/openverse 支持，忽略于: {', '.join(no_type)}", file=sys.stderr)
+    no_color = [p for p in providers if args.color and p not in COLOR_MAP]
+    if no_color:
+        print(f"  [note] --color 仅 unsplash/pexels 支持，忽略于: {', '.join(no_color)}", file=sys.stderr)
+    if args.license_free:
+        print("  [note] --license-free: unsplash/pexels/pixabay 本就免强制署名，无需过滤", file=sys.stderr)
+
     groups: dict[str, list[dict]] = {}
     errors: dict[str, str] = {}
     with concurrent.futures.ThreadPoolExecutor(max_workers=len(providers)) as pool:
         futures = {
-            p: pool.submit(SEARCHERS[p], args.query, args.per_provider, orientation)
+            p: pool.submit(SEARCHERS[p], args.query, args.per_provider, filters)
             for p in providers
         }
         for p, fut in futures.items():

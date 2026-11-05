@@ -31,10 +31,10 @@ Python 3.10+ 与 `requests`。零配置来源（mediawiki / openverse）无需�
 |--------|---------|----------------------------|---------|
 | 搜索主题 | ✅ 必要 | 开放式收集；用户给中文时附上英文译法让用户确认（如"雪山湖泊 → snowy mountain lake，可以吗？"） | `query`（无此参数无法调用） |
 | 方向 / 宽高比 | 有布局用途时问 | A. 横图（hero/banner）· B. 竖图（手机端/文章）· C. 方形（头像/缩略图）· **D. 不限（默认）** | `--orientation landscape/portrait/square` |
-| 许可 / 署名限制 | 商用场景必问 | A. **可接受署名（默认）** · B. 必须免署名（只用 CC0/公有领域及各站免费许可）· C. 商用且需避开 nc/nd 限制 | B 保留 `attribution_required: false` 的结果；C 另筛掉 `license` 含 `nc`/`nd` 的结果 |
+| 许可 / 署名限制 | 商用场景必问 | A. **可接受署名（默认）** · B. 必须免署名（只用 CC0/公有领域及各站免费许可）· C. 商用且需避开 nc/nd 限制 | B 加 `--license-free`（openverse/Commons 过滤，其余来源本就免署名）；C 无参数，筛掉 `license` 含 `nc`/`nd` 的结果 |
 | 尺寸下限 | 高清场景问 | A. 宽 ≥1920px（高清/壁纸级）· B. 宽 ≥1200px（网页常规）· **C. 不限（默认）** | 按 `width` / `pixels` 字段筛选 |
 | 数量与是否下载 | 可选 | A. **每来源 5 条，仅预览不下载（默认）** · B. 每来源 10 条仅预览 · C. 下载前 N 张到指定目录（N 常用 1–5） | `--per-provider`、`--download N -o DIR` |
-| 颜色 / 内容类型 | 可选 | A. **不限（默认）** · B. 指定颜色（黑/白/暖色调…）· C. 只要照片 · D. 只要插画/矢量图 | 脚本不支持，B–D 需直连对应来源 API |
+| 颜色 / 内容类型 | 可选 | A. **不限（默认）** · B. 指定颜色（黑/白/红/蓝等 8 色）· C. 只要照片 · D. 只要插画 · E. 只要矢量图 | B 用 `--color`（仅 unsplash/pexels）；C–E 用 `--type`（服务端过滤仅 pixabay/openverse，其余来源不区分类型） |
 
 确认后把要求翻译成参数组合：能落参数的落参数（`query` / `--orientation` / `--per-provider` / `--download`），落不了的（许可、尺寸、颜色）在拿到 JSON 后按字段筛选并向用户说明筛选依据。
 
@@ -60,7 +60,10 @@ python scripts/image_search.py "sunset" --download 3 -o images/
 | `query` | 搜索关键词（英文命中率高） |
 | `--providers` | 逗号分隔来源列表；默认全部可用来源 |
 | `--orientation` | `any`（默认）/ `landscape` / `portrait` / `square`；各来源自动映射（Commons 不支持时按宽高事后过滤） |
-| `--per-provider` | 每来源结果数（默认 5） |
+| `--type` | `photo` / `illustration` / `vector`；服务端过滤仅 pixabay（`image_type`）与 openverse（`category`，无 vector 分类）支持，其余来源不区分类型（unsplash/pexels 为纯照片站） |
+| `--color` | `black`/`white`/`yellow`/`orange`/`red`/`purple`/`green`/`blue`；仅 unsplash/pexels 支持（`purple` 自动映射为 pexels 的 `violet`） |
+| `--license-free` | 仅保留免强制署名结果：openverse 服务端过滤 CC0/公有领域，Commons 结果后筛（许可未知即排除），unsplash/pexels/pixabay 本就免强制署名 |
+| `--per-provider` | 每来源结果数（默认 5）⚠️ pixabay 要求 ≥3，openverse 匿名上限 20 |
 | `--download N` | 下载混排前 N 张到 `-o` 目录，文件名 `{排名}_{来源}_{id}.{扩展名}` |
 | `-o` | 下载目录（默认 `./images`） |
 

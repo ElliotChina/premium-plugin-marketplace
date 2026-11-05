@@ -24,6 +24,12 @@
       "prompt": "聚合搜索提示 openverse 来源出错了，其他来源正常，这个结果还能用吗？",
       "expected_output": "解释单来源失败只记入 errors 不影响其他来源，providers_used 与 results 中的其余来源结果完整可用；如需 openverse 结果可稍后单独重试",
       "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "帮我找免署名的插画素材，主题是森林，最好红色调",
+      "expected_output": "运行 python scripts/image_search.py 'forest' --type illustration --color red --license-free，说明各来源对该参数组合的支持差异（--type 服务端过滤仅 pixabay/openverse，--color 仅 unsplash/pexels），并确认结果全部免强制署名",
+      "files": []
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "name": "image",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "Unsplash / Pexels / Pixabay / MediaWiki / Openverse 图片与视频搜索下载插件，支持五来源聚合搜索，快速获取高质量免费素材用于项目开发",
   "author": {
     "name": "elliot",

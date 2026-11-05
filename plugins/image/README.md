@@ -43,6 +43,18 @@ claude marketplace add https://github.com/ElliotChina/premium-plugin-marketplace
 | mediawiki | 无需 API Key | 公开 API 匿名可用，请求需携带自定义 User-Agent |
 | openverse | 无需（可选 `OPENVERSE_CLIENT_ID`/`OPENVERSE_CLIENT_SECRET`） | 匿名 20次/分 + 200次/天；注册 https://api.openverse.org/v1/auth_tokens/register/ 并完成邮箱验证后提升额度，token 由技能脚本自动刷新 |
 
+## 各来源官方 API 文档
+
+| 来源 | 文档 |
+|------|------|
+| Unsplash | https://unsplash.com/documentation |
+| Pexels | https://www.pexels.com/api/documentation/ |
+| Pixabay | https://pixabay.com/api/docs/ |
+| Wikimedia Commons (MediaWiki API) | https://www.mediawiki.org/wiki/API:Main_page |
+| Openverse | https://api.openverse.org/v1/ |
+
+聚合脚本未暴露的细粒度参数（颜色过滤、内容类型、许可枚举等）可查阅上述文档后直连 API 使用。
+
 ## 许可证
 
 MIT License
