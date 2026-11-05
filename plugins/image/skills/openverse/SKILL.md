@@ -18,25 +18,27 @@ description: Search and download openly-licensed images aggregated by Openverse 
 
 **可选注册提升额度**（无需网页注册，纯 API 调用）：
 ```bash
-# 1. 注册应用，得到 client_id / client_secret
+# 注册应用，得到 client_id / client_secret（一次性，长期有效）
 curl -X POST "https://api.openverse.org/v1/auth_tokens/register/" \
   -H "Content-Type: application/json" \
   -d '{"name": "my-project", "description": "image search for my app", "email": "me@example.com"}'
+```
 
-# 2. 换取 access_token
-curl -X POST "https://api.openverse.org/v1/auth_tokens/token/" \
-  -d "client_id=YOUR_CLIENT_ID&client_secret=YOUR_CLIENT_SECRET&grant_type=client_credentials"
+拿到凭据后配置两个长期环境变量，12 小时有效的 access_token 由本技能脚本 `scripts/openverse_token.py` 自动获取与刷新（缓存于 `~/.cache/openverse_token.json`，临期自动换新）：
 
-# 3. 带 Bearer token 请求（额度显著提升）
-curl "https://api.openverse.org/v1/images/?q=mountain" \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+```bash
+export OPENVERSE_CLIENT_ID=...      # 注册返回
+export OPENVERSE_CLIENT_SECRET=...  # 注册返回
+# 获取/刷新 token，可直接注入环境变量
+export OPENVERSE_ACCESS_TOKEN="$(python scripts/openverse_token.py)"
 ```
 
 ⚠️ 注册实测注意：
 - 注册后 Openverse 发验证邮件，**点击验证链接前额度不提升**（token 可用但仍走匿名额度，`GET /v1/rate_limit/` 返回 `verified: false`）
-- `access_token` 仅 **12 小时有效**（`expires_in: 43200`），过期后用长期有效的 client_id/secret 重新调 `/v1/auth_tokens/token/` 刷新；不要把 token 当长期凭据
+- `access_token` 仅 **12 小时有效**，不要当长期凭据；长期凭据是 client_id/secret，刷新交给脚本
+- urllib/requests 默认 UA（`Python-urllib/3.x`）会被 403 拦截，请求必须带自定义 User-Agent
 
-配置了 token 时用环境变量 `OPENVERSE_ACCESS_TOKEN`；未配置则匿名调用。
+配置了 `OPENVERSE_ACCESS_TOKEN` 直接用；只配置了 client 凭据时先运行 `python scripts/openverse_token.py` 生成 token；都未配置则匿名调用。
 
 ---
 
@@ -321,7 +323,8 @@ def check_rate_limit(token: str | None = None) -> dict:
 | 状态码 | 原因 | 解决方案 |
 |-------|------|---------|
 | 400 | 参数非法（如 `license` 传了不存在的值） | 对照参数表检查 |
-| 401 | Bearer token 无效/过期 | 重新调 `/v1/auth_tokens/token/` 换 token |
+| 401 | Bearer token 无效/过期 | 重新获取 token（`python scripts/openverse_token.py`） |
+| 403 | User-Agent 被拦（urllib/requests 默认 UA） | 请求带自定义 User-Agent（含项目名） |
 | 429 | 超过限流（匿名 20次/分 + 200次/天） | 缓存结果、控制请求频率，或注册 token |
 | 500 | 服务端错误（实测 `license_type` 参数匿名下可触发） | 改用 `license` 参数精确枚举；仍失败则稍后重试 |
 

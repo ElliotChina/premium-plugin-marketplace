@@ -22,7 +22,13 @@
     {
       "id": 4,
       "prompt": "搜索 Openverse 时频繁遇到 429 错误，如何解决？",
-      "expected_output": "说明匿名限流 20次/分钟 + 200次/天；解决方案：缓存查询结果、减少翻页、一次 page_size 拿足候选本地筛选，或通过 /v1/auth_tokens/register/ 与 /v1/auth_tokens/token/ 注册获取 Bearer token 提升额度，用 GET /v1/rate_limit/ 自查余量",
+      "expected_output": "说明匿名限流 20次/分钟 + 200次/天；解决方案：缓存查询结果、减少翻页、一次 page_size 拿足候选本地筛选，或通过 /v1/auth_tokens/register/ 注册 client 凭据并用技能脚本 scripts/openverse_token.py 自动获取/刷新 Bearer token，用 GET /v1/rate_limit/ 自查余量",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "我已经注册了 Openverse client 凭据（OPENVERSE_CLIENT_ID/OPENVERSE_CLIENT_SECRET），帮我获取一个可用的 access token",
+      "expected_output": "运行 python scripts/openverse_token.py（依赖 OPENVERSE_CLIENT_ID/OPENVERSE_CLIENT_SECRET 环境变量）获取 token；说明 token 缓存于 ~/.cache/openverse_token.json、12h 有效且临期自动刷新、stdout 仅输出 token 可注入 OPENVERSE_ACCESS_TOKEN；并提醒需先完成邮箱验证额度才提升",
       "files": []
     }
   ]
